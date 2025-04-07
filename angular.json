@@ -13,24 +13,50 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "rfdc",
+              "@popperjs/core",
+              "canvg",
+              "html2canvas",
+              "core-js",
+              "raf",
+              "rgbcolor"
+            ],
             "outputPath": "dist/gestion-activities",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
-            ],
-            "scripts": []
+  "node_modules/bootstrap/dist/css/bootstrap.min.css",
+  "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+  "src/styles.css",
+  "src/assets/FrontOffice/daycare-website-template/css/bootstrap.min.css",
+  "src/assets/FrontOffice/daycare-website-template/css/style.css",
+  "src/assets/BackOffice/purple-free/dist/assets/vendors/mdi/css/materialdesignicons.min.css",
+  "src/assets/BackOffice/purple-free/dist/assets/vendors/css/vendor.bundle.base.css",
+  "node_modules/animate.css/animate.css",
+  "src/assets/BackOffice/purple-free/dist/assets/css/style.css"
+],
+"scripts": [
+  "src/assets/FrontOffice/daycare-website-template/lib/jquery/jquery.min.js",
+  "src/assets/FrontOffice/daycare-website-template/js/main.js",
+  "src/assets/BackOffice/purple-free/dist/assets/vendors/js/vendor.bundle.base.js",
+  "src/assets/BackOffice/purple-free/dist/assets/js/off-canvas.js",
+  "src/assets/BackOffice/purple-free/dist/assets/js/misc.js"
+]
           },
           "configurations": {
             "production": {
+              "buildOptimizer": true,
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
               "budgets": [
                 {
                   "type": "initial",
@@ -42,14 +68,11 @@
                   "maximumWarning": "2kb",
                   "maximumError": "4kb"
                 }
-              ],
-              "outputHashing": "all"
+              ]
             },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
             }
@@ -58,6 +81,10 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "gestion-activities:build:development",
+            "port": 4200
+          },
           "configurations": {
             "production": {
               "browserTarget": "gestion-activities:build:production"
@@ -77,11 +104,10 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -94,5 +120,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "3d87fdf9-9ce0-4148-8a94-5aafd549f26e"
   }
 }
