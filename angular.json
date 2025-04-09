@@ -44,17 +44,15 @@
 ],
 "scripts": [
   "node_modules/jquery/dist/jquery.min.js",
-  "assets/FrontOffice/daycare-website-template/lib/wow/wow.min.js",
-  "assets/FrontOffice/daycare-website-template/lib/easing/easing.min.js",
-  "assets/FrontOffice/daycare-website-template/lib/waypoints/waypoints.min.js",
-  "assets/FrontOffice/daycare-website-template/lib/owlcarousel/owl.carousel.min.js",
-  "assets/FrontOffice/daycare-website-template/lib/lightbox/js/lightbox.min.js",
-  "src/assets/FrontOffice/daycare-website-template/lib/jquery/jquery.min.js",
-  "assets/FrontOffice/daycare-website-template/lib/wow/wow.min.js",
+  "node_modules/wow.js/dist/wow.min.js",
+  "src/assets/FrontOffice/daycare-website-template/lib/easing/easing.min.js",
+  "node_modules/waypoints/lib/noframework.waypoints.min.js", 
+  "node_modules/owl.carousel/dist/owl.carousel.min.js",
+  "node_modules/lightbox2/dist/js/lightbox-plus-jquery.min.js",
+  "src/assets/FrontOffice/daycare-website-template/js/main.js",
   "src/assets/BackOffice/purple-free/dist/assets/vendors/js/vendor.bundle.base.js",
   "src/assets/BackOffice/purple-free/dist/assets/js/off-canvas.js",
-  "src/assets/BackOffice/purple-free/dist/assets/js/misc.js",
-  "assets/FrontOffice/daycare-website-template/js/main.js"
+  "src/assets/BackOffice/purple-free/dist/assets/js/misc.js"
 ]
           },
           "configurations": {
