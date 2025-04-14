@@ -38,7 +38,8 @@
              "src/assets/FrontOffice/daycare-website-template/lib/lightbox/css/lightbox.min.css",
              "src/assets/FrontOffice/daycare-website-template/lib/owlcarousel/assets/owl.carousel.min.css",
              "src/assets/FrontOffice/daycare-website-template/css/bootstrap.min.css",
-             "src/assets/FrontOffice/daycare-website-template/css/style.css"             
+             "src/assets/FrontOffice/daycare-website-template/css/style.css"    ,
+             "src/styles.css"
             
             ],
             "scripts": [
@@ -57,6 +58,7 @@
              "src/assets/FrontOffice/daycare-website-template/lib/lightbox/js/lightbox.min.js",
              "src/assets/FrontOffice/daycare-website-template/lib/owlcarousel/owl.carousel.min.js",
              "src/assets/FrontOffice/daycare-website-template/js/main.js"
+             
                 
             ]
           },
