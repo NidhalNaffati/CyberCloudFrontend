@@ -12,9 +12,10 @@ import {FooterBackComponent} from './BackOffice/footer-back/footer-back.componen
 import {AllTemplateBackComponent} from './BackOffice/all-template-back/all-template-back.component';
 import {HomeFrontComponent} from './FrontOffice/home-front/home-front.component';
 import {HomeBackComponent} from './BackOffice/home-back/home-back.component';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FullCalendarModule} from '@fullcalendar/angular';
+import {AuthInterceptor} from "./auth/auth.interceptor";
 
 @NgModule({
   declarations: [
@@ -37,7 +38,9 @@ import {FullCalendarModule} from '@fullcalendar/angular';
     ReactiveFormsModule,
     FullCalendarModule
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

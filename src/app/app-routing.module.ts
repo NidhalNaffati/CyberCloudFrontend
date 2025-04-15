@@ -6,8 +6,13 @@ import {AllTemplateFrontComponent} from './FrontOffice/all-template-front/all-te
 import {AllTemplateBackComponent} from './BackOffice/all-template-back/all-template-back.component';
 import {HomeFrontComponent} from './FrontOffice/home-front/home-front.component';
 import {HomeBackComponent} from './BackOffice/home-back/home-back.component';
+import {NotfoundComponent} from "./components/notfound/notfound.component";
 
 const routes: Routes = [
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
+  },
   {
     path: '', component: AllTemplateFrontComponent,
     children: [
@@ -15,9 +20,6 @@ const routes: Routes = [
       // {path:'add-appointment', component: AddAppointmentComponent},
     ]
   },
-
-  // { path: 'calendar', component: CalendarComponent },
-
   {
     path: 'admin', component: AllTemplateBackComponent,
     children: [
@@ -25,7 +27,9 @@ const routes: Routes = [
       //  { path: 'appointments', component: AppointmentListComponent },
       //  { path: 'appointments/edit/:id', component: EditAppointmentComponent },
     ]
-  }
+  },
+  {path: '404', component: NotfoundComponent},
+  {path: '**', redirectTo: '/404'}
 ];
 
 @NgModule({
