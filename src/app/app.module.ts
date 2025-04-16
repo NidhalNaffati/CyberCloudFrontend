@@ -1,20 +1,30 @@
-import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
-import {HeaderFrontComponent} from './FrontOffice/header-front/header-front.component';
-import {FooterFrontComponent} from './FrontOffice/footer-front/footer-front.component';
-import {AllTemplateFrontComponent} from './FrontOffice/all-template-front/all-template-front.component';
-import {NavbarBackComponent} from './BackOffice/navbar-back/navbar-back.component';
-import {SidebarBackComponent} from './BackOffice/sidebar-back/sidebar-back.component';
-import {FooterBackComponent} from './BackOffice/footer-back/footer-back.component';
-import {AllTemplateBackComponent} from './BackOffice/all-template-back/all-template-back.component';
-import {HomeFrontComponent} from './FrontOffice/home-front/home-front.component';
-import {HomeBackComponent} from './BackOffice/home-back/home-back.component';
-import {HttpClientModule} from '@angular/common/http';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {FullCalendarModule} from '@fullcalendar/angular';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { HeaderFrontComponent } from './FrontOffice/header-front/header-front.component';
+import { FooterFrontComponent } from './FrontOffice/footer-front/footer-front.component';
+import { AllTemplateFrontComponent } from './FrontOffice/all-template-front/all-template-front.component';
+import { NavbarBackComponent } from './BackOffice/navbar-back/navbar-back.component';
+import { SidebarBackComponent } from './BackOffice/sidebar-back/sidebar-back.component';
+import { FooterBackComponent } from './BackOffice/footer-back/footer-back.component';
+import { AllTemplateBackComponent } from './BackOffice/all-template-back/all-template-back.component';
+import { HomeFrontComponent } from './FrontOffice/home-front/home-front.component';
+import { HeaderBackComponent } from './BackOffice/header-back/header-back.component';
+import { HomeBackComponent } from './BackOffice/home-back/home-back.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AddAppointmentComponent } from './components/add-appointment/add-appointment.component';
+import { AppointmentListComponent } from './components/appointment-list/appointment-list.component';
+import { EditAppointmentComponent } from './components/edit-appointment/edit-appointment.component';
+import { ConsultationListComponent } from './components/consultations/consultation-list/consultation-list.component';
+import { AddConsultationComponent } from './components/consultations/add-consultation/add-consultation.component';
+import { EditConsultationComponent } from './components/consultations/edit-consultation/edit-consultation.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { C } from '@fullcalendar/core/internal-common';
+import { CalendarComponent } from './components/calendar/calendar.component';
+
 
 @NgModule({
   declarations: [
@@ -27,12 +37,21 @@ import {FullCalendarModule} from '@fullcalendar/angular';
     FooterBackComponent,
     AllTemplateBackComponent,
     HomeFrontComponent,
+    HeaderBackComponent,
     HomeBackComponent,
+    AddAppointmentComponent,
+    AppointmentListComponent,
+    EditAppointmentComponent,
+    ConsultationListComponent,
+    AddConsultationComponent,
+    EditConsultationComponent,
+    CalendarComponent
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
+    HttpClientModule ,
     FormsModule,
     ReactiveFormsModule,
     FullCalendarModule
@@ -40,5 +59,4 @@ import {FullCalendarModule} from '@fullcalendar/angular';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule { }

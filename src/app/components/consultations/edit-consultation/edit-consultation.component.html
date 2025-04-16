@@ -1,0 +1,27 @@
+<div class="container mt-4">
+  <h2>Update Consultation</h2>
+
+  <form (ngSubmit)="updateConsultation()">
+    <div class="mb-3">
+      <label>Details:</label>
+      <input type="text" class="form-control" [(ngModel)]="consultation.details" name="details" required>
+    </div>
+    <div class="mb-3">
+      <label>Description:</label>
+      <input type="text" class="form-control" [(ngModel)]="consultation.description" name="description" required>
+    </div>
+    <div class="mb-3">
+      <label>Duration</label>
+      <input type="time" class="form-control" [(ngModel)]="consultation.actualDuration" name="actualDuration" required>
+    </div>
+    <div class="mb-3">
+      <label>Appointment</label>
+      <select class="form-control" [(ngModel)]="consultation.appointment.id" name="appointmentId" required>
+        <option *ngFor="let appt of appointments" [value]="appt.id">
+          {{ appt.date }} {{ appt.startTime }}
+        </option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-success">Update</button>
+  </form>
+</div>

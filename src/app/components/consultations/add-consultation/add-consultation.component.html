@@ -1,0 +1,42 @@
+<div class="container mt-4">
+  <h2>Ajouter une Consultation</h2>
+
+  <form [formGroup]="consultationForm" (ngSubmit)="addConsultation()">
+    <div class="form-group">
+      <label>Details :</label>
+      <input type="text" class="form-control" formControlName="details" />
+      <div *ngIf="consultationForm.get('details')?.touched && consultationForm.get('details')?.invalid" class="text-danger">
+        <small *ngIf="consultationForm.get('details')?.hasError('required')">Le champ "Details" est requis.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Description :</label>
+      <input type="text" class="form-control" formControlName="description" />
+      <div *ngIf="consultationForm.get('description')?.touched && consultationForm.get('description')?.invalid" class="text-danger">
+        <small *ngIf="consultationForm.get('description')?.hasError('required')">Le champ "Description" est requis.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Duration (HH:mm:ss) :</label>
+      <input type="time" class="form-control" formControlName="actualDuration" />
+      <div *ngIf="consultationForm.get('actualDuration')?.touched && consultationForm.get('actualDuration')?.invalid" class="text-danger">
+        <small *ngIf="consultationForm.get('actualDuration')?.hasError('required')">La durée est requise.</small>
+        <small *ngIf="consultationForm.get('actualDuration')?.hasError('invalidTime')">Format d'heure invalide. (HH:mm:ss)</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Appointment :</label>
+      <select class="form-control" formControlName="appointment">
+        <option *ngFor="let a of appointments" [ngValue]="a">{{ a.date }} à {{ a.startTime }}</option>
+      </select>
+      <div *ngIf="consultationForm.get('appointment')?.touched && consultationForm.get('appointment')?.invalid" class="text-danger">
+        <small *ngIf="consultationForm.get('appointment')?.hasError('required')">Le choix du rendez-vous est requis.</small>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3" [disabled]="consultationForm.invalid">Ajouter</button>
+  </form>
+</div>

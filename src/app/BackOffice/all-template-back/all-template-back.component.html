@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Speekly Admin</title>
-</head>
-<body>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Purple Admin</title>
+  
+  </head>
+  <body>
 
 <div class="container-scroller">
-  <app-navbar-back class="mb-5"/>
-  <div class="container-fluid page-body-wrapper mt-5">
-    <app-sidebar-back class="mt-5"/>
-    <div class="main-panel">
-      <router-outlet/>
-    </div>
-  </div>
+<app-header-back></app-header-back>
+<app-navbar-back class="mb-5 p-lg-5"></app-navbar-back>
+<div class="container-fluid page-body-wrapper mt-5">
+<app-sidebar-back></app-sidebar-back>
+<div class="main-panel">
+<router-outlet></router-outlet>
 
 </div>
-<app-footer-back/>
+</div>
+
+</div>
+<app-footer-back></app-footer-back>
 </body>
 
 </html>
