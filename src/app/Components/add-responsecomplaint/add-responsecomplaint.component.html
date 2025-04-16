@@ -1,0 +1,130 @@
+<div class="container mt-5">
+  <!-- Title -->
+  <h2 class="text-center mb-4 title-animation gradient-text">
+    <i class="bi bi-chat-dots-fill me-2"></i>Respond to Complaint
+  </h2>
+
+  <!-- Displaying the Complaint -->
+  <div *ngIf="complaint" class="mb-4 animate__animated animate__fadeInUp">
+    <div class="complaint-card card-hover-effect shadow-lg rounded-4">
+
+      <div class="d-flex align-items-center justify-content-between mb-3 px-4 pt-3">
+        <div class="d-flex gap-2">
+          <span class="badge bg-primary me-2 fs-7 p-2">USER #{{ complaint.userId }}</span>
+          <span class="badge fs-7 p-2" [ngClass]="complaint.isUrgent ? 'bg-danger pulse' : 'bg-secondary'">
+            {{ complaint.isUrgent ? 'URGENT' : 'STANDARD' }}
+          </span>
+        </div>
+        <span class="text-muted fs-7 fw-medium">{{ complaint.date | date: 'MMM d, y - HH:mm' }}</span>
+      </div>
+
+      <div class="mb-3 px-4">
+        <h5 class="fw-bold mb-2 text-primary">CONSULTATION #{{ complaint.consultationId }}</h5>
+        <p class="mb-0 text-muted lh-base fs-5">{{ complaint.content }}</p>
+      </div>
+
+      <div class="d-flex align-items-center justify-content-between px-4 pb-3">
+        <div class="star-rating">
+          <span *ngFor="let star of [1,2,3,4,5]" 
+                 class="me-1"
+                 [ngClass]="star <= complaint.starRatingConsultation ? 'text-warning' : 'text-muted-opacity'">
+            <i class="bi bi-star-fill fs-5"></i>
+          </span>
+        </div>
+        <button class="btn btn-outline-primary btn-sm rounded-pill" (click)="toggleResponses()">
+          {{ showResponses ? 'Hide History' : 'Show History' }}
+          <i class="bi bi-chevron-down ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Responses Timeline -->
+<div *ngIf="showResponses && responses.length > 0" class="timeline-container mt-5">
+  <div class="timeline-divider mb-4 position-relative">
+    <hr class="timeline-line">
+  </div>
+
+
+
+  <!-- Timeline items -->
+  <div class="timeline-scroll-container card shadow-lg rounded-4 px-3 py-3">
+    <!-- Response history button inside scroll area -->
+    
+    <!-- Centered button for showing the oldest responses -->
+    <div *ngIf="responses.length > 5 && !allResponsesVisible" class="text-center mb-4">
+      <button class="btn btn-outline-secondary btn-sm rounded-pill" (click)="showAllResponses()">
+        Show the oldest responses
+      </button>
+    </div>
+  <div *ngFor="let response of responses.slice(0, visibleResponsesCount)" class="timeline-item mb-4">
+    <div class="timeline-badge bg-primary"></div>
+    <div class="response-card shadow-sm rounded-3">
+      <div class="d-flex justify-content-between align-items-center mb-2 px-3 pt-3">
+        <span class="badge bg-info fs-7 p-2">User #{{ response.userId }}</span>
+        <div class="d-flex align-items-center gap-2">
+          <small class="text-muted fs-8">{{ response.dateRep | date: 'mediumDate' }}</small>
+          <button class="btn btn-outline-warning btn-sm rounded-pill" (click)="editResponse(response)">
+            <i class="bi bi-pencil-fill"></i> Edit
+          </button>
+        </div>
+      </div>
+      <p class="mb-0 px-3 pb-3 fs-5 text-dark-700">{{ response.content }}</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+  <!-- Toggle Response Form Button -->
+  <div class="text-end mb-4 mt-5">
+    <button class="btn btn-success rounded-pill px-4 py-2 shadow-sm" (click)="toggleResponseForm()">
+      <i class="bi bi-chat-left-text-fill me-2"></i> {{ showResponseForm ? 'Close Form' : 'Add Response' }}
+    </button>
+  </div>
+
+  <!-- Response Form -->
+  <div *ngIf="showResponseForm" class="card response-form-card border-0 shadow-lg rounded-4 animate__animated animate__fadeIn" #responseFormSection>
+    <div class="card-header bg-success text-white rounded-top-4 d-flex align-items-center py-3">
+      <i class="bi bi-chat-left-text-fill me-2 fs-4"></i>
+      <strong class="fs-5">{{ editingResponse ? 'EDIT RESPONSE' : 'COMPOSE RESPONSE' }}</strong>
+    </div>
+
+    <div class="card-body px-4 pt-4">
+      <form [formGroup]="responseForm" (ngSubmit)="addResponse()">
+        <div class="mb-4">
+          <label for="userId" class="form-label fw-medium text-secondary">User ID</label>
+          <input type="number"
+                 id="userId"
+                 formControlName="userId"
+                 placeholder="Enter User ID"
+                 class="form-control form-control-lg border-2 rounded-3 focus-ring"
+                 required>
+        </div>
+
+        <div class="mb-4">
+          <label for="content" class="form-label fw-medium text-secondary">Response Content</label>
+          <textarea id="content"
+                    formControlName="content"
+                    rows="4"
+                    placeholder="Type your response..."
+                    class="form-control border-2 rounded-3 focus-ring"
+                    required></textarea>
+        </div>
+
+        <div class="d-flex justify-content-end gap-3 pb-3">
+          <button type="button"
+                  class="btn btn-lg btn-outline-secondary rounded-pill px-4"
+                  (click)="toggleResponseForm()">
+            Cancel
+          </button>
+          <button type="submit"
+                  class="btn btn-lg btn-success rounded-pill px-4 shadow-sm"
+                  [disabled]="responseForm.invalid">
+            <i class="bi bi-send-check me-2"></i> {{ editingResponse ? 'Update' : 'Send' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>  
+</div>

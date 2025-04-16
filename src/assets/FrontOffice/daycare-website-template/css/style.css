@@ -14,7 +14,32 @@
  }
 /*** Spinner End ***/
 
-
+.hover-shadow-sm:hover {
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+  }
+  
+  .bg-light-blue {
+    background-color: #f0f8ff;
+    border-left: 3px solid #0d6efd;
+  }
+  
+  .mailbox-list::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .mailbox-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .mailbox-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+  
+  .star-rating {
+    font-size: 0.9em;
+  }
 /*** Common CSS Start ***/
 .back-to-top {
     position: fixed;

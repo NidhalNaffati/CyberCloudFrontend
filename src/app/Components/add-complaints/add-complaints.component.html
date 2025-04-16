@@ -1,0 +1,143 @@
+<div class="container-fluid py-4">
+  <div class="row g-4">
+    
+    <!-- Sidebar - Liste des plaintes -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 rounded-lg">
+        <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between">
+          <h5 class="mb-0 text-primary fw-bold"><i class="fas fa-inbox me-2"></i>All Complaints</h5>
+          <button class="btn btn-primary" (click)="startAddingNewComplaint()">Add New Complaint</button>
+        </div>
+        <div class="list-group list-group-flush mailbox-list" style="max-height: 75vh; overflow-y: auto;">
+          <a *ngFor="let complaint of complaints | paginate: { id: 'complaints', itemsPerPage: 10, currentPage: p }"
+            class="list-group-item list-group-item-action p-3 d-flex align-items-start border-0 hover-shadow-sm"
+            [class.bg-light-blue]="selectedComplaintId === complaint.complaintId" (click)="getComplaint(complaint)">
+            <div class="avatar me-3">
+              <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px;">
+                <i class="fas fa-user"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="fw-bold text-dark">consultation #{{ complaint.consultationId }}</span>
+                <small class="text-muted">{{ complaint.date | date:'short' }}</small>
+              </div>
+              <p class="text-muted mb-1">{{ complaint.content | slice:0:60 }}...</p>
+              <div class="d-flex align-items-center">
+                <span class="badge bg-warning me-2" *ngIf="complaint.isUrgent">URGENT</span>
+                <div class="star-rating small">
+                  <i *ngFor="let star of [1,2,3,4,5]" class="fas fa-star{{ star > complaint.starRatingConsultation ? '-empty' : '' }} text-warning"></i>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-container">
+          <pagination-controls id="complaints" (pageChange)="p = $event"></pagination-controls>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main form - Ajouter une nouvelle plainte ou afficher les détails -->
+    <div class="col-md-8">
+      <div class="card shadow-lg h-100 rounded-lg">
+        <div class="card-header bg-white border-bottom p-4">
+          <h4 class="mb-0 text-primary fw-bold">
+            <i class="fas fa-comment me-2"></i>
+            <ng-container *ngIf="selectedComplaintId !== null">Complaint Details</ng-container>
+            <ng-container *ngIf="selectedComplaintId === null">Add New Complaint</ng-container>
+          </h4>
+        </div>
+        <div class="card-body">
+          
+          <!-- Si une plainte est sélectionnée, afficher les détails et les réponses -->
+          <div *ngIf="selectedComplaintId !== null">
+            <h5>Consultation #{{ complaintForm.value.consultationId }}</h5>
+            <p>{{ complaintForm.value.content }}</p>
+            <small class="text-muted d-block mb-2">
+              {{ selectedComplaint?.date | date:'short' }}
+            </small>
+                        <h6>Responses:</h6>
+            <ul>
+              <li *ngFor="let response of responses">
+                <p>{{ response.content }}</p>
+                <small class="text-muted d-block mb-2"> {{ response.dateRep | date:'short' }}</small>
+              </li>
+            </ul>
+            <h6>Reply to this Complaint:</h6>
+            <form [formGroup]="responseForm" (ngSubmit)="onSubmitResponse()">
+              <textarea formControlName="responseContent" rows="4" class="form-control mb-3" placeholder="Write your response"></textarea>
+              <button type="submit" [disabled]="responseForm.invalid" class="btn btn-primary">Send Response</button>
+            </form>
+          </div>
+          
+          <!-- Si aucune plainte n'est sélectionnée, afficher le formulaire d'ajout -->
+          <div *ngIf="selectedComplaintId === null">
+            <form [formGroup]="complaintForm" (ngSubmit)="onSubmit()">
+              <div class="mb-3">
+                <label for="consultationId" class="form-label">Consultation ID</label>
+                <input type="number" formControlName="consultationId" class="form-control form-control-lg rounded-pill" id="consultationId" placeholder="Enter consultation ID" required>
+                <div class="invalid-feedback d-block">
+                  <small *ngIf="complaintForm.get('consultationId')?.invalid && complaintForm.get('consultationId')?.touched">
+                    Required field
+                  </small>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="content" class="form-label">Complaint Content</label>
+                <textarea formControlName="content" class="form-control rounded-3" id="content" rows="6" placeholder="Write your complaint details here..." required></textarea>
+                <div class="invalid-feedback d-block">
+                  <small *ngIf="complaintForm.get('content')?.invalid && complaintForm.get('content')?.touched">
+                    Required field
+                  </small>
+                </div>
+              </div>
+
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label class="form-label fw-bold">User ID</label>
+                  <input type="number" formControlName="userId" class="form-control rounded-pill" placeholder="User ID" required>
+                  <div class="invalid-feedback d-block">
+                    <small *ngIf="complaintForm.get('userId')?.invalid && complaintForm.get('userId')?.touched">
+                      Required field
+                    </small>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-bold">Rating</label>
+                  <div class="input-group">
+                    <input type="number" min="0" max="5" formControlName="starRatingConsultation" class="form-control rounded-pill" placeholder="0-5" required>
+                    <span class="input-group-text rounded-pill bg-transparent"><i class="fas fa-star text-warning"></i></span>
+                  </div>
+                  <div class="invalid-feedback d-block">
+                    <small *ngIf="complaintForm.get('starRatingConsultation')?.invalid && complaintForm.get('starRatingConsultation')?.touched">
+                      Must be between 0-5
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-check form-switch mb-4">
+                <input class="form-check-input" type="checkbox" formControlName="isUrgent" id="isUrgent">
+                <label class="form-check-label fw-bold" for="isUrgent">
+                  <i class="fas fa-exclamation-circle me-2 text-danger"></i>Mark as Urgent
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold" [disabled]="complaintForm.invalid">
+                <i class="fas fa-paper-plane me-2"></i> Send Complaint
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
