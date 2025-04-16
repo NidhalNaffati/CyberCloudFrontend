@@ -32,27 +32,24 @@
               "src/assets"
             ],
             "styles": [
-  "node_modules/bootstrap/dist/css/bootstrap.min.css",
-  "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
-  "src/styles.css",
-  "src/assets/FrontOffice/daycare-website-template/css/bootstrap.min.css",
-  "src/assets/FrontOffice/daycare-website-template/css/style.css",
-  "src/assets/BackOffice/purple-free/dist/assets/vendors/mdi/css/materialdesignicons.min.css",
-  "src/assets/BackOffice/purple-free/dist/assets/vendors/css/vendor.bundle.base.css",
-  "node_modules/animate.css/animate.css",
-  "src/assets/BackOffice/purple-free/dist/assets/css/style.css"
+  "src/assets/BackOffice/purple-free/src/assets/vendors/ti-icons/css/themify-icons.css",
+"src/assets/BackOffice/purple-free/src/assets/vendors/font-awesome/css/font-awesome.min.css",
+"src/assets/BackOffice/purple-free/src/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css",
+"src/assets/FrontOffice/daycare-website-template/lib/animate/animate.min.css",
+"src/assets/FrontOffice/daycare-website-template/lib/lightbox/css/lightbox.min.css",
+"src/assets/FrontOffice/daycare-website-template/lib/owlcarousel/assets/owl.carousel.min.css"
 ],
 "scripts": [
-  "node_modules/jquery/dist/jquery.min.js",
-  "node_modules/wow.js/dist/wow.min.js",
-  "src/assets/FrontOffice/daycare-website-template/lib/easing/easing.min.js",
-  "node_modules/waypoints/lib/noframework.waypoints.min.js", 
-  "node_modules/owl.carousel/dist/owl.carousel.min.js",
-  "node_modules/lightbox2/dist/js/lightbox-plus-jquery.min.js",
-  "src/assets/FrontOffice/daycare-website-template/js/main.js",
-  "src/assets/BackOffice/purple-free/dist/assets/vendors/js/vendor.bundle.base.js",
-  "src/assets/BackOffice/purple-free/dist/assets/js/off-canvas.js",
-  "src/assets/BackOffice/purple-free/dist/assets/js/misc.js"
+ "src/assets/BackOffice/purple-free/src/assets/vendors/chart.js/chart.umd.js",
+"src/assets/BackOffice/purple-free/src/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js",
+"src/assets/BackOffice/purple-free/src/assets/js/settings.js",
+"src/assets/BackOffice/purple-free/src/assets/js/todolist.js",
+"src/assets/BackOffice/purple-free/src/assets/js/jquery.cookie.js",
+"src/assets/BackOffice/purple-free/src/assets/js/dashboard.js",
+"src/assets/FrontOffice/daycare-website-template/lib/wow/wow.min.js",
+"src/assets/FrontOffice/daycare-website-template/lib/waypoints/waypoints.min.js",
+"src/assets/FrontOffice/daycare-website-template/lib/lightbox/js/lightbox.min.js",
+"src/assets/FrontOffice/daycare-website-template/lib/owlcarousel/owl.carousel.min.js"
 ]
           },
           "configurations": {
