@@ -24,6 +24,17 @@ import { EditConsultationComponent } from './components/consultations/edit-consu
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { C } from '@fullcalendar/core/internal-common';
 import { CalendarComponent } from './components/calendar/calendar.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EventDialogComponent } from './components/event-dialog/event-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
@@ -45,7 +56,8 @@ import { CalendarComponent } from './components/calendar/calendar.component';
     ConsultationListComponent,
     AddConsultationComponent,
     EditConsultationComponent,
-    CalendarComponent
+    CalendarComponent,
+    EventDialogComponent
 
   ],
   imports: [
@@ -54,7 +66,17 @@ import { CalendarComponent } from './components/calendar/calendar.component';
     HttpClientModule ,
     FormsModule,
     ReactiveFormsModule,
-    FullCalendarModule
+    FullCalendarModule,
+    BrowserAnimationsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatCheckboxModule,
+    MatSelectModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

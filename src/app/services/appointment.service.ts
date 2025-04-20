@@ -9,7 +9,8 @@ import { catchError, throwError } from 'rxjs';
 })
 export class AppointmentService {
 
-  private apiUrl = 'http://localhost:8080/appointments';  // URL de l'API Spring Boot
+  private apiUrl = 'http://localhost:8080/appointments'; 
+ // URL de l'API Spring Boot
 
   constructor(private http: HttpClient) { }
 
