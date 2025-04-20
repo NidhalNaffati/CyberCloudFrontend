@@ -1,50 +1,43 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Appointment} from '../models/appointment';
-import { catchError, throwError } from 'rxjs';
+import { Appointment } from '../models/appointment';
+import { ApiService } from '../auth/api-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppointmentService {
+  private endpoint = '/appointments'; // Endpoint path without base URL which is handled by ApiService
 
-  private apiUrl = 'http://localhost:8080/appointments'; 
- // URL de l'API Spring Boot
-
-  constructor(private http: HttpClient) { }
+  constructor(private apiService: ApiService) { }
 
   // Récupérer tous les rendez-vous
   getAllAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(this.apiUrl);
+    return this.apiService.get<Appointment[]>(this.endpoint);
   }
 
   // Récupérer un rendez-vous par son ID
   getAppointmentById(id: number): Observable<Appointment> {
-    return this.http.get<Appointment>(`${this.apiUrl}/${id}`);
+    return this.apiService.get<Appointment>(`${this.endpoint}/${id}`);
   }
 
+  // Récupérer les créneaux disponibles pour une date donnée
   getAvailableSlots(date: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/available?date=${date}`);
+    return this.apiService.get<any[]>(`${this.endpoint}/available`, { date });
   }
- // Créer un nouveau rendez-vous
-createAppointment(appointment: Appointment): Observable<Appointment> {
-  return this.http.post<Appointment>(this.apiUrl, appointment).pipe(
-    catchError((error) => {
-      return throwError(() => error); // propage l'erreur au composant
-    })
-  );
-}
 
+  // Créer un nouveau rendez-vous
+  createAppointment(appointment: Appointment): Observable<Appointment> {
+    return this.apiService.post<Appointment>(this.endpoint, appointment);
+  }
 
   // Mettre à jour un rendez-vous existant
   updateAppointment(id: number, appointment: Appointment): Observable<Appointment> {
-    return this.http.put<Appointment>(`${this.apiUrl}/${id}`, appointment);
+    return this.apiService.put<Appointment>(`${this.endpoint}/${id}`, appointment);
   }
 
   // Supprimer un rendez-vous
   deleteAppointment(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.apiService.delete<void>(`${this.endpoint}/${id}`);
   }
 }
-

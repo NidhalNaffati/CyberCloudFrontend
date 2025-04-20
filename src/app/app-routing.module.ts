@@ -13,34 +13,43 @@ import { ConsultationListComponent } from './components/consultations/consultati
 import { AddConsultationComponent } from './components/consultations/add-consultation/add-consultation.component';
 import { EditConsultationComponent } from './components/consultations/edit-consultation/edit-consultation.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
+import { NotfoundComponent } from './components/notfound/notfound.component';
 
 const routes: Routes = [
-  { path: '', component: AllTemplateFrontComponent ,
+  {
+    path: '', component: AllTemplateFrontComponent,
     children: [
       { path: '', component: HomeFrontComponent },
-      {path:'add-appointment', component: AddAppointmentComponent},
-       
-      
-
+      { path: 'add-appointment', component: AddAppointmentComponent },
     ]
   },
-  
+
   { path: 'calendar', component: CalendarComponent },
-  
-  { path: 'admin', component: AllTemplateBackComponent ,
+
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
+  },
+  {
+    path: '', component: AllTemplateFrontComponent,
+    children: [
+      { path: '', component: HomeFrontComponent },
+      // {path:'add-appointment', component: AddAppointmentComponent},
+    ]
+  },
+  {
+    path: 'admin', component: AllTemplateBackComponent,
     children: [
       { path: '', component: HomeBackComponent },
       { path: 'appointments', component: AppointmentListComponent },
       { path: 'consultations', component: ConsultationListComponent },
-     
-     
       { path: 'consultations/add', component: AddConsultationComponent },
       { path: 'consultations/edit/:id', component: EditConsultationComponent },
       { path: 'appointments/edit/:id', component: EditAppointmentComponent },
-    
-      
     ]
-  }
+  },
+  { path: '404', component: NotfoundComponent },
+  { path: '**', redirectTo: '/404' }
 ];
 
 @NgModule({

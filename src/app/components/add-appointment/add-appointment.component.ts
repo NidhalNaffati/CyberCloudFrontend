@@ -3,6 +3,7 @@ import { AppointmentService } from '../../services/appointment.service';
 import { Appointment } from '../../models/appointment';
 import Swal from 'sweetalert2';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { AuthStoreService } from '../../auth/auth-store.service'; // Import AuthStoreService
 
 @Component({
   selector: 'app-add-appointment',
@@ -12,11 +13,13 @@ import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/fo
 export class AddAppointmentComponent implements OnInit {
   appointments: Appointment[] = [];
   availableSlots: string[] = [];
-  workingHours = { start: 9, end: 17 }; // 9AM to 5PM
-
+  workingHours = { start: 9, end: 17 };
   appointmentForm: FormGroup;
 
-  constructor(private appointmentService: AppointmentService) {
+  constructor(
+    private appointmentService: AppointmentService,
+    private authStoreService: AuthStoreService
+  ) {
     this.appointmentForm = new FormGroup({
       date: new FormControl('', [Validators.required, this.weekendValidator]),
       startTime: new FormControl('', Validators.required),
@@ -52,10 +55,21 @@ export class AddAppointmentComponent implements OnInit {
       const endTime = this.calculateEndTime(startTime);
       
       if (this.isSlotAvailable(date, startTime, endTime)) {
+        // Get user ID from token
+        const userId = this.authStoreService.getUserId();
+        
+        if (!userId) {
+          Swal.fire('Erreur!', 'Utilisateur non authentifié.', 'error');
+          return;
+        }
+        
         const appointmentData = {
           ...formData,
-          endTime: endTime
+          endTime: endTime,
+          userId: userId // Add user ID to appointment data
         };
+        
+        console.log('Creating appointment with data:', appointmentData);
         
         this.appointmentService.createAppointment(appointmentData).subscribe({
           next: () => {
