@@ -1,0 +1,56 @@
+<!-- speech-to-text.component.html -->
+<div class="speech-to-text-container">
+  <h2>Deepgram Speech-to-Text</h2>
+
+  <div class="status-container">
+    <p>Status: <span [ngClass]="{'connected': status === 'Connected', 'error': status.includes('Error')}">{{ status }}</span></p>
+  </div>
+
+  <div class="controls">
+    <button
+      [disabled]="isRecording"
+      (click)="startRecording()"
+      class="control-btn start-btn">
+      Start Recording
+    </button>
+
+    <button
+      [disabled]="!isRecording"
+      (click)="stopRecording()"
+      class="control-btn stop-btn">
+      Stop Recording
+    </button>
+
+    <button
+      (click)="clearTranscript()"
+      class="control-btn clear-btn">
+      Clear Transcript
+    </button>
+
+    <button
+      [disabled]="!completeTranscript"
+      (click)="saveTranscript()"
+      class="control-btn save-btn">
+      Save Transcript
+    </button>
+  </div>
+
+  <div class="transcript-container">
+    <h3>Transcript:</h3>
+    <div class="transcript-box">
+      <ng-container *ngIf="fullTranscript || interimTranscript; else emptyState">
+        <span class="final-text">{{ fullTranscript }}</span>
+        <span class="interim-text" *ngIf="interimTranscript">{{ interimTranscript }}</span>
+      </ng-container>
+
+      <ng-template #emptyState>
+        <p class="empty-transcript">Transcript will appear here...</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="debug-info" *ngIf="isRecording">
+    <p>Recording in progress... Speak into your microphone.</p>
+    <p *ngIf="interimTranscript">Processing: "{{ interimTranscript }}"</p>
+  </div>
+</div>
