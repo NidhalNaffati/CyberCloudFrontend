@@ -3,10 +3,14 @@ import { CalendarOptions, EventApi, DateSelectArg, EventClickArg, EventDropArg }
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { EventDialogComponent } from '../event-dialog/event-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AppointmentService } from 'src/app/services/appointment.service';
+import { Appointment } from 'src/app/models/appointment';
+import { EventDialogComponent } from '../event-dialog/event-dialog.component';
+
+
+
 
 @Component({
   selector: 'app-calendar',
@@ -33,7 +37,7 @@ export class CalendarComponent implements OnInit {
   };
 
   constructor(
-    private http: HttpClient,
+    private appointmentService: AppointmentService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
   ) {}
@@ -43,74 +47,122 @@ export class CalendarComponent implements OnInit {
   }
 
   loadEvents(): void {
-    this.http.get<any[]>('http://localhost:8080/appointments/calendar')
-      .subscribe(data => {
-        this.calendarOptions.events = data;
-      }, error => {
-        console.error('Erreur lors du chargement des événements:', error);
-        this.showNotification('Erreur lors du chargement des événements', 'error');
-      });
+    this.appointmentService.getAllAppointments()
+      .subscribe(
+        appointments => {
+          console.log('Rendez-vous reçus:', appointments);
+          
+          // Convertir les rendez-vous au format FullCalendar
+          const events = appointments.map(appointment => {
+            // Créer les dates de début et de fin en combinant date et heure
+            const startDate = `${appointment.date}T${appointment.startTime}`;
+            const endDate = `${appointment.date}T${appointment.endTime}`;
+            
+            return {
+              id: appointment.id?.toString(),
+              title: appointment.isAvailable ? 'Disponible' : 'Rendez-vous',
+              start: startDate,
+              end: endDate,
+              allDay: false,
+              extendedProps: {
+                userId: appointment.userId,
+                isAvailable: appointment.isAvailable,
+                originalAppointment: appointment // Garder l'objet original pour la mise à jour
+              }
+            };
+          });
+          
+          console.log('Événements formatés pour FullCalendar:', events);
+          
+          // Mettre à jour les événements du calendrier
+          this.calendarOptions = {
+            ...this.calendarOptions,
+            events: events
+          };
+        },
+        error => {
+          console.error('Erreur lors du chargement des rendez-vous:', error);
+          this.showNotification('Erreur lors du chargement des rendez-vous', 'error');
+        }
+      );
   }
 
   handleEventDrop(eventDropInfo: EventDropArg): void {
     const event = eventDropInfo.event;
+    const originalAppointment = event.extendedProps['originalAppointment'] as Appointment;
     
-    const updatedEvent = {
-      id: event.id,
-      start: event.start,
-      end: event.end || event.start,
-      title: event.title,
-      allDay: event.allDay,
-      extendedProps: event.extendedProps
+    // Extraire la nouvelle date et les nouvelles heures après le déplacement
+    const newStart = event.start;
+    const newEnd = event.end || event.start;
+    
+    if (!newStart || !newEnd) {
+      eventDropInfo.revert();
+      this.showNotification('Erreur: dates invalides', 'error');
+      return;
+    }
+    
+    // Mettre à jour l'objet rendez-vous avec les nouvelles valeurs
+    const updatedAppointment: Appointment = {
+      ...originalAppointment,
+      date: newStart.toISOString().split('T')[0], // Format YYYY-MM-DD
+      startTime: newStart.toISOString().split('T')[1].substring(0, 8), // Format HH:mm:ss
+      endTime: newEnd.toISOString().split('T')[1].substring(0, 8) // Format HH:mm:ss
     };
-
-    this.http.put(`http://localhost:8080/appointments/${event.id}`, updatedEvent)
+    
+    console.log('Mise à jour du rendez-vous:', updatedAppointment);
+    
+    this.appointmentService.updateAppointment(originalAppointment.id!, updatedAppointment)
       .subscribe(
         () => {
-          this.showNotification('Événement mis à jour avec succès', 'success');
+          this.showNotification('Rendez-vous mis à jour avec succès', 'success');
         },
         error => {
           console.error('Erreur lors de la mise à jour:', error);
           eventDropInfo.revert();
-          this.showNotification('Erreur lors de la mise à jour de l\'événement', 'error');
+          this.showNotification('Erreur lors de la mise à jour du rendez-vous', 'error');
         }
       );
   }
 
   handleEventClick(clickInfo: EventClickArg): void {
+    const event = clickInfo.event;
+    const originalAppointment = event.extendedProps['originalAppointment'] as Appointment;
+    
     const dialogRef = this.dialog.open(EventDialogComponent, {
       width: '500px',
-      data: { 
-        event: clickInfo.event,
+      data: {
+        appointment: originalAppointment,
         isEdit: true
       }
     });
-
+    
     dialogRef.afterClosed().subscribe(result => {
       if (!result) return;
       
-      if (result.result === 'save') {
-        this.http.put(`http://localhost:8080/appointments/${result.event.id}`, result.event)
+      if (result.action === 'save') {
+        const updatedAppointment = result.appointment;
+        
+        this.appointmentService.updateAppointment(updatedAppointment.id!, updatedAppointment)
           .subscribe(
             () => {
-              this.showNotification('Événement mis à jour avec succès', 'success');
+              this.showNotification('Rendez-vous mis à jour avec succès', 'success');
               this.loadEvents();
             },
             error => {
               console.error('Erreur lors de la mise à jour:', error);
-              this.showNotification('Erreur lors de la mise à jour de l\'événement', 'error');
+              this.showNotification('Erreur lors de la mise à jour du rendez-vous', 'error');
             }
           );
-      } else if (result.result === 'delete') {
-        this.http.delete(`http://localhost:8080/appointments/${result.event.id}`)
+      } else if (result.action === 'delete') {
+        this.appointmentService.deleteAppointment(originalAppointment.id!)
           .subscribe(
             () => {
-              this.showNotification('Événement supprimé avec succès', 'success');
+              this.showNotification('Rendez-vous supprimé avec succès', 'success');
               this.loadEvents();
             },
             error => {
               console.error('Erreur lors de la suppression:', error);
-              this.showNotification('Erreur lors de la suppression de l\'événement', 'error');
+              this.showNotification('Erreur lors de la suppression du rendez-vous', 'error');
             }
           );
       }
@@ -118,29 +170,50 @@ export class CalendarComponent implements OnInit {
   }
 
   handleDateSelect(selectInfo: DateSelectArg): void {
+    const selectedDate = selectInfo.start.toISOString().split('T')[0];
+    let startTime = selectInfo.startStr.split('T')[1];
+    let endTime = selectInfo.endStr.split('T')[1];
+    
+    // Si l'heure n'est pas définie (sélection de jour entier), utiliser des valeurs par défaut
+    if (!startTime) {
+      startTime = '09:00:00';
+      endTime = '10:00:00';
+    } else {
+      // Limiter à HH:mm:ss
+      startTime = startTime.substring(0, 8);
+      endTime = endTime.substring(0, 8);
+    }
+    
+    // Créer un nouveau rendez-vous vide
+    const newAppointment: Appointment = {
+      date: selectedDate,
+      startTime: startTime,
+      endTime: endTime,
+      userId: 1, // Remplacer par l'ID de l'utilisateur connecté
+      isAvailable: true
+    };
+    
     const dialogRef = this.dialog.open(EventDialogComponent, {
       width: '500px',
-      data: { 
-        start: selectInfo.start,
-        end: selectInfo.end,
-        allDay: selectInfo.allDay,
+      data: {
+        appointment: newAppointment,
         isEdit: false
       }
     });
-
+    
     dialogRef.afterClosed().subscribe(result => {
       selectInfo.view.calendar.unselect();
       
-      if (result && result.result === 'save') {
-        this.http.post('http://localhost:8080/appointments', result.event)
+      if (result && result.action === 'save') {
+        this.appointmentService.createAppointment(result.appointment)
           .subscribe(
             () => {
-              this.showNotification('Événement créé avec succès', 'success');
+              this.showNotification('Rendez-vous créé avec succès', 'success');
               this.loadEvents();
             },
             error => {
               console.error('Erreur lors de la création:', error);
-              this.showNotification('Erreur lors de la création de l\'événement', 'error');
+              this.showNotification('Erreur lors de la création du rendez-vous', 'error');
             }
           );
       }
@@ -148,14 +221,11 @@ export class CalendarComponent implements OnInit {
   }
 
   handleEventDidMount(info: any): void {
-    // Styliser les événements en fonction de leur statut
-    if (info.event.extendedProps?.status === 'confirmed') {
-      info.el.style.backgroundColor = '#28a745';
-    } else if (info.event.extendedProps?.status === 'pending') {
-      info.el.style.backgroundColor = '#ffc107';
-    } else if (info.event.extendedProps?.status === 'cancelled') {
-      info.el.style.backgroundColor = '#dc3545';
-      info.el.style.textDecoration = 'line-through';
+    // Styliser les événements en fonction de leur disponibilité
+    if (info.event.extendedProps.isAvailable) {
+      info.el.style.backgroundColor = '#28a745'; // Vert pour disponible
+    } else {
+      info.el.style.backgroundColor = '#007bff'; // Bleu pour rendez-vous
     }
   }
 

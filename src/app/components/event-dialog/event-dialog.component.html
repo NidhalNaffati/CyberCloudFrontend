@@ -1,45 +1,40 @@
-<!-- event-dialog.component.html -->
 <h2 mat-dialog-title>{{dialogTitle}}</h2>
 <div mat-dialog-content>
-  <form [formGroup]="eventForm">
+  <form [formGroup]="appointmentForm">
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Titre</mat-label>
-      <input matInput formControlName="title" placeholder="Titre de l'événement">
-      <mat-error *ngIf="eventForm.get('title')?.hasError('required')">
-        Le titre est obligatoire
+      <mat-label>Date</mat-label>
+      <input matInput [matDatepicker]="datePicker" formControlName="date">
+      <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+      <mat-error *ngIf="appointmentForm.get('date')?.hasError('required')">
+        La date est obligatoire
       </mat-error>
-    </mat-form-field>
-    
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description" rows="3"></textarea>
     </mat-form-field>
     
     <div class="form-row">
       <mat-form-field appearance="fill">
-        <mat-label>Date de début</mat-label>
-        <input matInput [matDatepicker]="startPicker" formControlName="startDate">
-        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
+        <mat-label>Heure de début</mat-label>
+        <input matInput type="time" formControlName="startTime">
+        <mat-error *ngIf="appointmentForm.get('startTime')?.hasError('required')">
+          L'heure de début est obligatoire
+        </mat-error>
       </mat-form-field>
       
       <mat-form-field appearance="fill">
-        <mat-label>Date de fin</mat-label>
-        <input matInput [matDatepicker]="endPicker" formControlName="endDate">
-        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-        <mat-datepicker #endPicker></mat-datepicker>
+        <mat-label>Heure de fin</mat-label>
+        <input matInput type="time" formControlName="endTime">
+        <mat-error *ngIf="appointmentForm.get('endTime')?.hasError('required')">
+          L'heure de fin est obligatoire
+        </mat-error>
       </mat-form-field>
     </div>
     
-    <mat-checkbox formControlName="allDay">Toute la journée</mat-checkbox>
+    <mat-checkbox formControlName="isAvailable">Disponible</mat-checkbox>
     
+    <!-- Champ caché ou menu déroulant pour userId selon vos besoins -->
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Statut</mat-label>
-      <mat-select formControlName="status">
-        <mat-option value="pending">En attente</mat-option>
-        <mat-option value="confirmed">Confirmé</mat-option>
-        <mat-option value="cancelled">Annulé</mat-option>
-      </mat-select>
+      <mat-label>ID Utilisateur</mat-label>
+      <input matInput formControlName="userId" type="number">
     </mat-form-field>
   </form>
 </div>
@@ -47,7 +42,7 @@
 <div mat-dialog-actions align="end">
   <button mat-button color="warn" *ngIf="data.isEdit" (click)="onDelete()">Supprimer</button>
   <button mat-button (click)="onCancel()">Annuler</button>
-  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!eventForm.valid">
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!appointmentForm.valid">
     Enregistrer
   </button>
 </div>

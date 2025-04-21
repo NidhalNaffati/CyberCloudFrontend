@@ -1,61 +1,59 @@
-// event-dialog.component.ts
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Appointment } from 'src/app/models/appointment';
+
 
 @Component({
   selector: 'app-event-dialog',
   templateUrl: './event-dialog.component.html',
-  styleUrls: ['./event-dialog.component.css']
+  styleUrls: ['./event-dialog.component.css'] // ou .css selon votre configuration
 })
 export class EventDialogComponent {
-  eventForm: FormGroup;
+  appointmentForm: FormGroup;
   dialogTitle: string;
   
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EventDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: { appointment: Appointment, isEdit: boolean }
   ) {
-    this.dialogTitle = data.isEdit ? 'Modifier l\'événement' : 'Nouvel événement';
+    this.dialogTitle = data.isEdit ? 'Modifier le rendez-vous' : 'Nouveau rendez-vous';
     
     // Initialisation du formulaire
-    this.eventForm = this.fb.group({
-      title: [data.event ? data.event.title : '', Validators.required],
-      description: [data.event ? data.event.extendedProps?.description : ''],
-      startDate: [data.event ? data.event.start : data.start, Validators.required],
-      endDate: [data.event ? data.event.end : data.end],
-      allDay: [data.event ? data.event.allDay : data.allDay],
-      status: [data.event ? data.event.extendedProps?.status || 'pending' : 'pending']
+    this.appointmentForm = this.fb.group({
+      date: [data.appointment.date, Validators.required],
+      startTime: [data.appointment.startTime, Validators.required],
+      endTime: [data.appointment.endTime, Validators.required],
+      isAvailable: [data.appointment.isAvailable],
+      userId: [data.appointment.userId, Validators.required]
     });
   }
 
   onSave(): void {
-    if (this.eventForm.valid) {
-      this.dialogRef.close({
-        result: 'save',
-        event: {
-          ...this.data.event,
-          title: this.eventForm.value.title,
-          start: this.eventForm.value.startDate,
-          end: this.eventForm.value.endDate,
-          allDay: this.eventForm.value.allDay,
-          extendedProps: {
-            description: this.eventForm.value.description,
-            status: this.eventForm.value.status
-          }
-        }
+    if (this.appointmentForm.valid) {
+      const updatedAppointment: Appointment = {
+        ...this.data.appointment,
+        ...this.appointmentForm.value
+      };
+      
+      this.dialogRef.close({ 
+        action: 'save', 
+        appointment: updatedAppointment 
       });
     }
   }
 
   onCancel(): void {
-    this.dialogRef.close({ result: 'cancel' });
+    this.dialogRef.close();
   }
 
   onDelete(): void {
     if (this.data.isEdit) {
-      this.dialogRef.close({ result: 'delete', event: this.data.event });
+      this.dialogRef.close({ 
+        action: 'delete', 
+        appointment: this.data.appointment 
+      });
     }
   }
 }
