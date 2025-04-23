@@ -109,7 +109,7 @@ export class AuthService {
       } else {
         // Regular user registration
         const endpoint = registerData.role === 'ROLE_USER'
-          ? `${this.apiUrl}/register`
+          ? `${this.apiUrl}/register/user`
           : `${this.apiUrl}/register`;
 
         return await firstValueFrom(
