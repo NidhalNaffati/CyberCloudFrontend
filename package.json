@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
     "@auth0/angular-jwt": "^5.2.0",
+    "@deepgram/sdk": "^3.12.1",
     "@fullcalendar/angular": "^6.1.17",
     "@fullcalendar/common": "^5.11.5",
     "@fullcalendar/core": "^6.1.17",

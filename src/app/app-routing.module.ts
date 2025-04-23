@@ -7,6 +7,7 @@ import {AllTemplateBackComponent} from './BackOffice/all-template-back/all-templ
 import {HomeFrontComponent} from './FrontOffice/home-front/home-front.component';
 import {HomeBackComponent} from './BackOffice/home-back/home-back.component';
 import {NotfoundComponent} from "./components/notfound/notfound.component";
+import {RealtimeTranscriptionComponent} from "./components/realtime-transcription/realtime-transcription.component";
 
 const routes: Routes = [
   {
@@ -17,6 +18,7 @@ const routes: Routes = [
     path: '', component: AllTemplateFrontComponent,
     children: [
       {path: '', component: HomeFrontComponent},
+      {path: 'stt', component: RealtimeTranscriptionComponent}
       // {path:'add-appointment', component: AddAppointmentComponent},
     ]
   },

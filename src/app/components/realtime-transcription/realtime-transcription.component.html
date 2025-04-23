@@ -1,0 +1,83 @@
+<!-- speech-to-text.component.html -->
+<div class="container-fluid py-5">
+  <div class="container py-5">
+    <div class="p-5 bg-light rounded">
+      <div class="mx-auto text-center wow fadeIn" data-wow-delay="0.1s" style="max-width: 700px;">
+        <h4 class="text-primary mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius">Voice Recognition</h4>
+        <h1 class="display-3">Speech-to-Text</h1>
+        <p class="mb-5">Speak into your microphone to convert your speech into text with our advanced voice recognition technology.</p>
+      </div>
+      <div class="row g-5 justify-content-center">
+        <div class="col-lg-8 wow fadeIn" data-wow-delay="0.3s">
+          <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="text-primary">Status:</h5>
+              <span [ngClass]="{'text-success': status === 'Connected', 'text-danger': status.includes('Error'), 'text-secondary': status === 'Not Connected' || status === 'Disconnected'}">{{ status }}</span>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <button
+                [disabled]="isRecording"
+                (click)="startRecording()"
+                class="w-100 btn btn-primary py-3 border-primary text-white bg-primary btn-border-radius">
+                <i class="fas fa-microphone me-2"></i> Start Recording
+              </button>
+            </div>
+            <div class="col-md-6">
+              <button
+                [disabled]="!isRecording"
+                (click)="stopRecording()"
+                class="w-100 btn btn-danger py-3 border-danger text-white bg-danger btn-border-radius">
+                <i class="fas fa-stop-circle me-2"></i> Stop Recording
+              </button>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <button
+                (click)="clearTranscript()"
+                class="w-100 btn btn-secondary py-3 border-secondary text-white bg-secondary btn-border-radius">
+                <i class="fas fa-eraser me-2"></i> Clear Transcript
+              </button>
+            </div>
+            <div class="col-md-6">
+              <button
+                [disabled]="!completeTranscript"
+                (click)="saveTranscript()"
+                class="w-100 btn btn-success py-3 border-success text-white bg-success btn-border-radius">
+                <i class="fas fa-save me-2"></i> Save Transcript
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <h5 class="text-primary mb-3">Transcript:</h5>
+            <div class="p-4 bg-white border border-primary rounded" style="min-height: 200px;">
+              <ng-container *ngIf="fullTranscript || interimTranscript; else emptyState">
+                <p class="mb-0">
+                  <span class="text-dark">{{ fullTranscript }}</span>
+                  <span class="text-secondary fst-italic" *ngIf="interimTranscript">{{ interimTranscript }}</span>
+                </p>
+              </ng-container>
+
+              <ng-template #emptyState>
+                <p class="text-secondary text-center mb-0">Transcript will appear here...</p>
+              </ng-template>
+            </div>
+          </div>
+
+          <div *ngIf="isRecording" class="alert alert-info d-flex align-items-center" role="alert">
+            <i class="fas fa-spinner fa-spin me-2"></i>
+            <div>
+              <strong>Recording in progress...</strong> Speak into your microphone.
+              <p *ngIf="interimTranscript" class="mb-0 mt-2">Processing: "{{ interimTranscript }}"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
