@@ -22,7 +22,6 @@ import { ConsultationListComponent } from './components/consultations/consultati
 import { AddConsultationComponent } from './components/consultations/add-consultation/add-consultation.component';
 import { EditConsultationComponent } from './components/consultations/edit-consultation/edit-consultation.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { C } from '@fullcalendar/core/internal-common';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EventDialogComponent } from './components/event-dialog/event-dialog.component';
@@ -35,6 +34,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
+import { JitsiComponent } from './jitsi/jitsi.component';
 
 
 @NgModule({
@@ -57,7 +57,10 @@ import { MatSelectModule } from '@angular/material/select';
     AddConsultationComponent,
     EditConsultationComponent,
     CalendarComponent,
-    EventDialogComponent
+    EventDialogComponent,
+    JitsiComponent,
+    
+    
 
   ],
   imports: [
@@ -76,7 +79,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatNativeDateModule,
     MatCheckboxModule,
     MatSelectModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatInputModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

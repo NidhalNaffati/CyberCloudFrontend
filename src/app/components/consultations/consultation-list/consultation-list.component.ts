@@ -23,7 +23,10 @@ export class ConsultationListComponent implements OnInit {
 
   loadConsultations(): void {
     this.consultationService.getConsultations().subscribe({
-      next: (data) => this.consultations = data,
+      next: (data) => {
+        this.consultations = data;
+        console.log('Consultations chargées:', this.consultations);
+      },
       error: (err) => console.error('Erreur chargement consultations:', err)
     });
   }

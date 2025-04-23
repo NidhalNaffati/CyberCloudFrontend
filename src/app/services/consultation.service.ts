@@ -1,45 +1,38 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Consultation } from '../models/consultation.model';
-
+import { ApiService } from '../auth/api-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsultationService {
+  private endpoint = '/consultations'; // Just the endpoint path
 
-  private apiUrl = 'http://localhost:8080/consultations'; // URL de ton backend
-
-  constructor(private http: HttpClient) { }
+  constructor(private apiService: ApiService) { }
 
   // Récupérer toutes les consultations
   getConsultations(): Observable<Consultation[]> {
-    return this.http.get<Consultation[]>(this.apiUrl);
+    return this.apiService.get<Consultation[]>(this.endpoint);
   }
 
   // Récupérer une consultation par ID
   getConsultationById(id: number): Observable<Consultation> {
-    return this.http.get<Consultation>(`${this.apiUrl}/${id}`);
+    return this.apiService.get<Consultation>(`${this.endpoint}/${id}`);
   }
 
   // Créer une nouvelle consultation
- // createConsultation(consultation: Consultation): Observable<Consultation> {
-  //  return this.http.post<Consultation>(this.apiUrl, consultation);
-//  }
-createConsultation(consultation: Consultation): Observable<Consultation> {
-  return this.http.post<Consultation>(this.apiUrl, consultation, {
-    headers: { 'Content-Type': 'application/json' }
-  });
-}
+  createConsultation(consultation: Consultation): Observable<Consultation> {
+    return this.apiService.post<Consultation>(this.endpoint, consultation);
+  }
 
   // Mettre à jour une consultation
   updateConsultation(id: number, consultation: Consultation): Observable<Consultation> {
-    return this.http.put<Consultation>(`${this.apiUrl}/${id}`, consultation);
+    return this.apiService.put<Consultation>(`${this.endpoint}/${id}`, consultation);
   }
 
   // Supprimer une consultation
   deleteConsultation(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.apiService.delete<void>(`${this.endpoint}/${id}`);
   }
 }

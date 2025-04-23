@@ -14,6 +14,7 @@ import { AddConsultationComponent } from './components/consultations/add-consult
 import { EditConsultationComponent } from './components/consultations/edit-consultation/edit-consultation.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
+import { JitsiComponent } from './jitsi/jitsi.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
   },
 
   { path: 'calendar', component: CalendarComponent },
+  {path: 'video-call', component: JitsiComponent},
 
   {
     path: 'auth',

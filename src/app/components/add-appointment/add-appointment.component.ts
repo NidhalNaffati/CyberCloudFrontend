@@ -3,7 +3,7 @@ import { AppointmentService } from '../../services/appointment.service';
 import { Appointment } from '../../models/appointment';
 import Swal from 'sweetalert2';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
-import { AuthStoreService } from '../../auth/auth-store.service'; // Import AuthStoreService
+import { AuthStoreService } from '../../auth/auth-store.service'; 
 
 @Component({
   selector: 'app-add-appointment',
@@ -31,7 +31,7 @@ export class AddAppointmentComponent implements OnInit {
     this.loadAppointments();
   }
 
-  // Add this method to fix the error
+  
   getTodayDate(): string {
     const today = new Date();
     const year = today.getFullYear();
@@ -51,11 +51,11 @@ export class AddAppointmentComponent implements OnInit {
       const formData = this.appointmentForm.value;
       const { date, startTime } = formData;
       
-      // Calculate end time (1 hour after start)
+      
       const endTime = this.calculateEndTime(startTime);
       
       if (this.isSlotAvailable(date, startTime, endTime)) {
-        // Get user ID from token
+        
         const userId = this.authStoreService.getUserId();
         
         if (!userId) {
@@ -66,33 +66,32 @@ export class AddAppointmentComponent implements OnInit {
         const appointmentData = {
           ...formData,
           endTime: endTime,
-          userId: userId // Add user ID to appointment data
+          userId: userId 
         };
         
         console.log('Creating appointment with data:', appointmentData);
         
         this.appointmentService.createAppointment(appointmentData).subscribe({
           next: () => {
-            Swal.fire('Succès!', 'Rendez-vous ajouté avec succès!', 'success');
-            this.loadAppointments();
+            Swal.fire('Succès!', 'appointment added with success!', 'success');
             this.appointmentForm.reset();
           },
           error: (error) => {
-            const errorMessage = error?.error?.message || 'Erreur lors de l\'ajout.';
+            const errorMessage = error?.error?.message ||'Error while adding';
             Swal.fire('Erreur!', errorMessage, 'error');
           }
         });
       } else {
-        Swal.fire('Erreur!', 'Le créneau sélectionné est déjà pris.', 'error');
+        Swal.fire('Error!', 'The selected time slot is already taken.', 'error');
       }
     } else {
-      Swal.fire('Erreur!', 'Veuillez remplir tous les champs correctement.', 'error');
+      Swal.fire('Error!', 'Please fill in all fields correctly.', 'error');
     }
   }
 
   deleteAppointment(id: number): void {
     this.appointmentService.deleteAppointment(id).subscribe(() => {
-      Swal.fire('Succès!', 'Rendez-vous supprimé avec succès!', 'success');
+      Swal.fire('Success!', 'Appointment deleted successfully!', 'success');
       this.loadAppointments();
     });
   }
@@ -100,10 +99,10 @@ export class AddAppointmentComponent implements OnInit {
   onDateChange(): void {
     const selectedDate = this.appointmentForm.get('date')?.value;
     if (selectedDate) {
-      // Generate available time slots for the selected date
+      
       this.generateTimeSlots(selectedDate);
       
-      // Reset start time when date changes
+      
       this.appointmentForm.get('startTime')?.reset();
     }
   }
@@ -113,10 +112,10 @@ export class AddAppointmentComponent implements OnInit {
     const dateObj = new Date(date);
     const day = dateObj.getDay();
     
-    // Only generate slots for weekdays
+    
     if (day !== 0 && day !== 6) {
       for (let hour = this.workingHours.start; hour < this.workingHours.end; hour++) {
-        // Generate slots on the hour (e.g., 09:00, 10:00, etc.)
+        
         const timeString = `${hour.toString().padStart(2, '0')}:00`;
         slots.push(timeString);
       }
@@ -129,7 +128,7 @@ export class AddAppointmentComponent implements OnInit {
     const [hours, minutes] = startTime.split(':').map(Number);
     let endHour = hours + 1;
     
-    // Handle crossing into the next hour
+    
     if (endHour >= 24) {
       endHour = 0;
     }
@@ -154,7 +153,7 @@ export class AddAppointmentComponent implements OnInit {
     const date = new Date(control.value);
     const day = date.getDay();
     
-    // 0 is Sunday, 6 is Saturday
+    
     if (day === 0 || day === 6) {
       return { weekend: true };
     }
