@@ -92,6 +92,21 @@
                   Please select an account type
                 </div>
               </div>
+
+              <!-- Document upload section for medical professionals -->
+              <div *ngIf="showFileUpload" class="col-12 mb-4">
+                <label for="document" class="form-label">Medical License/Certification <span class="text-danger">*</span></label>
+                <input
+                  type="file"
+                  id="document"
+                  class="w-100 form-control py-3 border-primary"
+                  (change)="onFileSelected($event)"
+                  accept=".pdf,.jpg,.jpeg,.png">
+                <small class="form-text text-muted">
+                  Please upload a copy of your medical license or certification. Supported formats: PDF, JPG, PNG.
+                </small>
+              </div>
+
               <div class="col-12 mb-4">
                 <div class="form-check">
                   <input

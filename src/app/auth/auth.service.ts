@@ -60,7 +60,7 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse): never {
-    console.error('API Error:', error);
+    console.error('API Error:', error.message);
 
     let errorMessage = 'An error occurred while processing your request.';
 
@@ -87,13 +87,37 @@ export class AuthService {
     throw enhancedError;
   }
 
-  async register(registerData: RegisterRequest): Promise<string> {
+  async register(registerData: RegisterRequest, file?: File): Promise<string> {
     try {
-      return await firstValueFrom(
-        this.http.post(`${this.apiUrl}/register`, registerData, {
-          responseType: 'text'  // Handle plain text response
-        })
-      );
+      // If role is MEDECIN and file is provided, use FormData to submit
+      if (registerData.role === 'ROLE_MEDECIN' && file) {
+        const formData = new FormData();
+
+        // Convert registerData to JSON string and append as request part
+        formData.append('request', new Blob([JSON.stringify(registerData)], {
+          type: 'application/json'
+        }));
+
+        // Append file
+        formData.append('document', file);
+
+        return await firstValueFrom(
+          this.http.post(`${this.apiUrl}/register/medecin`, formData, {
+            responseType: 'text'
+          })
+        );
+      } else {
+        // Regular user registration
+        const endpoint = registerData.role === 'ROLE_USER'
+          ? `${this.apiUrl}/register`
+          : `${this.apiUrl}/register`;
+
+        return await firstValueFrom(
+          this.http.post(endpoint, registerData, {
+            responseType: 'text'
+          })
+        );
+      }
     } catch (error) {
       return this.handleError(error as HttpErrorResponse);
     }
