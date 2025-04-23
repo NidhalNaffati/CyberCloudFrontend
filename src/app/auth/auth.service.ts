@@ -245,6 +245,20 @@ export class AuthService {
     }
   }
 
+  getUserId(): number | null {
+    const token = this.getAccessToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      return decodedToken.id_user ?? null;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  }
+
+
   isAdmin(): boolean {
     return this.getUserRole() === 'ROLE_ADMIN';
   }
