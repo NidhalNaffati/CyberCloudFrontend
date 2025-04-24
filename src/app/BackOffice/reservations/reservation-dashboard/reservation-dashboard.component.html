@@ -1,0 +1,199 @@
+<div class="container mt-4">
+  <h2 class="mb-3">
+    <i class="fas fa-ticket-alt me-2"></i>Gestion des Réservations
+  </h2>
+
+  <!-- Barre de recherche dynamique -->
+  <div class="input-group mb-3">
+    <span class="input-group-text">
+      <i class="fas fa-search"></i>
+    </span>
+    <input type="text"
+           class="form-control"
+           placeholder="Rechercher une réservation..."
+           [formControl]="searchControl" />
+  </div>
+
+  <div class="text-end mb-3">
+    <button class="btn btn-outline-danger" (click)="generatePDF()">
+      <i class="fas fa-file-pdf me-1"></i> Télécharger PDF
+    </button>
+  </div>
+
+  <!-- Boutons d'action -->
+  <div class="d-flex gap-2 mb-3">
+    <!-- Bouton pour générer les statistiques -->
+    <button class="btn btn-info" (click)="generateStatistics()">
+      <i class="fas fa-chart-pie me-2"></i>Statistiques
+    </button>
+
+    <!-- Bouton pour retourner aux activités -->
+    <a routerLink="/admin/activities" class="btn btn-primary">
+      <i class="fas fa-calendar-alt me-2"></i>Activités
+    </a>
+  </div>
+
+  <!-- Tableau des réservations -->
+  <div class="table-responsive" #pdfContent>
+    <table class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th (click)="sortTable('activityReservationId')">
+            <i class="fas fa-hashtag"></i> ID
+            <i class="fas" [ngClass]="{
+              'fa-sort-up': sortColumn === 'activityReservationId' && sortDirection === 'asc',
+              'fa-sort-down': sortColumn === 'activityReservationId' && sortDirection === 'desc'
+            }"></i>
+          </th>
+          <th (click)="sortTable('fullName')">
+            <i class="fas fa-user"></i> Nom
+            <i class="fas" [ngClass]="{
+              'fa-sort-up': sortColumn === 'fullName' && sortDirection === 'asc',
+              'fa-sort-down': sortColumn === 'fullName' && sortDirection === 'desc'
+            }"></i>
+          </th>
+          <th (click)="sortTable('email')">
+            <i class="fas fa-envelope"></i> Email
+            <i class="fas" [ngClass]="{
+              'fa-sort-up': sortColumn === 'email' && sortDirection === 'asc',
+              'fa-sort-down': sortColumn === 'email' && sortDirection === 'desc'
+            }"></i>
+          </th>
+          <th (click)="sortTable('phoneNumber')">
+            <i class="fas fa-phone"></i> Téléphone
+            <i class="fas" [ngClass]="{
+              'fa-sort-up': sortColumn === 'phoneNumber' && sortDirection === 'asc',
+              'fa-sort-down': sortColumn === 'phoneNumber' && sortDirection === 'desc'
+            }"></i>
+          </th>
+          <th (click)="sortTable('numberOfSeats')">
+            <i class="fas fa-users"></i> Places
+            <i class="fas" [ngClass]="{
+              'fa-sort-up': sortColumn === 'numberOfSeats' && sortDirection === 'asc',
+              'fa-sort-down': sortColumn === 'numberOfSeats' && sortDirection === 'desc'
+            }"></i>
+          </th>
+          <th (click)="sortTable('reservationDate')">
+            <i class="fas fa-calendar-day"></i> Date Réservation
+            <i class="fas" [ngClass]="{
+              'fa-sort-up': sortColumn === 'reservationDate' && sortDirection === 'asc',
+              'fa-sort-down': sortColumn === 'reservationDate' && sortDirection === 'desc'
+            }"></i>
+          </th>
+          <th>
+            <i class="fas fa-cogs"></i> Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let reservation of getPaginatedReservations()">
+          <td>{{ reservation.activityReservationId }}</td>
+
+          <!-- Nom (Editable) -->
+          <td (dblclick)="editField(reservation, 'fullName')">
+            <ng-container *ngIf="editing?.id === reservation.activityReservationId && editing?.field === 'fullName'; else fullNameDisplay">
+              <input [(ngModel)]="reservation.fullName" (blur)="saveField(reservation)" class="form-control" />
+            </ng-container>
+            <ng-template #fullNameDisplay>
+              {{ reservation.fullName }}
+            </ng-template>
+          </td>
+
+          <!-- Email (Editable) -->
+          <td (dblclick)="editField(reservation, 'email')">
+            <ng-container *ngIf="editing?.id === reservation.activityReservationId && editing?.field === 'email'; else emailDisplay">
+              <input [(ngModel)]="reservation.email" (blur)="saveField(reservation)" class="form-control" />
+            </ng-container>
+            <ng-template #emailDisplay>
+              {{ reservation.email }}
+            </ng-template>
+          </td>
+
+          <!-- Téléphone (Editable) -->
+          <td (dblclick)="editField(reservation, 'phoneNumber')">
+            <ng-container *ngIf="editing?.id === reservation.activityReservationId && editing?.field === 'phoneNumber'; else phoneDisplay">
+              <input [(ngModel)]="reservation.phoneNumber" (blur)="saveField(reservation)" class="form-control" />
+            </ng-container>
+            <ng-template #phoneDisplay>
+              {{ reservation.phoneNumber }}
+            </ng-template>
+          </td>
+
+          <!-- Places (Editable) -->
+          <td (dblclick)="editField(reservation, 'numberOfSeats')">
+            <ng-container *ngIf="editing?.id === reservation.activityReservationId && editing?.field === 'numberOfSeats'; else seatsDisplay">
+              <input type="number" min="1" [(ngModel)]="reservation.numberOfSeats" (blur)="saveField(reservation)" class="form-control" />
+            </ng-container>
+            <ng-template #seatsDisplay>
+              {{ reservation.numberOfSeats }}
+            </ng-template>
+          </td>
+
+          <td>{{ reservation.reservationDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+
+          <td>
+            <div class="btn-group" role="group">
+              <button class="btn btn-danger btn-sm" (click)="deleteReservation(reservation.activityReservationId)">
+                <i ></i>🗑️ Supprimer
+              </button>
+              <button class="btn btn-sm btn-warning" (click)="sendReminder(reservation.activityReservationId)">
+                ✉️ Envoyer Rappel
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Graphiques ngx-charts -->
+  <div class="row mt-4" *ngIf="chartData.length > 0">
+    <!-- Pie Chart -->
+    <div class="col-md-6">
+      <h4><i class="fas fa-chart-pie me-2"></i>Réservations par Activité</h4>
+      <ngx-charts-pie-chart
+        [results]="chartData"
+        [legend]="true"
+        [labels]="true"
+        [explodeSlices]="true"
+        [doughnut]="false">
+      </ngx-charts-pie-chart>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="col-md-6">
+      <h4><i class="fas fa-chart-bar me-2"></i>Répartition par Nombre de Places</h4>
+      <ngx-charts-bar-vertical
+        [results]="barChartData"
+        [legend]="true"
+        [xAxisLabel]="'Places'"
+        [yAxisLabel]="'Nombre de Réservations'">
+      </ngx-charts-bar-vertical>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center mt-5" *ngIf="filteredReservations.length > itemsPerPage">
+    <nav aria-label="Navigation des réservations">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link" (click)="previousPage()">
+            <i class="fas fa-chevron-left"></i>
+          </a>
+        </li>
+
+        <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+          <a class="page-link" (click)="changePage(page)">
+            {{ page }}
+          </a>
+        </li>
+
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <a class="page-link" (click)="nextPage()">
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

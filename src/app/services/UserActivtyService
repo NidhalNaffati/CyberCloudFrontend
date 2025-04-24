@@ -1,0 +1,23 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Activity } from '../models/activity.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UserActivityService {
+  private apiUrl = 'http://localhost:8089/api/user-activities';
+
+  constructor(private http: HttpClient) { }
+
+  markActivityInterest(activityId: number, interested: boolean): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${activityId}/interest`, null, {
+      params: { interested }
+    });
+  }
+
+  getUserActivities(): Observable<Activity[]> {
+    return this.http.get<Activity[]>(this.apiUrl);
+  }
+}

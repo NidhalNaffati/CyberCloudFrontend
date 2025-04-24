@@ -1,0 +1,29 @@
+.page-link {
+  cursor: pointer;
+}
+
+.btn-group-sm > .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.card-header {
+  font-weight: 500;
+}
+th {
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+
+th:hover {
+  background-color: #f8f9fa;
+}
+
+.fas.fa-sort-up, .fas.fa-sort-down {
+  margin-left: 5px;
+}

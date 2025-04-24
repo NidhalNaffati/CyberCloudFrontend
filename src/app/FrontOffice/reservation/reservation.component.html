@@ -1,0 +1,129 @@
+<div class="container-fluid py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-lg border-0 rounded-lg animate__animated animate__fadeIn">
+        <div class="card-header pink-header text-white">
+          <h2 class="text-center mb-0 fw-bold " >
+            <i class="fas fa-calendar-check me-2"></i>Réserver une Activité
+          </h2>
+          <div class="text-center mt-2" *ngIf="currentActivity">
+            <span class="badge bg-info">{{currentActivity.name}}</span>
+          </div>
+        </div>
+
+        <div class="card-body p-5">
+          <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+            <!-- Champ caché pour userId -->
+            <input type="hidden" formControlName="userId" [value]="1">
+
+            <!-- Nom Complet -->
+            <div class="mb-4">
+              <label for="fullName" class="form-label fw-bold text-primary">
+                <i class="fas fa-user me-2"></i>Nom Complet
+              </label>
+              <input type="text" class="form-control form-control-lg border-primary" id="fullName"
+                     formControlName="fullName" placeholder="Votre nom complet">
+              <div *ngIf="(reservationForm.get('fullName')?.invalid && (reservationForm.get('fullName')?.touched || submitted))"
+                   class="invalid-feedback d-block mt-2 animate__animated animate__fadeIn">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span *ngIf="reservationForm.get('fullName')?.errors?.['required']">Le nom complet est obligatoire</span>
+                <span *ngIf="reservationForm.get('fullName')?.errors?.['minlength']">Minimum 3 caractères</span>
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Email -->
+              <div class="col-md-6 mb-4">
+                <label for="email" class="form-label fw-bold text-primary">
+                  <i class="fas fa-envelope me-2"></i>Email
+                </label>
+                <input type="email" class="form-control border-primary" id="email"
+                       formControlName="email" placeholder="exemple@email.com">
+                <div *ngIf="(reservationForm.get('email')?.invalid && (reservationForm.get('email')?.touched || submitted))"
+                     class="invalid-feedback d-block mt-2 animate__animated animate__fadeIn">
+                  <i class="fas fa-exclamation-circle me-2"></i>
+                  <span *ngIf="reservationForm.get('email')?.errors?.['required']">Email obligatoire</span>
+                  <span *ngIf="reservationForm.get('email')?.errors?.['email']">Format email invalide</span>
+                </div>
+              </div>
+
+              <!-- Téléphone -->
+              <div class="col-md-6 mb-4">
+                <label for="phoneNumber" class="form-label fw-bold text-primary">
+                  <i class="fas fa-phone me-2"></i>Téléphone
+                </label>
+                <input type="text" class="form-control border-primary" id="phoneNumber"
+                       formControlName="phoneNumber" placeholder="00 000 000">
+                <div *ngIf="(reservationForm.get('phoneNumber')?.invalid && (reservationForm.get('phoneNumber')?.touched || submitted))"
+                     class="invalid-feedback d-block mt-2 animate__animated animate__fadeIn">
+                  <i class="fas fa-exclamation-circle me-2"></i>
+                  <span *ngIf="reservationForm.get('phoneNumber')?.errors?.['required']">Le téléphone est obligatoire</span>
+                  <span *ngIf="reservationForm.get('phoneNumber')?.errors?.['pattern']">Format invalide (8-15 chiffres)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Nombre de Places -->
+            <div class="mb-4">
+              <label for="numberOfSeats" class="form-label fw-bold text-primary">
+                <i class="fas fa-users me-2"></i>Nombre de Places
+                <span *ngIf="currentActivity" class="text-muted ms-2">
+                  ({{currentActivity.availableSeats}} disponibles)
+                </span>
+              </label>
+              <div class="input-group">
+                <button class="btn btn-outline-primary" type="button" (click)="decrementSeats()"
+                        [disabled]="(reservationForm.get('numberOfSeats')?.value ?? 0) <= 1">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <input type="number" class="form-control text-center border-primary" id="numberOfSeats"
+                       formControlName="numberOfSeats" min="1" [max]="currentActivity?.availableSeats ?? 1">
+                <button class="btn btn-outline-primary" type="button" (click)="incrementSeats()"
+                        [disabled]="!canIncrementSeats()">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              <div *ngIf="(reservationForm.get('numberOfSeats')?.invalid && (reservationForm.get('numberOfSeats')?.touched || submitted))"
+                   class="invalid-feedback d-block mt-2 animate__animated animate__fadeIn">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span *ngIf="reservationForm.get('numberOfSeats')?.errors?.['required']">Nombre de places obligatoire</span>
+                <span *ngIf="reservationForm.get('numberOfSeats')?.errors?.['min']">Minimum 1 place</span>
+                <span *ngIf="reservationForm.get('numberOfSeats')?.errors?.['max']">Maximum {{currentActivity?.availableSeats}} places disponibles</span>
+              </div>
+            </div>
+
+            <!-- Bouton de soumission -->
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-pink btn-lg py-3" [disabled]="isSubmitting || reservationForm.invalid">
+                <span *ngIf="!isSubmitting">
+                  <i class="fas fa-check-circle me-2"></i>Confirmer la Réservation
+                </span>
+                <span *ngIf="isSubmitting">
+                  <i class="fas fa-spinner fa-spin me-2"></i>Traitement...
+                </span>
+              </button>
+
+              <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong>{{errorMessage}}</strong>
+                <div *ngIf="errorDetails" class="mt-2">{{errorDetails}}</div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Pied de carte avec info activité -->
+        <div class="card-footer bg-light">
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              <i class="fas fa-info-circle me-1"></i>Réservation pour: {{currentActivity?.name || 'activité sélectionnée'}}
+            </small>
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="goBack()">
+              <i class="fas fa-arrow-left me-1"></i>Retour aux activités
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
