@@ -24,7 +24,7 @@ export class ConfirmationComponent implements OnInit {
       this.reservation = navigation.extras.state['reservationData'];
       this.activity = navigation.extras.state['activity'];
     } else {
-      this.router.navigate(['/home']);
+      this.router.navigate(['']);
     }
   }
 

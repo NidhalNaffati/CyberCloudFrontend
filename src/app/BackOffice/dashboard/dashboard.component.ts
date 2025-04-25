@@ -13,7 +13,10 @@ export class DashboardComponent implements OnInit {
   activities: any[] = [];
   filteredActivities: any[] = [];
   searchTerm: string = '';
-
+  statistics: any = {};
+  locationStats: any[] = [];
+  monthlyStats: any[] = [];
+  activityMetrics: { [key: number]: { waitlistCount: number, reservationsCount: number } } = {};
   // Pagination
   currentPage: number = 1;
   itemsPerPage: number = 5;
@@ -34,6 +37,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.getActivities();
+    this.loadStatistics();
   }
 
   getActivities(): void {
@@ -42,7 +46,24 @@ export class DashboardComponent implements OnInit {
       this.applyFilter(); // Appliquer filtre après chargement
     });
   }
+  loadStatistics(): void {
+    this.activityService.getGeneralStatistics().subscribe(data => {
+      this.statistics = data;
+    });
 
+    this.activityService.getLocationStatistics().subscribe(data => {
+      this.locationStats = data;
+    });
+
+    this.activityService.getMonthlyStatistics().subscribe(data => {
+      this.monthlyStats = data;
+    });
+  }
+  loadActivityMetrics(activityId: number): void {
+    this.activityService.getActivityMetrics(activityId).subscribe(data => {
+      this.activityMetrics[activityId] = data;
+    });
+  }
   applyFilter(): void {
     this.filteredActivities = this.searchTerm
       ? this.activities.filter(activity =>

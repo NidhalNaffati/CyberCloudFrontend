@@ -29,7 +29,7 @@ const routes: Routes = [
     path: '',
     component: AllTemplateFrontComponent,
     children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: '', component: HomeFrontComponent },
       { path: 'home', component: HomeComponent },
       { path: 'home-front', component: HomeFrontComponent },
       { path: 'reservation/:id', component: ReservationComponent },
@@ -40,7 +40,7 @@ const routes: Routes = [
     path: 'admin',
     component: AllTemplateBackComponent,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: '', redirectTo: 'admin', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'home', component: HomeBackComponent },
       { path: 'add-activity', component: AddActivityComponent },

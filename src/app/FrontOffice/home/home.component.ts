@@ -192,7 +192,8 @@ public loadActivities(): void {  // Ajout de public
       const bInterested = this.isInterested(b.activityId) ? -1 : 0;
       return aInterested - bInterested;
     });
-  } joinWaitlist(activityId: number): void {
+  }
+  joinWaitlist(activityId: number): void {
     this.activityService.joinWaitlist(activityId).subscribe({
       next: () => {
         this.activityService.checkWaitlistStatus(activityId).subscribe({

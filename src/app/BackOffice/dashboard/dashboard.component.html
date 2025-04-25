@@ -2,6 +2,34 @@
   <h2 class="mb-3">
     <i class="fas fa-calendar-alt me-2"></i>Gestion des Activités </h2>
 
+<!-- Statistiques Générales -->
+<div class="mb-4">
+  <h3>Statistiques Générales</h3>
+  <div *ngIf="statistics">
+    <p>Nombre total d'activités : {{ statistics.totalActivities }}</p>
+    <p>Nombre d'activités complètes : {{ statistics.fullActivities }}</p>
+    <p>Nombre d'activités disponibles : {{ statistics.availableActivities }}</p>
+    <p>Prix moyen : {{ statistics.averagePrice | number:'1.2-2' }} TND</p>
+  </div>
+</div>
+ <!-- Statistiques par lieu -->
+ <div class="mb-4">
+  <h3>Statistiques par lieu</h3>
+  <ul>
+    <li *ngFor="let loc of locationStats">
+      {{ loc[0] }} : {{ loc[1] }}
+    </li>
+  </ul>
+</div>
+ <!-- Statistiques mensuelles -->
+ <div class="mb-4">
+  <h3>Statistiques mensuelles</h3>
+  <ul>
+    <li *ngFor="let month of monthlyStats">
+      Mois {{ month[0] }} : {{ month[1] }} activités
+    </li>
+  </ul>
+</div>
 
   <div class="input-group mb-3">
     <span class="input-group-text">

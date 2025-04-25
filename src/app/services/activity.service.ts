@@ -72,7 +72,7 @@ deleteActivity(id: number): Observable<void> {
   refreshActivities(): void {
     this.getActivities().subscribe();
   }
-  
+
   joinWaitlist(activityId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/${activityId}/waitlist`, {});
   }
@@ -80,4 +80,23 @@ deleteActivity(id: number): Observable<void> {
   checkWaitlistStatus(activityId: number): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/${activityId}/waitlist/check`);
   }
+ 
+
+getGeneralStatistics(): Observable<Map<string, any>> {
+  return this.http.get<Map<string, any>>(`${this.apiUrl}/general`);
+}
+
+getLocationStatistics(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/locations`);
+}
+
+getMonthlyStatistics(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/monthly`);
+}
+
+getActivityMetrics(activityId: number): Observable<{ waitlistCount: number, reservationsCount: number }> {
+  return this.http.get<{ waitlistCount: number, reservationsCount: number }>(`${this.apiUrl}/${activityId}/metrics`);
+}
+
+// ...existing code...
 }
