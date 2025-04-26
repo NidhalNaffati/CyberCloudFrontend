@@ -8,6 +8,7 @@ import {HomeFrontComponent} from './FrontOffice/home-front/home-front.component'
 import {HomeBackComponent} from './BackOffice/home-back/home-back.component';
 import {NotfoundComponent} from "./components/notfound/notfound.component";
 import {RealtimeTranscriptionComponent} from "./components/realtime-transcription/realtime-transcription.component";
+import {MedecinList} from "./components/medecin-list/medecin-list.component";
 
 const routes: Routes = [
   {
@@ -18,14 +19,22 @@ const routes: Routes = [
     path: '', component: AllTemplateFrontComponent,
     children: [
       {path: '', component: HomeFrontComponent},
-      {path: 'stt', component: RealtimeTranscriptionComponent}
-      // {path:'add-appointment', component: AddAppointmentComponent},
+      // { path: 'about', component: AboutComponent },
+      // { path: 'services', component: ServicesComponent },
+      // { path: 'programs', component: ProgramsComponent },
+      // { path: 'add-appointment', component: AddAppointmentComponent },
+      // { path: 'blog', component: BlogComponent },
+      // { path: 'forum', component: ForumComponent },
+      // { path: 'complaints', component: ComplaintsComponent },
+      // { path: 'contact', component: ContactComponent },
+      {path: 'speech-to-text', component: RealtimeTranscriptionComponent}
     ]
   },
   {
     path: 'admin', component: AllTemplateBackComponent,
     children: [
       {path: '', component: HomeBackComponent},
+      {path: 'medecins', component: MedecinList}
       //  { path: 'appointments', component: AppointmentListComponent },
       //  { path: 'appointments/edit/:id', component: EditAppointmentComponent },
     ]
