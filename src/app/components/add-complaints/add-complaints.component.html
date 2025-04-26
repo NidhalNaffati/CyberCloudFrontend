@@ -1,3 +1,4 @@
+
 <div class="container-fluid py-4">
   <div class="row g-4">
     
@@ -213,39 +214,41 @@
           </div>
           
           <!-- Si aucune plainte n'est sélectionnée, afficher le formulaire d'ajout -->
-          <div *ngIf="selectedComplaintId === null || isEditMode" class="add-complaint-container">
-            <div class="add-complaint-header bg-light p-4 rounded-top">
-              <h3 class="text-primary mb-0">
-                <i class="fas fa-plus-circle me-2"></i>
-                {{ isEditMode ? 'Edit feedback' : 'Create a feedback' }}
-              </h3>
-              <p class="text-muted mb-0 mt-2">Fill out the form below to submit a new feedback</p>
-            </div>
+      <!-- Si aucune plainte n'est sélectionnée, afficher le formulaire d'ajout -->
+      <div *ngIf="selectedComplaintId === null || isEditMode" class="add-complaint-container">
+        <div class="add-complaint-header bg-light p-4 rounded-top">
+          <h3 class="text-primary mb-0">
+            <i class="fas fa-plus-circle me-2"></i>
+            {{ isEditMode ? 'Edit feedback' : 'Create a feedback' }}
+          </h3>
+          <p class="text-muted mb-0 mt-2">Fill out the form below to submit a new feedback</p>
+        </div>
 
-            <form [formGroup]="complaintForm" (ngSubmit)="onSubmit()" class="p-4">
-              <!-- Subject Field -->
-              <div class="mb-4">
-                <label for="subject" class="form-label fw-bold">
-                  <i class="fas fa-heading me-2 text-primary"></i>Subject
-                </label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light rounded-start-pill">
-                    <i class="fas fa-tag text-muted"></i>
-                  </span>
-                  <input type="text" formControlName="subject" 
-                         class="form-control form-control-lg rounded-end-pill" 
-                         id="subject" 
-                         placeholder="Enter feedback subject">
-                </div>
-                <div class="form-text text-end">
-                  <small>Briefly describe the subject of your feedback</small>
-                </div>
-                <div class="invalid-feedback d-block">
-                  <small *ngIf="complaintForm.get('subject')?.invalid && complaintForm.get('subject')?.touched" class="text-danger">
-                    <i class="fas fa-exclamation-circle me-1"></i>Required field
-                  </small>
-                </div>
-              </div>
+        <form [formGroup]="complaintForm" (ngSubmit)="onSubmit()" class="p-4">
+          <!-- Subject Field -->
+          <div class="mb-4">
+            <label for="subject" class="form-label fw-bold">
+              <i class="fas fa-heading me-2 text-primary"></i>Subject
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light rounded-start-pill">
+                <i class="fas fa-tag text-muted"></i>
+              </span>
+              <input type="text" formControlName="subject" 
+                     class="form-control form-control-lg rounded-end-pill" 
+                     id="subject" 
+                     placeholder="Enter feedback subject">
+            </div>
+            <div class="form-text text-end">
+              <small>Briefly describe the subject of your feedback</small>
+            </div>
+            <div class="invalid-feedback d-block">
+              <small *ngIf="complaintForm.get('subject')?.invalid && complaintForm.get('subject')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Required field
+              </small>
+            </div>
+          </div>
+
 
               <!-- Complaint Content -->
               <div class="mb-4">
@@ -279,25 +282,7 @@
 
               <!-- User ID and Rating -->
               <div class="row g-3 mb-4">
-                <!-- User ID -->
-                <div class="col-md-6">
-                  <label class="form-label fw-bold">
-                    <i class="fas fa-user me-2 text-primary"></i>Your ID
-                  </label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-light rounded-start-pill">
-                      <i class="fas fa-id-card text-muted"></i>
-                    </span>
-                    <input type="number" formControlName="userId" 
-                           class="form-control rounded-end-pill" 
-                           placeholder="Enter your user ID">
-                  </div>
-                  <div class="invalid-feedback d-block">
-                    <small *ngIf="complaintForm.get('userId')?.invalid && complaintForm.get('userId')?.touched" class="text-danger">
-                      <i class="fas fa-exclamation-circle me-1"></i>Required field
-                    </small>
-                  </div>
-                </div>
+              
 
                 <!-- Rating -->
                 <div class="col-md-6">

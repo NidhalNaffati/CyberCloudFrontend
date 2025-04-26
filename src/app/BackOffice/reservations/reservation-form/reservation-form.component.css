@@ -1,0 +1,50 @@
+.form-control.ng-invalid.ng-touched {
+  border-color: #dc3545;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+}
+.invalid-feedback {
+  display: block;
+  color: #dc3545;
+  font-size: 0.875em;
+}
+
+.is-invalid {
+  border-color: #dc3545;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+/* Ajoutez à votre fichier CSS */
+.debug-panel {
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  padding: 15px;
+  margin-top: 20px;
+  border-left: 4px solid #fa4c83;
+}
+
+.debug-toggle {
+  cursor: pointer;
+  color: #4e73df;
+}
+
+.debug-content {
+  background-color: #343a40;
+  color: #f8f9fa;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 10px;
+  overflow-x: auto;
+}
+.card-header.pink-header {
+  background: linear-gradient(135deg, #81bfdc 0%, #fa4c83 100%);
+  color: #fff !important;
+  background-image: none !important;
+  border-radius: 0.5rem 0.5rem 0 0;
+  border: none;
+}
