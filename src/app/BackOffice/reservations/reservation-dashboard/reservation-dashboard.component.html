@@ -34,7 +34,11 @@
   </div>
 
   <!-- Tableau des réservations -->
-  <div class="table-responsive" #pdfContent>
+  <!-- Logo for PDF export -->
+  <div class="pdf-logo" style="text-align:center; margin-bottom: 16px;">
+    <img src="assets/sprites/speakly.svg.ong" alt="Logo" style="height: 60px;" />
+  </div>
+<div class="table-responsive" #pdfContent>
     <table class="table table-bordered table-hover">
       <thead class="thead-dark">
         <tr>
@@ -134,10 +138,10 @@
           <td>
             <div class="btn-group" role="group">
               <button class="btn btn-danger btn-sm" (click)="deleteReservation(reservation.activityReservationId)">
-                <i ></i>🗑️ Supprimer
+                <i ></i>🗑️
               </button>
               <button class="btn btn-sm btn-warning" (click)="sendReminder(reservation.activityReservationId)">
-                ✉️ Envoyer Rappel
+                ✉️
               </button>
             </div>
           </td>
