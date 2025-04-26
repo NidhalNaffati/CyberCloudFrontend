@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StatisticsService } from 'src/app/services/statistics-service.service';
-import { ChartConfiguration, ChartType } from 'chart.js';
+import { Color, ScaleType } from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-statistics',
@@ -8,131 +8,68 @@ import { ChartConfiguration, ChartType } from 'chart.js';
   styleUrls: ['./statistics.component.css']
 })
 export class StatisticsComponent implements OnInit {
-  readStatusChart: ChartConfiguration<'doughnut'> | undefined;
-  urgencyChart: ChartConfiguration<'bar'> | undefined;
-  ratingChart: ChartConfiguration<'line'> | undefined;
+  // Chart data
+  readUnreadData: any[] = [];
+  urgencyData: any[] = [];
+  ratingsData: any[] = [];
+  
+  // Chart options
+  view: [number, number] = [700, 400];
+  showLegend = true;
+  showLabels = true;
+  showXAxis = true;
+  showYAxis = true;
+  gradient = false;
+  showXAxisLabel = true;
+  showYAxisLabel = true;
+  xAxisLabel = 'Rating';
+  yAxisLabel = 'Count';
+  timeline = true;
+  autoScale = true;
+  
+  // Color scheme
+  colorScheme: any = {
+    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA', '#FFA500', '#4682B4']
+  };
 
-  constructor(private statsService: StatisticsService) {}
+  constructor(private statisticsService: StatisticsService) {}
 
   ngOnInit(): void {
     this.loadStatistics();
   }
 
   loadStatistics(): void {
-    this.statsService.getReadStatus().subscribe(data => {
-      this.readStatusChart = {
-        type: 'doughnut',
-        data: {
-          labels: ['Read', 'Unread'],
-          datasets: [{
-            data: [data.read, data.unread],
-            backgroundColor: ['#4caf50', '#f44336'],
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'bottom'
-            },
-            title: {
-              display: true,
-              text: 'Read Status'
-            }
-          }
-        }
-      };
+    // Load read/unread stats for pie chart
+    this.statisticsService.getComplaintStatus().subscribe(data => {
+      this.readUnreadData = [
+        { name: 'Read', value: data.read },
+        { name: 'Unread', value: data.unread }
+      ];
     });
 
-    this.statsService.getUrgencyStats().subscribe(data => {
-      this.urgencyChart = {
-        type: 'bar',
-        data: {
-          labels: ['Normal', 'Urgent'],
-          datasets: [{
-            label: 'Number of Messages',
-            data: [data.normal, data.urgent],
-            backgroundColor: ['#2196f3', '#ff9800']
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              display: true
-            },
-            title: {
-              display: true,
-              text: 'Urgency Level'
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Count'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Urgency'
-              }
-            }
-          }
-        }
-      };
+    // Load urgency stats for bar chart
+    this.statisticsService.getComplaintUrgency().subscribe(data => {
+      this.urgencyData = [
+        { name: 'Urgent', value: data.urgent },
+        { name: 'Normal', value: data.normal }
+      ];
     });
 
-    this.statsService.getRatingDistribution().subscribe(data => {
-      const ratings = Array.from(Object.entries(data)).map(([rating, count]) => ({
-        rating: Number(rating),
-        count: Number(count)
-      })).sort((a, b) => a.rating - b.rating);
-
-      this.ratingChart = {
-        type: 'line',  // Changement ici
-        data: {
-          labels: ratings.map(r => `★ ${r.rating}`),
-          datasets: [{
-            label: 'Number of Ratings',
-            data: ratings.map(r => r.count),
-            borderColor: '#9c27b0',
-            backgroundColor: '#e1bee7',
-            fill: true,
-            tension: 0.4, // rend la courbe plus fluide
-            pointRadius: 5
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              display: true
-            },
-            title: {
-              display: true,
-              text: 'Rating Distribution'
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Count'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Rating'
-              }
-            }
-          }
-        }
-      };
-    });
-  }
+    // Load ratings for line chart
+   // In statistics.component.ts
+this.statisticsService.getComplaintRatings().subscribe((ratingsObj: {[key: number]: number}) => {
+  // Convert object to array format for ngx-charts
+  const ratingsArray = Object.entries(ratingsObj)
+    .map(([rating, count]) => ({
+      name: rating.toString(),
+      value: count
+    }))
+    .sort((a, b) => parseInt(a.name) - parseInt(b.name));
+  
+  this.ratingsData = [{
+    name: 'Ratings Distribution',
+    series: ratingsArray
+  }];
+});
+}
 }

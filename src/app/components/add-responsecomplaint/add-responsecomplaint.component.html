@@ -90,15 +90,31 @@
       <div class="timeline-badge bg-primary"></div>
       <div class="response-card shadow-sm rounded-3">
         <div class="d-flex justify-content-between align-items-center mb-2 px-3 pt-3">
-          <span class="badge bg-info fs-7 p-2">User #{{ response.userId }}</span>
-          <div class="d-flex align-items-center gap-2">
-            <small class="text-muted fs-8">{{ response.dateRep | date: 'short' }}</small>
-            <button *ngIf="shouldShowEditButton(response)" 
-                    class="btn btn-outline-warning btn-sm rounded-pill" 
-                    (click)="editResponse(response)">
-              <i class="bi bi-pencil-fill"></i> Edit
-            </button>
-          </div>
+          <span class="badge fs-7 p-2" [ngClass]="{
+            'bg-danger': authService.isAdmin(),
+            'bg-primary': !authService.isAdmin()
+          }">
+            <span *ngIf="authService.isAdmin()">
+              <i class="bi bi-shield-fill me-1"></i> ADMIN
+            </span>
+            <span *ngIf="!authService.isAdmin()">
+              <i class="bi bi-person-fill me-1"></i> User #{{ response.userId }}
+            </span>
+          </span>
+         <!-- Dans la partie timeline-item, modifiez le div des boutons -->
+<div class="d-flex align-items-center gap-2">
+  <small class="text-muted fs-8">{{ response.dateRep | date: 'short' }}</small>
+  <button *ngIf="shouldShowEditButton(response)" 
+          class="btn btn-outline-warning btn-sm rounded-pill" 
+          (click)="editResponse(response)">
+    <i class="bi bi-pencil-fill"></i> Edit
+  </button>
+  <button *ngIf="shouldShowEditButton(response)"
+          class="btn btn-outline-danger btn-sm rounded-pill"
+          (click)="confirmDelete(response)">
+    <i class="bi bi-trash-fill"></i> Delete
+  </button>
+</div>
         </div>
         <p class="mb-0 px-3 pb-3 fs-5 text-dark-700"[innerHTML]="getSafeHtml(response.content)"></p>
       </div>
@@ -121,15 +137,7 @@
 
     <div class="card-body px-4 pt-4">
       <form [formGroup]="responseForm" (ngSubmit)="addResponse()">
-        <div class="mb-4">
-          <label for="userId" class="form-label fw-medium text-secondary">User ID</label>
-          <input type="number"
-                 id="userId"
-                 formControlName="userId"
-                 placeholder="Enter User ID"
-                 class="form-control form-control-lg border-2 rounded-3 focus-ring"
-                 required>
-        </div>
+        
 
         <div class="mb-4">
           <label for="content" class="form-label fw-medium text-secondary">Response Content</label>
@@ -156,4 +164,4 @@
       </form>
     </div>
   </div>  
-</div>
+</div> 
