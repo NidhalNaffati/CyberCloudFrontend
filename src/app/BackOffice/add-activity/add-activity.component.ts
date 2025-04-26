@@ -1,7 +1,9 @@
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ActivityService } from 'src/app/services/activity.service';
 import { Router } from '@angular/router';
+import { AiService } from 'src/app/services/ai.service';
 
 @Component({
   selector: 'app-add-activity',
@@ -13,7 +15,7 @@ export class AddActivityComponent implements OnInit {
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
   wordCount: number = 0;
-
+  isGeneratingDescription = false;
   regions: string[] = [
     'Tunis', 'Sfax', 'Sousse', 'Nabeul', 'Monastir', 'Kairouan',
     'Bizerte', 'Ariana', 'Ben Arous', 'Kasserine', 'Gafsa',
@@ -26,7 +28,8 @@ export class AddActivityComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private activityService: ActivityService,
-    private router: Router
+    private router: Router,
+    private aiService: AiService
   ) {}
 
   ngOnInit(): void {
@@ -142,6 +145,24 @@ export class AddActivityComponent implements OnInit {
   private markAllAsTouched(): void {
     Object.values(this.activityForm.controls).forEach(control => {
       control.markAsTouched();
+    });
+  }
+  generateDescription() {
+    const title = this.activityForm.get('name')?.value;
+    if (!title) {
+      alert('Veuillez d\'abord saisir le nom de l\'activité.');
+      return;
+    }
+    this.isGeneratingDescription = true;
+    this.aiService.generateDescription(title).subscribe({
+      next: (desc) => {
+        this.activityForm.get('details')?.setValue(desc);
+        this.isGeneratingDescription = false;
+      },
+      error: () => {
+        alert('Erreur lors de la génération de la description.');
+        this.isGeneratingDescription = false;
+      }
     });
   }
 }

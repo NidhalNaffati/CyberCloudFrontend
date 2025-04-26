@@ -30,6 +30,11 @@ export class DashboardComponent implements OnInit {
   // Statistiques
   chartData: any[] = [];
   barChartData: any[] = [];
+  // Pie chart for locations
+locationChartData: { name: string; value: number }[] = []; // [{ name: 'Jendouba', value: 1 }, ...]
+
+// Bar chart for monthly stats
+monthlyChartData: { name: string; value: any }[] = [];
 
   @ViewChild('pdfTable', { static: false }) pdfTable!: ElementRef;
 
@@ -38,6 +43,19 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.getActivities();
     this.loadStatistics();
+    this.activityService.getLocationStatistics().subscribe(locStats => {
+      this.locationChartData = locStats.map(loc => ({
+        name: loc.location || loc[0], // support both {location, count} and [location, count]
+        value: loc.count || loc[1]
+      }));
+    });
+
+    this.activityService.getMonthlyStatistics().subscribe(monthStats => {
+      this.monthlyChartData = monthStats.map(month => ({
+        name: 'Mois ' + (month.month || month[0]),
+        value: month.count || month[1]
+      }));
+    });
   }
 
   getActivities(): void {

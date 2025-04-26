@@ -1,34 +1,53 @@
 <div class="container mt-4">
-  <h2 class="mb-3">
-    <i class="fas fa-calendar-alt me-2"></i>Gestion des Activités </h2>
-
-<!-- Statistiques Générales -->
-<div class="mb-4">
-  <h3>Statistiques Générales</h3>
-  <div *ngIf="statistics">
-    <p>Nombre total d'activités : {{ statistics.totalActivities }}</p>
-    <p>Nombre d'activités complètes : {{ statistics.fullActivities }}</p>
-    <p>Nombre d'activités disponibles : {{ statistics.availableActivities }}</p>
-    <p>Prix moyen : {{ statistics.averagePrice | number:'1.2-2' }} TND</p>
+  <div class="d-flex align-items-center mb-4">
+    <i class="fas fa-calendar-alt fa-2x text-primary me-3"></i>
+    <div>
+      <h2 class="mb-0 fw-bold text-primary" style="letter-spacing:1px;">Gestion des Activités</h2>
+      <small class="text-muted" style="font-size:1.1rem;">Tableau de bord & statistiques</small>
+    </div>
   </div>
-</div>
- <!-- Statistiques par lieu -->
- <div class="mb-4">
-  <h3>Statistiques par lieu</h3>
-  <ul>
-    <li *ngFor="let loc of locationStats">
-      {{ loc[0] }} : {{ loc[1] }}
-    </li>
-  </ul>
-</div>
- <!-- Statistiques mensuelles -->
- <div class="mb-4">
-  <h3>Statistiques mensuelles</h3>
-  <ul>
-    <li *ngFor="let month of monthlyStats">
-      Mois {{ month[0] }} : {{ month[1] }} activités
-    </li>
-  </ul>
+
+  <!-- Statistiques Générales -->
+  <div class="row mb-4" *ngIf="statistics">
+    <h3 class="mb-3 fw-semibold text-secondary" style="letter-spacing:0.5px;">
+      <i class="fas fa-chart-bar me-2"></i>Statistiques Générales
+    </h3>
+  <div class="col-md-3 col-sm-6 mb-3">
+    <div class="card shadow text-center border-primary">
+      <div class="card-body">
+        <i class="fas fa-list-ol fa-2x text-primary mb-2"></i>
+        <h5 class="card-title">Total d'activités</h5>
+        <p class="card-text display-6 fw-bold">{{ statistics.totalActivities }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6 mb-3">
+    <div class="card shadow text-center border-danger">
+      <div class="card-body">
+        <i class="fas fa-ban fa-2x text-danger mb-2"></i>
+        <h5 class="card-title">Activités complètes</h5>
+        <p class="card-text display-6 fw-bold">{{ statistics.fullActivities }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6 mb-3">
+    <div class="card shadow text-center border-success">
+      <div class="card-body">
+        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+        <h5 class="card-title">Activités disponibles</h5>
+        <p class="card-text display-6 fw-bold">{{ statistics.availableActivities }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6 mb-3">
+    <div class="card shadow text-center border-warning">
+      <div class="card-body">
+        <i class="fas fa-coins fa-2x text-warning mb-2"></i>
+        <h5 class="card-title">Prix moyen</h5>
+        <p class="card-text display-6 fw-bold">{{ statistics.averagePrice | number:'1.2-2' }} TND</p>
+      </div>
+    </div>
+  </div>
 </div>
 
   <div class="input-group mb-3">
@@ -160,29 +179,35 @@
 
   <!-- Graphiques ngx-charts -->
   <div class="row mt-4" *ngIf="chartData.length > 0">
-    <!-- Pie Chart -->
-    <div class="col-md-6">
-      <h4><i class="fas fa-chart-pie me-2"></i>Répartition par Lieu</h4>
-      <ngx-charts-pie-chart
-        [results]="chartData"
-        [legend]="true"
-        [labels]="true"
-        [explodeSlices]="true"
-        [doughnut]="false">
-      </ngx-charts-pie-chart>
+    <div class="row mt-4">
+      <div class="col-md-6 mb-4">
+        <h3>Statistiques par lieu</h3>
+        <ngx-charts-pie-chart
+          [results]="locationChartData"
+          [legend]="true"
+          [labels]="true"
+          [explodeSlices]="true"
+          [doughnut]="false"
+          [view]="[400,300]">
+        </ngx-charts-pie-chart>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h3>Statistiques mensuelles</h3>
+        <ngx-charts-bar-vertical
+          [results]="monthlyChartData"
+          [legend]="true"
+          [xAxis]="true"
+          [yAxis]="true"
+          [xAxisLabel]="'Mois'"
+          [yAxisLabel]="'Nombre d\'activités'"
+          [view]="[500,300]">
+        </ngx-charts-bar-vertical>
+      </div>
     </div>
 
+
     <!-- Bar Chart -->
-    <div class="col-md-6">
-      <h4><i class="fas fa-chart-bar me-2"></i>Activités par Prix</h4>
-      <ngx-charts-bar-vertical
-        [results]="barChartData"
-        [legend]="true"
-        [xAxisLabel]="'Prix (TND)'"
-        [yAxisLabel]="'Nombre d\'Activités'">
-      </ngx-charts-bar-vertical>
-    </div>
-  </div>
+
   <div class="d-flex justify-content-center mt-5" *ngIf="filteredActivities.length > itemsPerPage">
     <nav aria-label="Navigation des activités">
       <ul class="pagination">
