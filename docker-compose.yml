@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  front-office:
+    build: ./front-office
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./front-office:/app
+      - /app/node_modules
+
+  back-office:
+    build: ./back-office
+    ports:
+      - "4300:4300"
+    volumes:
+      - ./back-office:/app
+      - /app/node_modules
