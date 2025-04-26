@@ -16,7 +16,15 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FullCalendarModule} from '@fullcalendar/angular';
 import {AuthInterceptor} from "./auth/auth.interceptor";
-
+import { AddComplaintsComponent } from './components/add-complaints/add-complaints.component';
+import { ListComplaintsComponent } from './components/list-complaints/list-complaints.component';
+import { AddResponsecomplaintComponent } from './components/add-responsecomplaint/add-responsecomplaint.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgPipesModule } from 'ngx-pipes'; // Importer NgPipesModule
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxEditorModule } from 'ngx-editor';
+import { NgChartsModule } from 'ng2-charts';
+import { StatisticsComponent } from './components/statistics/statistics.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,6 +37,10 @@ import {AuthInterceptor} from "./auth/auth.interceptor";
     AllTemplateBackComponent,
     HomeFrontComponent,
     HomeBackComponent,
+    AddComplaintsComponent,
+    ListComplaintsComponent,
+    AddResponsecomplaintComponent,
+    StatisticsComponent,
   ],
   imports: [
     BrowserModule,
@@ -36,7 +48,12 @@ import {AuthInterceptor} from "./auth/auth.interceptor";
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    FullCalendarModule
+    FullCalendarModule,
+    NgxPaginationModule,
+    NgPipesModule,
+    BrowserAnimationsModule ,
+    NgxEditorModule  ,
+    NgChartsModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
