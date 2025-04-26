@@ -120,6 +120,7 @@ export class AuthService {
     }
   }
 
+  // In auth.service.ts
   async login(email: string, password: string): Promise<AuthenticationResponse> {
     try {
       const authRequest: AuthenticationRequest = {email, password};
@@ -132,6 +133,14 @@ export class AuthService {
       const userRole = this.extractUserRoleFromToken(response.access_token);
       this.isAuthenticatedSubject.next(true);
       this.userRoleSubject.next(userRole);
+
+      // Add redirection logic here
+      if (userRole === 'ROLE_ADMIN') {
+        await this.router.navigate(['/admin']); // Adjust the admin route as needed
+      } else {
+        await this.router.navigate(['/']); // Home page for regular users
+      }
+
       return response;
     } catch (error) {
       return this.handleError(error as HttpErrorResponse);

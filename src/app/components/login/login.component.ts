@@ -52,7 +52,12 @@ export class LoginComponent implements OnInit {
     try {
       const {email, password} = this.loginForm.value;
       await this.authService.login(email, password);
-      this.router.navigate(['/']);
+
+      if (this.authService.isAdmin()) {
+        await this.router.navigate(['/admin']);
+      } else {
+        await this.router.navigate(['/']);
+      }
     } catch (error: any) {
       // Now we can directly use the error message from our service
       this.showErrorMessage(error.message || 'An error occurred while processing your request.');
