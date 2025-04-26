@@ -93,6 +93,29 @@
         </div>
       </li>
       <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#blog" aria-expanded="false" aria-controls="blog">
+          <span class="menu-title">Blog</span>
+          <i class="menu-arrow"></i>
+          <i class="mdi mdi-blogger menu-icon"></i>
+        </a>
+        <div class="collapse" id="blog">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/blogs">Articles</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/comments">Commentaires</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/responses">Réponses</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/blog-statistics">Statistiques</a>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
           <span class="menu-title">Consultations</span>
           <i class="mdi mdi-table-large menu-icon"></i>
@@ -101,32 +124,6 @@
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
               <a class="nav-link" routerLink="consultations">Consultations list</a>
-            </li>
-          </ul>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-          <span class="menu-title">Activites</span>
-          <i class="mdi mdi-table-large menu-icon"></i>
-        </a>
-        <div class="collapse" id="tables">
-          <ul class="nav flex-column sub-menu">
-            <li class="nav-item">
-              <a class="nav-link" routerLink="dashboard">Activity list</a>
-            </li>
-          </ul>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-          <span class="menu-title">Reservations</span>
-          <i class="mdi mdi-table-large menu-icon"></i>
-        </a>
-        <div class="collapse" id="tables">
-          <ul class="nav flex-column sub-menu">
-            <li class="nav-item">
-              <a class="nav-link" routerLink="reservations">Reservations list</a>
             </li>
           </ul>
         </div>

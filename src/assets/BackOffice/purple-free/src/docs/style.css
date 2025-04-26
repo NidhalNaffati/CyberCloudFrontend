@@ -87,10 +87,7 @@ h6 {
 .CodeMirror-scroll {
   min-height: auto;
 }
-.fas {
-  font-family: 'Font Awesome 6 Free' !important;
-  font-weight: 900 !important;
-}
+
 .documentation .left-sidebar {
   width: 260px;
   padding: 20px 30px;
