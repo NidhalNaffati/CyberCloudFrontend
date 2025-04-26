@@ -7,6 +7,7 @@ import { ResponseComplaint } from 'src/app/models/response-complaint';
 import { Router } from '@angular/router';
 import { Editor, Toolbar } from 'ngx-editor';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-add-complaints',
@@ -43,7 +44,8 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
     private complaintService: ComplaintService,
     private responseComplaintService: ResponseComplaintService,
     private router: Router,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +58,6 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
     this.complaintForm = this.fb.group({
       subject: ['', Validators.required],
       content: ['', Validators.required],
-      userId: [0, Validators.required],
       starRatingConsultation: [0, [Validators.required, Validators.min(0), Validators.max(5)]],
       isUrgent: [false],
       isRead: [false]
@@ -80,10 +81,9 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
     this.editor.destroy();
   }
 
-  // Nouvelle méthode pour vider et rafraîchir les complaints
   refreshComplaints(): void {
     this.isLoading = true;
-    this.complaints = []; // Vide la liste
+    this.complaints = [];
     
     this.complaintService.getComplaints().subscribe({
       next: (data: Complaint[]) => {
@@ -97,7 +97,6 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Méthode pour vider complètement le sidebar sans recharger
   clearSidebar(): void {
     this.complaints = [];
   }
@@ -159,7 +158,6 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
       this.complaintForm.patchValue({
         subject: this.selectedComplaint.subject,
         content: this.selectedComplaint.content,
-        userId: this.selectedComplaint.userId,
         starRatingConsultation: this.selectedComplaint.starRatingConsultation,
         isUrgent: this.selectedComplaint.isUrgent
       });
@@ -195,20 +193,19 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
     }
   
     const responseContent = this.responseForm.value.responseContent;
+    const currentUserId = this.authService.getUserId();
   
-    this.responseComplaintService.checkForBadWords(responseContent).subscribe({
-      next: (response) => {
-        const answer = response.choices?.[0]?.message?.content?.trim().toUpperCase();
-        
-        if (answer === 'YES') {
-          alert('The response contains inappropriate words and cannot be saved.');
-          return;
-        }
+    if (!currentUserId) {
+      alert('You must be logged in to submit a response');
+      return;
+    }
+  
+    
   
         const responseObj: ResponseComplaint = {
           responseId: 0,
           complaintId: this.selectedComplaintId!,
-          userId: this.complaintForm.value.userId,
+          userId: currentUserId,
           content: responseContent,
           dateRep: new Date().toISOString(),
           isReadRep: false
@@ -218,20 +215,17 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
           next: () => {
             this.responseForm.reset();
             this.loadResponses(this.selectedComplaintId!);
-            this.refreshComplaints(); // Rafraîchir le sidebar après ajout
+            this.refreshComplaints();
             this.isEditingResponse = false;
           },
           error: (err) => console.error('Error adding response:', err)
         });
-      },
-      error: (err) => {
-        console.error('Error checking for bad words:', err);
-        alert('Error during content verification.');
       }
-    });
-  }
+
+
 
   editResponse(response: ResponseComplaint): void {
+    
     if (this.selectedComplaint && response.userId === this.selectedComplaint.userId) {
       this.isEditingResponse = true;
       this.currentResponseId = response.responseId;
@@ -249,14 +243,7 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
 
     const responseContent = this.responseForm.value.responseContent;
 
-    this.responseComplaintService.checkForBadWords(responseContent).subscribe({
-      next: (response) => {
-        const answer = response.choices?.[0]?.message?.content?.trim().toUpperCase();
-        
-        if (answer === 'YES') {
-          alert('The response contains inappropriate words and cannot be saved.');
-          return;
-        }
+   
 
         const responseToUpdate = this.responses.find(r => r.responseId === this.currentResponseId);
         if (!responseToUpdate || responseToUpdate.userId !== this.selectedComplaint!.userId) {
@@ -282,14 +269,7 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
           },
           error: (err) => console.error('Error updating response:', err)
         });
-      },
-      error: (err) => {
-        console.error('Error checking for bad words:', err);
-        alert('Error during content verification.');
       }
-    });
-  }
-
   cancelEditResponse(): void {
     this.isEditingResponse = false;
     this.currentResponseId = null;
@@ -297,18 +277,19 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
   }
 
   deleteResponse(responseId: number): void {
-    if (!this.selectedComplaint || !confirm('Voulez-vous vraiment supprimer cette réponse ?')) {
+    const currentUserId = this.authService.getUserId();
+    if (!currentUserId || !confirm('Do you really want to delete this response?')) {
       return;
     }
 
     this.responseComplaintService.deleteResponse(responseId).subscribe({
       next: () => {
         this.loadResponses(this.selectedComplaintId!);
-        this.refreshComplaints(); // Rafraîchir le sidebar après suppression
+        this.refreshComplaints();
       },
       error: (err) => {
-        console.error('Erreur lors de la suppression:', err);
-        alert('Erreur lors de la suppression.');
+        console.error('Error during deletion:', err);
+        alert('Error during deletion.');
       }
     });
   }
@@ -319,22 +300,22 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
       return;
     }
   
-    const complaint: Complaint = this.complaintForm.value;
+    const currentUserId = this.authService.getUserId();
+    if (!currentUserId) {
+      alert('You must be logged in to submit a complaint');
+      return;
+    }
   
-    this.complaintService.checkForBadWords(complaint.content).subscribe({
-      next: (response) => {
-        const answer = response.choices?.[0]?.message?.content?.trim().toUpperCase();
-  
-        if (answer === 'YES') {
-          alert('The content of the complaint contains inappropriate words. Saving is not allowed.');
-          return;
-        }
+    const complaint: Complaint = {
+      ...this.complaintForm.value,
+      userId: currentUserId
+    };
   
         if (this.isEditMode && this.selectedComplaintId !== null) {
           this.complaintService.updateComplaint(this.selectedComplaintId, complaint).subscribe({
             next: () => {
               alert('Complaint updated.');
-              this.refreshComplaints(); // Rafraîchir le sidebar après mise à jour
+              this.refreshComplaints();
               this.resetForm();
             },
             error: () => alert('Error updating complaint.')
@@ -343,18 +324,13 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
           this.complaintService.addComplaint(complaint).subscribe({
             next: () => {
               alert('Complaint added!');
-              this.refreshComplaints(); // Rafraîchir le sidebar après ajout
+              this.refreshComplaints();
               this.resetForm();
             },
             error: () => alert('Error adding complaint.')
           });
         }
-      },
-      error: (err) => {
-        console.error('Bad words API error:', err);
-        alert('Error during content verification.');
-      }
-    });
+      
   }
 
   startAddingNewComplaint(): void {
@@ -363,7 +339,6 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
     this.complaintForm.reset({
       subject: '',
       content: '',
-      userId: 0,
       starRatingConsultation: 0,
       isUrgent: false,
       isRead: false
@@ -374,7 +349,6 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
     this.complaintForm.reset({
       subject: '',
       content: '',
-      userId: 0,
       starRatingConsultation: 0,
       isUrgent: false,
       isRead: false
@@ -391,4 +365,6 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
       return this.responses.slice(startIndex);
     }
   }
-}
+} 
+
+

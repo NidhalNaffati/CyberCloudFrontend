@@ -1,0 +1,56 @@
+<!-- confirmation.component.html -->
+<div class="confirmation-container">
+  <div class="ticket-container" id="ticket-to-print">
+    <div class="ticket-header">
+      <h1><i class="fas fa-check-circle text-success"></i> Réservation Confirmée</h1>
+      <div class="divider"></div>
+    </div>
+
+    <div class="ticket-body">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="ticket-details">
+            <h2 class="activity-name">{{activity.name}}</h2>
+
+            <div class="detail-item">
+              <i class="fas fa-user"></i>
+              <span>Nom: <strong>{{reservation.fullName}}</strong></span>
+            </div>
+
+            <div class="detail-item">
+              <i class="fas fa-calendar-day"></i>
+              <span>Date: <strong>{{activity.date | date:'fullDate'}}</strong></span>
+            </div>
+
+            <div class="detail-item">
+              <i class="fas fa-users"></i>
+              <span>Nombre de places: <strong>{{reservation.numberOfSeats}}</strong></span>
+            </div>
+
+            <div class="detail-item">
+              <i class="fas fa-id-card"></i>
+              <span>Référence: <strong>#{{reservation.activityReservationId}}</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 qr-code-container">
+          <div class="qr-code-wrapper">
+            <img *ngIf="qrCodeUrl" [src]="qrCodeUrl" alt="QR Code" class="qr-code">
+            <p class="scan-text">Scannez pour vérification</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ticket-footer">
+      <p class="thank-you">Merci pour votre réservation !</p>
+      <button class="btn btn-primary print-btn" (click)="printTicket()">
+        <i class="fas fa-print"></i> Imprimer le ticket
+      </button>
+      <button class="btn btn-outline-primary back-btn" routerLink="/home">
+        <i class="fas fa-arrow-left"></i> Retour aux activités
+      </button>
+    </div>
+  </div>
+</div>

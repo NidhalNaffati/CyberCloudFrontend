@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from "../../auth/auth.service";
-import { ResponseComplaintService } from 'src/app/services/response-complaint.service';
-import { ComplaintService } from 'src/app/services/complaint.service';
-import { ResponseComplaint } from 'src/app/models/response-complaint';
-import { Complaint } from 'src/app/models/complaint';
+import { ResponseComplaintService } from '../../services/response-complaint.service';
+import { ComplaintService } from '../../services/complaint.service';
+import { ResponseComplaint } from '../../models/response-complaint';
+import { Complaint } from '../../models/complaint';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
