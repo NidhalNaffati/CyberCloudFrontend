@@ -115,9 +115,9 @@
                     id="terms"
                     formControlName="acceptTerms">
                   <label class="form-check-label" for="terms">
-                    I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#"
-                                                                                                class="text-primary">Privacy
-                    Policy</a>
+                    I agree to the <small class="text-primary">Terms of Service</small> and
+                    <small href="#"  class="text-primary">Privacy
+                    Policy</small>
                   </label>
                 </div>
                 <div *ngIf="registerForm.get('acceptTerms')?.invalid && registerForm.get('acceptTerms')?.touched"
@@ -145,18 +145,7 @@
           </div>
 
           <div class="text-center mt-4">
-            <p>Already have an account? <a routerLink="/login" class="text-primary">Login here</a></p>
-          </div>
-          <div class="text-center mt-4">
-            <p>Or register with:</p>
-            <div class="d-flex justify-content-center">
-              <a class="btn btn-primary btn-sm-square me-3 rounded-circle text-white" href=""><i
-                class="fab fa-facebook-f"></i></a>
-              <a class="btn btn-primary btn-sm-square me-3 rounded-circle text-white" href=""><i
-                class="fab fa-google"></i></a>
-              <a class="btn btn-primary btn-sm-square rounded-circle text-white" href=""><i
-                class="fab fa-apple"></i></a>
-            </div>
+            <p>Already have an account? <a routerLink="/auth/login" class="text-primary">Login here</a></p>
           </div>
         </div>
       </div>

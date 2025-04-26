@@ -1,7 +1,7 @@
 // src/app/components/reset-password/reset-password.component.ts
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router, ActivatedRoute, RouterLink} from '@angular/router';
 import {AuthService} from '../../auth/auth.service';
 import {NgIf} from "@angular/common";
 
@@ -12,7 +12,8 @@ import {NgIf} from "@angular/common";
   imports: [
     ReactiveFormsModule,
     NgIf,
-    FormsModule
+    FormsModule,
+    RouterLink
   ],
   styleUrls: ['./reset-password.component.scss']
 })
