@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import '~font-awesome/css/font-awesome.css';
 
 import { ActivityService } from './activity.service';
 
