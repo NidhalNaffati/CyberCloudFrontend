@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReservationService } from '../../services/reservation.service';
 import { ActivityService } from '../../services/activity.service';
 import { Activity } from '../../models/activity.model';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-reservation',
@@ -24,7 +25,8 @@ export class ReservationComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private reservationService: ReservationService,
-    private activityService: ActivityService
+    private activityService: ActivityService,
+    private authService: AuthService
   ) {
     this.activityId = parseInt(this.route.snapshot.paramMap.get('id') || '0', 10);
     this.reservationForm = this.fb.group({
@@ -38,6 +40,17 @@ export class ReservationComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadActivity();
+    const userId = this.authService.getUserId?.();
+  const email = this.authService.getUserEmail?.();
+
+  if (userId) {
+    this.reservationForm.patchValue({ userId });
+  }
+
+  if (email) {
+    this.reservationForm.patchValue({ email });
+  }
+
   }
 
   loadActivity(): void {
