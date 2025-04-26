@@ -79,7 +79,7 @@ export class ReservationComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/activities']);
+    this.router.navigate(['']);
   }
  // reservation.component.ts
 onSubmit(): void {

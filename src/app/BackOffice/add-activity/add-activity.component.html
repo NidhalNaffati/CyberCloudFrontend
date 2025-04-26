@@ -16,6 +16,17 @@
             <i class="fas fa-exclamation-circle me-2"></i>Le nom doit contenir au moins 3 caractères.
           </div>
         </div>
+        <!-- After the activity name input, before the details textarea -->
+<div class="mb-2">
+  <button type="button"
+          class="btn btn-outline-info btn-sm"
+          (click)="generateDescription()"
+          [disabled]="activityForm.get('name')?.invalid || isGeneratingDescription">
+    <i class="fas fa-robot me-1"></i>
+    Générer une description avec l'IA
+    <span *ngIf="isGeneratingDescription" class="spinner-border spinner-border-sm ms-2"></span>
+  </button>
+</div>
         <div class="mb-4">
           <label for="details" class="form-label fw-bold text-primary">
             <i class="fas fa-align-left me-2"></i>Détails

@@ -1,0 +1,180 @@
+<div class="container-fluid px-4 py-5">
+  <!-- En-tête avec titre -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-gradient mb-3 mb-md-0">
+      <i class="bi bi-megaphone me-2"></i> Patient Feedback
+    </h2>
+
+    <!-- Zone de filtres et actions -->
+    <div class="col-md-6 d-flex flex-wrap justify-content-md-end gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <label for="dateFilter" class="form-label mb-0 me-2">Filter by Date:</label>
+        <input
+          id="dateFilter"
+          type="date"
+          class="form-control"
+          style="min-width: 150px;"
+          [(ngModel)]="filterDate"
+          (change)="filterComplaints()"
+        />
+      </div>
+
+      <button class="btn btn-secondary" (click)="clearFilter()">Reset</button>
+    </div>
+  </div>
+
+  <!-- Liste des réclamations version desktop -->
+  <div class="card shadow-lg d-none d-lg-block">
+    <div class="card-body p-0">
+      <div class="table-responsive rounded-3">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="bg-light-azure text-white">
+            <tr>
+              <th class="ps-4">Date & Time</th>
+              <th>Case Details</th> 
+              <th>User Feedback</th>
+              <th>Priority</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of paginatedComplaints" class="hover-highlight">
+              <td class="ps-4">
+                <div class="d-flex flex-column">
+                  <span class="fw-bold">{{ c.date | date:'shortDate' }}</span>
+                  <small class="text-muted">{{ c.date | date:'shortTime' }}</small>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex flex-column">
+                  <span class="badge bg-info mb-1">{{ c.subject }}</span> 
+                  <small class="text-muted">User ID: {{ c.userId }}</small>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex flex-column">
+                  <div class="rating-stars mb-2">
+                    <span *ngFor="let star of [1,2,3,4,5]" class="star {{ star <= c.starRatingConsultation ? 'filled' : '' }}">
+                      <i class="bi bi-star{{ star <= c.starRatingConsultation ? '-fill' : '' }}"></i>
+                    </span>
+                  </div>
+                  <p class="feedback-preview mb-0"[innerHTML]="getSafeHtml(c.content)"></p>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex flex-column align-items-start">
+                  <span class="badge {{ c.isUrgent ? 'bg-danger' : 'bg-secondary' }} mb-1">
+                    {{ c.isUrgent ? 'Urgent' : 'Normal' }}
+                  </span>
+                  <span class="badge {{ c.isRead ? 'bg-success' : 'bg-warning' }}">
+                    {{ c.isRead ? 'Read' : 'Unread' }}
+                  </span>
+                </div>
+              </td>
+              <td class="pe-4">
+                <div class="d-flex justify-content-end gap-2">
+                  <button class="btn btn-icon" (click)="delete(c.complaintId)" data-bs-toggle="tooltip" title="Delete complaint">
+                    <i class="bi bi-trash text-danger"></i>
+                  </button>
+                  <button class="btn btn-icon" (click)="openModal(c.complaintId)" data-bs-toggle="tooltip" title="Respond to complaint">
+                    <i class="bi bi-chat-dots text-success"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center mt-4">
+    <nav *ngIf="totalPages > 1">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+        </li>
+        <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="currentPage === i + 1">
+          <button class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  
+  <app-statistics></app-statistics>
+
+  <!-- Version mobile -->
+  <div class="row g-4 d-lg-none">
+    <div class="col-12" *ngFor="let c of paginatedComplaints">
+      <div class="card shadow-sm hover-shadow">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <h5 class="card-title mb-1">
+                <i class="bi bi-calendar-event me-2"></i>
+                {{ c.date | date:'short' }}
+              </h5>
+              <h6 class="fw-bold">{{ c.subject }}</h6> <!-- Affichage du sujet en mobile -->
+            </div>
+            <div class="dropdown">
+              <button class="btn btn-icon" type="button" data-bs-toggle="dropdown">
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" [routerLink]="['/edit', c.complaintId]">
+                  <i class="bi bi-pencil-square me-2"></i>Edit
+                </a></li>
+                <li><a class="dropdown-item text-danger" (click)="delete(c.complaintId)">
+                  <i class="bi bi-trash me-2"></i>Delete
+                </a></li>
+                <li><a class="dropdown-item text-success" (click)="openModal(c.complaintId)">
+                  <i class="bi bi-chat-dots me-2"></i>Respond
+                </a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="rating-stars">
+              <span *ngFor="let star of [1,2,3,4,5]" class="star {{ star <= c.starRatingConsultation ? 'filled' : '' }}">
+                <i class="bi bi-star{{ star <= c.starRatingConsultation ? '-fill' : '' }}"></i>
+              </span>
+            </div>
+            <div class="status-indicators">
+              <span class="badge {{ c.isUrgent ? 'bg-danger' : 'bg-secondary' }} me-1">
+                {{ c.isUrgent ? 'Urgent' : 'Normal' }}
+              </span>
+              <span class="badge {{ c.isRead ? 'bg-success' : 'bg-warning' }}">
+                {{ c.isRead ? 'Read' : 'Unread' }}
+              </span>
+            </div>
+          </div>
+
+          <p class="card-text text-muted mb-3">{{ c.content }}</p>
+          <small class="text-muted">User ID: {{ c.userId }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal amélioré -->
+  <div class="modal fade" id="responseModal1" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-light-azure text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-chat-text me-2"></i>Response Management
+          </h5>
+          <button type="button" class="btn-close btn-close-dark" (click)="closeModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <app-add-responsecomplaint *ngIf="selectedComplaintId" [complaintId]="selectedComplaintId" @fadeInOut></app-add-responsecomplaint>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

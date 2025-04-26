@@ -1,4 +1,3 @@
-// Merged app-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -20,6 +19,11 @@ import { HomeBackComponent } from './BackOffice/home-back/home-back.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 
+// Complaints Components
+import { ListComplaintsComponent } from './components/list-complaints/list-complaints.component';
+import { AddComplaintsComponent } from './components/add-complaints/add-complaints.component';
+import { AddResponsecomplaintComponent } from './components/add-responsecomplaint/add-responsecomplaint.component';
+
 const routes: Routes = [
   {
     path: 'auth',
@@ -29,18 +33,20 @@ const routes: Routes = [
     path: '',
     component: AllTemplateFrontComponent,
     children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: '', component: HomeFrontComponent, pathMatch: 'full' },
       { path: 'home', component: HomeComponent },
       { path: 'home-front', component: HomeFrontComponent },
       { path: 'reservation/:id', component: ReservationComponent },
-      { path: 'confirmation', component: ConfirmationComponent }
+      { path: 'confirmation', component: ConfirmationComponent },
+      { path: 'add-complaint', component: AddComplaintsComponent },
+      { path: 'edit/:id', component: AddComplaintsComponent }
     ]
   },
   {
     path: 'admin',
     component: AllTemplateBackComponent,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: '', component: HomeBackComponent, pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'home', component: HomeBackComponent },
       { path: 'add-activity', component: AddActivityComponent },
@@ -52,7 +58,9 @@ const routes: Routes = [
             (m) => m.ReservationsRoutingModule
           )
       },
-      { path: 'reservation-form/:id', component: ReservationFormComponent }
+      { path: 'reservation-form/:id', component: ReservationFormComponent },
+      { path: 'complaints', component: ListComplaintsComponent },
+      { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent }
     ]
   },
   { path: '404', component: NotfoundComponent },
