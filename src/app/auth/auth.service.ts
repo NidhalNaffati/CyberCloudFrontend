@@ -19,6 +19,14 @@ interface RegisterRequest {
   role: string;
 }
 
+export interface EditProfileRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
 interface AuthenticationRequest {
   email: string;
   password: string;
@@ -63,59 +71,37 @@ export class AuthService {
     console.error('API Error:', error.message);
 
     let errorMessage = 'An error occurred while processing your request.';
-
-    // Extract message from Spring Boot error response
     if (error.error) {
       if (typeof error.error === 'string') {
         try {
-          // Try to parse it as JSON first
           const parsedError = JSON.parse(error.error);
           errorMessage = parsedError.message || errorMessage;
         } catch {
-          // If not valid JSON, use as is
           errorMessage = error.error;
         }
       } else if (error.error.message) {
         errorMessage = error.error.message;
       }
     }
-
     const enhancedError = new Error(errorMessage);
     (enhancedError as any).originalError = error;
     (enhancedError as any).status = error.status;
-
     throw enhancedError;
   }
 
   async register(registerData: RegisterRequest, file?: File): Promise<string> {
     try {
-      // If role is MEDECIN and file is provided, use FormData to submit
       if (registerData.role === 'ROLE_MEDECIN' && file) {
         const formData = new FormData();
-
-        // Convert registerData to JSON string and append as request part
-        formData.append('request', new Blob([JSON.stringify(registerData)], {
-          type: 'application/json'
-        }));
-
-        // Append file
+        formData.append('request', new Blob([JSON.stringify(registerData)], {type: 'application/json'}));
         formData.append('document', file);
-
         return await firstValueFrom(
-          this.http.post(`${this.apiUrl}/register/medecin`, formData, {
-            responseType: 'text'
-          })
+          this.http.post(`${this.apiUrl}/register/medecin`, formData, {responseType: 'text'})
         );
       } else {
-        // Regular user registration
-        const endpoint = registerData.role === 'ROLE_USER'
-          ? `${this.apiUrl}/register/user`
-          : `${this.apiUrl}/register`;
-
+        const endpoint = registerData.role === 'ROLE_USER' ? `${this.apiUrl}/register/user` : `${this.apiUrl}/register`;
         return await firstValueFrom(
-          this.http.post(endpoint, registerData, {
-            responseType: 'text'
-          })
+          this.http.post(endpoint, registerData, {responseType: 'text'})
         );
       }
     } catch (error) {
@@ -127,9 +113,7 @@ export class AuthService {
     try {
       const verifyRequest: VerifyAccountRequest = {email, code};
       return await firstValueFrom(
-        this.http.post<string>(`${this.apiUrl}/verify-user`, verifyRequest, {
-          responseType: 'text' as 'json'
-        })
+        this.http.post<string>(`${this.apiUrl}/verify-user`, verifyRequest, {responseType: 'text' as 'json'})
       );
     } catch (error) {
       return this.handleError(error as HttpErrorResponse);
@@ -142,19 +126,12 @@ export class AuthService {
       const response = await firstValueFrom(
         this.http.post<AuthenticationResponse>(`${this.apiUrl}/authenticate`, authRequest)
       );
-
-      // Store tokens
       localStorage.setItem('access_token', response.access_token);
       localStorage.setItem('refresh_token', response.refresh_token);
-
-      // Set auth headers
       this.setAuthHeaders();
-
-      // Update auth state
       const userRole = this.extractUserRoleFromToken(response.access_token);
       this.isAuthenticatedSubject.next(true);
       this.userRoleSubject.next(userRole);
-
       return response;
     } catch (error) {
       return this.handleError(error as HttpErrorResponse);
@@ -162,18 +139,11 @@ export class AuthService {
   }
 
   logout(): void {
-    // Clear tokens from storage
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-
-    // Update auth state
     this.isAuthenticatedSubject.next(false);
     this.userRoleSubject.next(null);
-
-    // Navigate to login
-    this.router
-      .navigate(['auth/login'])
-      .then(r => console.log('logged out'));
+    this.router.navigate(['auth/login']).then(r => console.log('logged out'));
   }
 
   async requestPasswordReset(email: string): Promise<string> {
@@ -189,13 +159,7 @@ export class AuthService {
 
   async resetPassword(email: string, code: string, newPassword: string, confirmPassword: string): Promise<string> {
     try {
-      const request: ResetPasswordRequest = {
-        email,
-        code,
-        newPassword,
-        confirmPassword
-      };
-
+      const request: ResetPasswordRequest = {email, code, newPassword, confirmPassword};
       return await firstValueFrom(
         this.http.post<string>(`${this.apiUrl}/reset-password`, request)
       );
@@ -210,16 +174,12 @@ export class AuthService {
       this.logout();
       throw new Error('No refresh token available');
     }
-
     try {
       const response = await firstValueFrom(
         this.http.post<{ access_token: string }>(`${this.apiUrl}/refresh-token`, {refresh_token: refreshToken})
       );
-
-      // Update the access token in local storage
       localStorage.setItem('access_token', response.access_token);
       this.setAuthHeaders();
-
       return response;
     } catch (error) {
       console.error('Refresh token error:', error);
@@ -235,7 +195,6 @@ export class AuthService {
   getUserRole(): string | null {
     const token = this.getAccessToken();
     if (!token) return null;
-
     try {
       const decodedToken = this.jwtHelper.decodeToken(token);
       return decodedToken.role;
@@ -248,7 +207,6 @@ export class AuthService {
   getUserId(): number | null {
     const token = this.getAccessToken();
     if (!token) return null;
-
     try {
       const decodedToken = this.jwtHelper.decodeToken(token);
       return decodedToken.id_user ?? null;
@@ -257,7 +215,6 @@ export class AuthService {
       return null;
     }
   }
-
 
   isAdmin(): boolean {
     return this.getUserRole() === 'ROLE_ADMIN';
@@ -280,8 +237,27 @@ export class AuthService {
   private setAuthHeaders(): void {
     const token = this.getAccessToken();
     if (token) {
-      // Note: In Angular, you would typically handle this in an HTTP interceptor
       console.log('Setting auth header with token');
+    }
+  }
+
+  async getUserProfile(): Promise<any> {
+    try {
+      return await firstValueFrom(
+        this.http.get<any>(`${this.apiUrl}/profile`)
+      );
+    } catch (error) {
+      return this.handleError(error as HttpErrorResponse);
+    }
+  }
+
+  async updateProfile(editProfile: EditProfileRequest): Promise<string> {
+    try {
+      return await firstValueFrom(
+        this.http.put(`${this.apiUrl}/profile`, editProfile, {responseType: 'text'})
+      );
+    } catch (error) {
+      return this.handleError(error as HttpErrorResponse);
     }
   }
 }
