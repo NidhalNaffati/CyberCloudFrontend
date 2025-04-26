@@ -16,6 +16,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FullCalendarModule} from '@fullcalendar/angular';
 import {AuthInterceptor} from "./auth/auth.interceptor";
+import {MedecinList} from "./components/medecin-list/medecin-list.component";
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {AuthInterceptor} from "./auth/auth.interceptor";
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    FullCalendarModule
+    FullCalendarModule,
+    MedecinList
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
