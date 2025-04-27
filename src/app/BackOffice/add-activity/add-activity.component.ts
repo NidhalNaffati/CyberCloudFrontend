@@ -155,7 +155,7 @@ export class AddActivityComponent implements OnInit {
     }
     this.isGeneratingDescription = true;
     this.aiService.generateDescription(title).subscribe({
-      next: (desc) => {
+      next: (desc: string) => {
         this.activityForm.get('details')?.setValue(desc);
         this.isGeneratingDescription = false;
       },
