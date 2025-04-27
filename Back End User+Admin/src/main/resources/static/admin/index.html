@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buzz Social Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background-color: #212529;
+            color: white;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+        }
+        .sidebar .nav-link.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            border-left: 5px solid #0d6efd;
+        }
+        .table-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .search-container {
+            margin-bottom: 20px;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Login Form -->
+        <div v-if="!isAuthenticated" class="login-container">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Admin Login</h4>
+                </div>
+                <div class="card-body">
+                    <form @submit.prevent="login">
+                        <div class="mb-3">
+                            <label for="usernameOrEmail" class="form-label">Username or Email</label>
+                            <input type="text" class="form-control" id="usernameOrEmail" v-model="loginForm.usernameOrEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" v-model="loginForm.password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+                    <div class="mt-3 text-center">
+                        <a href="#" @click.prevent="showRegisterForm = true" v-if="!showRegisterForm">Register as Admin</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Registration Form -->
+            <div v-if="showRegisterForm" class="card mt-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Admin Registration</h4>
+                </div>
+                <div class="card-body">
+                    <form @submit.prevent="registerAdmin">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" v-model="registerForm.fullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" v-model="registerForm.email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" v-model="registerForm.username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="registerPassword" v-model="registerForm.password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminSecretKey" class="form-label">Admin Secret Key</label>
+                            <input type="password" class="form-control" id="adminSecretKey" v-model="registerForm.adminSecretKey" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Register</button>
+                        <button type="button" class="btn btn-secondary w-100 mt-2" @click="showRegisterForm = false">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div v-else class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-2 sidebar p-0">
+                    <div class="d-flex flex-column p-3">
+                        <h4 class="text-center mb-4">Admin Dashboard</h4>
+                        <ul class="nav nav-pills flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" :class="{ active: activeTab === 'dashboard' }" href="#" @click.prevent="activeTab = 'dashboard'">
+                                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" :class="{ active: activeTab === 'users' }" href="#" @click.prevent="activeTab = 'users'">
+                                    <i class="bi bi-people me-2"></i> Users
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" :class="{ active: activeTab === 'buzzs' }" href="#" @click.prevent="activeTab = 'buzzs'">
+                                    <i class="bi bi-chat-dots me-2"></i> Buzzs
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" :class="{ active: activeTab === 'comments' }" href="#" @click.prevent="activeTab = 'comments'">
+                                    <i class="bi bi-chat-square-text me-2"></i> Comments
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" :class="{ active: activeTab === 'reports' }" href="#" @click.prevent="activeTab = 'reports'">
+                                    <i class="bi bi-flag me-2"></i> Reports
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="mt-auto">
+                            <a href="#" class="nav-link text-danger" @click.prevent="logout">
+                                <i class="bi bi-box-arrow-right me-2"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-md-10 main-content">
+                    <!-- Dashboard Overview -->
+                    <div v-if="activeTab === 'dashboard'">
+                        <h2 class="mb-4">Dashboard Overview</h2>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card stat-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Total Users</h5>
+                                        <h2 class="card-text">{{ stats.totalUsers || 0 }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stat-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Total Buzzs</h5>
+                                        <h2 class="card-text">{{ stats.totalBuzzs || 0 }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stat-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Total Comments</h5>
+                                        <h2 class="card-text">{{ stats.totalComments || 0 }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stat-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Pending Reports</h5>
+                                        <h2 class="card-text">{{ stats.pendingReports || 0 }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Users Management -->
+                    <div v-if="activeTab === 'users'">
+                        <h2 class="mb-4">Users Management</h2>
+                        <div class="search-container">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search users..." v-model="userSearchQuery">
+                                <button class="btn btn-primary" type="button" @click="searchUsers">Search</button>
+                                <button class="btn btn-secondary" type="button" @click="resetUserSearch">Reset</button>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Full Name</th>
+                                        <th>Joined</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="user in users" :key="user.id">
+                                        <td>{{ user.id }}</td>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.fullName }}</td>
+                                        <td>{{ formatDate(user.createdAt) }}</td>
+                                        <td>
+                                            <span class="badge" :class="user.isBanned ? 'bg-danger' : 'bg-success'">
+                                                {{ user.isBanned ? 'Banned' : 'Active' }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-sm" :class="user.isBanned ? 'btn-success' : 'btn-danger'" 
+                                                    @click="toggleUserBan(user)">
+                                                    {{ user.isBanned ? 'Unban' : 'Ban' }}
+                                                </button>
+                                                <button class="btn btn-sm btn-info" @click="viewUserDetails(user)">
+                                                    Details
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <nav>
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item" :class="{ disabled: userPage === 0 }">
+                                        <a class="page-link" href="#" @click.prevent="userPage--">Previous</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <span class="page-link">Page {{ userPage + 1 }}</span>
+                                    </li>
+                                    <li class="page-item" :class="{ disabled: users.length < userSize }">
+                                        <a class="page-link" href="#" @click.prevent="userPage++">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+
+                        <!-- User Details Modal -->
+                        <div class="modal fade" id="userDetailsModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">User Details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" v-if="selectedUser">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6>Profile Information</h6>
+                                                <p><strong>ID:</strong> {{ selectedUser.id }}</p>
+                                                <p><strong>Username:</strong> {{ selectedUser.username }}</p>
+                                                <p><strong>Email:</strong> {{ selectedUser.email }}</p>
+                                                <p><strong>Full Name:</strong> {{ selectedUser.fullName }}</p>
+                                                <p><strong>Bio:</strong> {{ selectedUser.bio || 'Not provided' }}</p>
+                                                <p><strong>Joined:</strong> {{ formatDate(selectedUser.createdAt) }}</p>
+                                                <p><strong>Status:</strong> 
+                                                    <span class="badge" :class="selectedUser.isBanned ? 'bg-danger' : 'bg-success'">
+                                                        {{ selectedUser.isBanned ? 'Banned' : 'Active' }}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>Statistics</h6>
+                                                <p><strong>Followers:</strong> {{ selectedUser.followersCount }}</p>
+                                                <p><strong>Following:</strong> {{ selectedUser.followingsCount }}</p>
+                                                <p><strong>Buzz Count:</strong> {{ selectedUser.buzzCount }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-12">
+                                                <ul class="nav nav-tabs" id="userDetailsTabs">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" data-bs-toggle="tab" href="#followers">Followers</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" data-bs-toggle="tab" href="#following">Following</a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content p-3 border border-top-0">
+                                                    <div class="tab-pane fade show active" id="followers">
+                                                        <div v-if="userFollowers.length === 0" class="text-center py-3">
+                                                            <p>No followers found</p>
+                                                        </div>
+                                                        <div v-else class="table-responsive">
+                                                            <table class="table table-sm">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Username</th>
+                                                                        <th>Email</th>
+                                                                        <th>Actions</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr v-for="follower in userFollowers" :key="follower.id">
+                                                                        <td>{{ follower.username }}</td>
+                                                                        <td>{{ follower.email }}</td>
+                                                                        <td>
+                                                                            <button class="btn btn-sm btn-info" @click="viewUserDetails(follower)">
+                                                                                View
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane fade" id="following">
+                                                        <div v-if="userFollowings.length === 0" class="text-center py-3">
+                                                            <p>No followings found</p>
+                                                        </div>
+                                                        <div v-else class="table-responsive">
+                                                            <table class="table table-sm">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Username</th>
+                                                                        <th>Email</th>
+                                                                        <th>Actions</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr v-for="following in userFollowings" :key="following.id">
+                                                                        <td>{{ following.username }}</td>
+                                                                        <td>{{ following.email }}</td>
+                                                                        <td>
+                                                                            <button class="btn btn-sm btn-info" @click="viewUserDetails(following)">
+                                                                                View
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buzzs Management -->
+                    <div v-if="activeTab === 'buzzs'">
+                        <h2 class="mb-4">Buzzs Management</h2>
+                        <div class="search-container">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search buzzs..." v-model="buzzSearchQuery">
+                                <button class="btn btn-primary" type="button" @click="searchBuzzs">Search</button>
+                                <button class="btn btn-secondary" type="button" @click="resetBuzzSearch">Reset</button>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Content</th>
+                                        <th>Author</th>
+                                        <th>Created</th>
+                                        <th>Stats</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="buzz in buzzs" :key="buzz.id">
+                                        <td>{{ buzz.id }}</td>
+                                        <td>{{ buzz.title || 'No Title' }}</td>
+                                        <td>{{ truncateText(buzz.content, 50) }}</td>
+                                        <td>{{ buzz.user ? buzz.user.username : 'Unknown' }}</td>
+                                        <td>{{ formatDate(buzz.createdAt) }}</td>
+                                        <td>
+                                            <span class="badge bg-info me-1">Views: {{ buzz.viewCount }}</span>
+                                            <span class="badge bg-primary">Comments: {{ buzz.commentCount }}</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-danger" @click="deleteBuzz(buzz.id)">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <nav>
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item" :class="{ disabled: buzzPage === 0 }">
+                                        <a class="page-link" href="#" @click.prevent="buzzPage--">Previous</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <span class="page-link">Page {{ buzzPage + 1 }}</span>
+                                    </li>
+                                    <li class="page-item" :class="{ disabled: buzzs.length < buzzSize }">
+                                        <a class="page-link" href="#" @click.prevent="buzzPage++">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Comments Management -->
+                    <div v-if="activeTab === 'comments'">
+                        <h2 class="mb-4">Comments Management</h2>
+                        <div class="search-container">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search comments..." v-model="commentSearchQuery">
+                                <button class="btn btn-primary" type="button" @click="searchComments">Search</button>
+                                <button class="btn btn-secondary" type="button" @click="resetCommentSearch">Reset</button>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Content</th>
+                                        <th>Author</th>
+                                        <th>Buzz ID</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="comment in comments" :key="comment.id">
+                                        <td>{{ comment.id }}</td>
+                                        <td>{{ truncateText(comment.content, 50) }}</td>
+                                        <td>{{ comment.user ? comment.user.username : 'Unknown' }}</td>
+                                        <td>{{ comment.buzz ? comment.buzz.id : 'Unknown' }}</td>
+                                        <td>{{ formatDate(comment.createdAt) }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-danger" @click="deleteComment(comment.id)">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <nav>
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item" :class="{ disabled: commentPage === 0 }">
+                                        <a class="page-link" href="#" @click.prevent="commentPage--">Previous</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <span class="page-link">Page {{ commentPage + 1 }}</span>
+                                    </li>
+                                    <li class="page-item" :class="{ disabled: comments.length < commentSize }">
+                                        <a class="page-link" href="#" @click.prevent="commentPage++">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Reports Management -->
+                    <div v-if="activeTab === 'reports'">
+                        <h2 class="mb-4">Reports Management</h2>
+                        <div class="search-container">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search reports..." v-model="reportSearchQuery">
+                                <button class="btn btn-primary" type="button" @click="searchReports">Search</button>
+                                <button class="btn btn-secondary" type="button" @click="resetReportSearch">Reset</button>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Reason</th>
+                                        <th>Reporter</th>
+                                        <th>Buzz ID</th>
+                                        <th>Created</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="report in reports" :key="report.id">
+                                        <td>{{ report.id }}</td>
+                                        <td>{{ truncateText(report.reason, 50) }}</td>
+                                        <td>{{ report.user ? report.user.username : 'Unknown' }}</td>
+                                        <td>{{ report.buzz ? report.buzz.id : 'Unknown' }}</td>
+                                        <td>{{ formatDate(report.createdAt) }}</td>
+                                        <td>
+                                            <span class="badge" :class="getReportStatusClass(report.status)">
+                                                {{ report.status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-sm btn-success" @click="updateReportStatus(report.id, 'REVIEWED')">
+                                                    Mark Reviewed
+                                                </button>
+                                                <button class="btn btn-sm btn-warning" @click="updateReportStatus(report.id, 'DISMISSED')">
+                                                    Dismiss
+                                                </button>
+                                                <button class="btn btn-sm btn-danger" @click="deleteBuzz(report.buzz.id)">
+                                                    Delete Buzz
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <nav>
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item" :class="{ disabled: reportPage === 0 }">
+                                        <a class="page-link" href="#" @click.prevent="reportPage--">Previous</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <span class="page-link">Page {{ reportPage + 1 }}</span>
+                                    </li>
+                                    <li class="page-item" :class="{ disabled: reports.length < reportSize }">
+                                        <a class="page-link" href="#" @click.prevent="reportPage++">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    isAuthenticated: false,
+                    token: '',
+                    activeTab: 'dashboard',
+                    showRegisterForm: false,
+                    
+                    // Login and Register Forms
+                    loginForm: {
+                        usernameOrEmail: '',
+                        password: ''
+                    },
+                    registerForm: {
+                        fullName: '',
+                        email: '',
+                        username: '',
+                        password: '',
+                        adminSecretKey: ''
+                    },
+                    
+                    // Dashboard Stats
+                    stats: {},
+                    
+                    // Users Management
+                    users: [],
+                    userPage: 0,
+                    userSize: 10,
+                    userSearchQuery: '',
+                    selectedUser: null,
+                    userFollowers: [],
+                    userFollowings: [],
+                    
+                    // Buzzs Management
+                    buzzs: [],
+                    buzzPage: 0,
+                    buzzSize: 10,
+                    buzzSearchQuery: '',
+                    
+                    // Comments Management
+                    comments: [],
+                    commentPage: 0,
+                    commentSize: 10,
+                    commentSearchQuery: '',
+                    
+                    // Reports Management
+                    reports: [],
+                    reportPage: 0,
+                    reportSize: 10,
+                    reportSearchQuery: ''
+                }
+            },
+            mounted() {
+                // Check if user is already authenticated
+                const token = localStorage.getItem('adminToken');
+                if (token) {
+                    this.token = token;
+                    this.isAuthenticated = true;
+                    this.loadDashboardData();
+                }
+            },
+            methods: {
+                // Authentication Methods
+                async login() {
+                    try {
+                        const response = await axios.post('/api/auth/login', this.loginForm);
+                        if (response.data.user.isAdmin) {
+                            this.token = response.data.accessToken;
+                            localStorage.setItem('adminToken', this.token);
+                            this.isAuthenticated = true;
+                            this.loadDashboardData();
+                        } else {
+                            alert('You do not have admin privileges');
+                        }
+                    } catch (error) {
+                        alert('Login failed: ' + (error.response?.data?.error || error.message));
+                    }
+                },
+                async registerAdmin() {
+                    try {
+                        const response = await axios.post('/api/admin/dashboard/register', this.registerForm);
+                        alert('Admin registered successfully. Please login.');
+                        this.showRegisterForm = false;
+                    } catch (error) {
+                        alert('Registration failed: ' + (error.response?.data?.error || error.message));
+                    }
+                },
+                logout() {
+                    this.isAuthenticated = false;
+                    this.token = '';
+                    localStorage.removeItem('adminToken');
+                },
+                
+                // Dashboard Methods
+                async loadDashboardData() {
+                    this.loadStats();
+                    this.loadUsers();
+                    this.loadBuzzs();
+                    this.loadComments();
+                    this.loadReports();
+                },
+                async loadStats() {
+                    try {
+                        const response = await axios.get('/api/admin/dashboard/stats', this.getAuthHeader());
+                        this.stats = response.data;
+                    } catch (error) {
+                        console.error('Failed to load stats:', error);
+                    }
+                },
+                
+                // Users Methods
+                async loadUsers() {
+                    try {
+                        const response = await axios.get(`/api/admin/dashboard/users?page=${this.userPage}&size=${this.userSize}`, 
+                            this.getAuthHeader());
+                        this.users = response.data.content;
+                    } catch (error) {
+                        console.error('Failed to load users:', error);
+                    }
+                },
+                async searchUsers() {
+                    if (!this.userSearchQuery) {
+                        this.loadUsers();
+                        return;
+                    }
+                    try {
+                        const response = await axios.get(`/api/admin/dashboard/users/search?query=${this.userSearchQuery}`, 
+                            this.getAuthHeader());
+                        this.users = response.data;
+                    } catch (error) {
+                        console.error('Failed to search users:', error);
+                    }
+                },
+                resetUserSearch() {
+                    this.userSearchQuery = '';
+                    this.loadUsers();
+                },
+                async toggleUserBan(user) {
+                    try {
+                        const endpoint = user.isBanned ? 
+                            `/api/admin/dashboard/users/${user.id}/unban` : 
+                            `/api/admin/dashboard/users/${user.id}/ban`;
+                        await axios.patch(endpoint, {}, this.getAuthHeader());
+                        user.isBanned = !user.isBanned;
+                    } catch (error) {
+                        console.error('Failed to toggle user ban:', error);
+                    }
+                },
+                async viewUserDetails(user) {
+                    this.selectedUser = user;
+                    await this.loadUserFollowers(user.id);
+                    await this.loadUserFollowings(user.id);
+                    
+                    // Show modal
+                    const modal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+                    modal.show();
+                },
+                async loadUserFollowers(userId) {
+                    try {
+                        const response = await axios.get(`/api/admin/dashboard/users/${userId}/followers`, 
+                            this.getAuthHeader());
+                        this.userFollowers = response.data;
+                    } catch (error) {
+                        console.error('Failed to load user followers:', error);
+                    }
+                },
+                async loadUserFollowings(userId) {
+                    try {
+                        const response = await axios.get(`/api/admin/dashboard/users/${userId}/followings`, 
+                            this.getAuthHeader());
+                        this.userFollowings = response.data;
+                    } catch (error) {
+                        console.error('Failed to load user followings:', error);
+                    }
+                },
+                
+                // Buzzs Methods
+                async loadBuzzs() {
+                    try {
+                        const response = await axios.get(`/api/admin/dashboard/buzzs?page=${this.buzzPage}&size=${this.buzzSize}`, 
+                            this.getAuthHeader());
+                        this.buzzs = response.data.content;
+                    } catch (error) {
+                        console.error('Failed to load buzzs:', error);
+                    }
+                },
+                async searchBuzzs() {
+                    if (!this.buzzSearchQuery) {
+                        this.loadBuzzs();
+                        return;
+                    }
+                    try {
+                        const response = await axios.get(`/api/admin/dashboard/buzzs/search?query=${this.buzzSearchQuery}`, 
+                            this.getAuthHeader());
+                        this.buzzs = response.data;
+                    } catch (error) {
+                        console.error('Failed to search buzzs:', error);
+                    }
+                },
+                resetBuzzSearch() {
+                    this.buzzSearchQuery = '';
+                    this.loadBuzzs();
+                },
+                async deleteBuzz(buzzId) {
+                    if (!confirm('Are you sure you want to delete this buzz?')) {
+                        return;
+                    }
+                    try {
+                        await axios.delete(`/api/admin/dashboard/buzzs/${buzzId}`, this.getAuthHeader());
+                        this.loadBuzzs();
+                        this.loadStats();
+                    } catch (error) {
+                        console.error('Failed to delete buzz:', error);
+                    }
+                },
+                
+                // Comments Methods
+                async loadComments() {
+                    try {
+                        const response = await axios.get(`/api/admin/dashboard/comments?page=${this.commentPage}&size=${this.commentSize}`, 
+                            this.getAuthHeader());
+                        this.comments = response.data.content;
+                    } catch (error) {
+                        console.error('Failed to load comments:', error);
+                    }
+                },
+                async searchComments() {
+                    if (!this.commentSearchQuery) {
+                        this.loadComments();
+                        return;
+                    }
+                    try {
+                        const response = await axios.get(`/api/admin/dashboard/comments/search?query=${this.commentSearchQuery}`, 
+                            this.getAuthHeader());
+                        this.comments = response.data;
+                    } catch (error) {
+                        console.error('Failed to search comments:', error);
+                    }
+                },
+                resetCommentSearch() {
+                    this.commentSearchQuery = '';
+                    this.loadComments();
+                },
+                async deleteComment(commentId) {
+                    if (!confirm('Are you sure you want to delete this comment?')) {
+                        return;
+                    }
+                    try {
+                        await axios.delete(`/api/admin/dashboard/comments/${commentId}`, this.getAuthHeader());
+                        this.loadComments();
+                        this.loadStats();
+                    } catch (error) {
+                        console.error('Failed to delete comment:', error);
+                    }
+                },
+                
+                // Reports Methods
+                async loadReports() {
+                    try {
+                        const response = await axios.get(`/api/admin/dashboard/reports?page=${this.reportPage}&size=${this.reportSize}`, 
+                            this.getAuthHeader());
+                        this.reports = response.data.content;
+                    } catch (error) {
+                        console.error('Failed to load reports:', error);
+                    }
+                },
+                async searchReports() {
+                    if (!this.reportSearchQuery) {
+                        this.loadReports();
+                        return;
+                    }
+                    try {
+                        const response = await axios.get(`/api/admin/dashboard/reports/search?query=${this.reportSearchQuery}`, 
+                            this.getAuthHeader());
+                        this.reports = response.data;
+                    } catch (error) {
+                        console.error('Failed to search reports:', error);
+                    }
+                },
+                resetReportSearch() {
+                    this.reportSearchQuery = '';
+                    this.loadReports();
+                },
+                async updateReportStatus(reportId, status) {
+                    try {
+                        await axios.patch(`/api/admin/dashboard/reports/${reportId}/status?status=${status}`, {}, 
+                            this.getAuthHeader());
+                        this.loadReports();
+                        this.loadStats();
+                    } catch (error) {
+                        console.error('Failed to update report status:', error);
+                    }
+                },
+                
+                // Utility Methods
+                getAuthHeader() {
+                    return {
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    };
+                },
+                formatDate(dateString) {
+                    if (!dateString) return 'N/A';
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                },
+                truncateText(text, maxLength) {
+                    if (!text) return '';
+                    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+                },
+                getReportStatusClass(status) {
+                    switch (status) {
+                        case 'PENDING': return 'bg-warning';
+                        case 'REVIEWED': return 'bg-success';
+                        case 'DISMISSED': return 'bg-secondary';
+                        default: return 'bg-info';
+                    }
+                }
+            },
+            watch: {
+                userPage() {
+                    this.loadUsers();
+                },
+                buzzPage() {
+                    this.loadBuzzs();
+                },
+                commentPage() {
+                    this.loadComments();
+                },
+                reportPage() {
+                    this.loadReports();
+                },
+                activeTab() {
+                    // Refresh data when tab changes
+                    switch (this.activeTab) {
+                        case 'dashboard': this.loadStats(); break;
+                        case 'users': this.loadUsers(); break;
+                        case 'buzzs': this.loadBuzzs(); break;
+                        case 'comments': this.loadComments(); break;
+                        case 'reports': this.loadReports(); break;
+                    }
+                }
+            }
+        });
+        
+        app.mount('#app');
+    </script>
+</body>
+</html>
