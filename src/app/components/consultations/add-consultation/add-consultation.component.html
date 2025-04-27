@@ -2,6 +2,7 @@
   <h2>Add Consultation</h2>
 
   <form [formGroup]="consultationForm" (ngSubmit)="addConsultation()">
+    <!-- Details -->
     <div class="form-group">
       <label>Details :</label>
       <input type="text" class="form-control" formControlName="details" />
@@ -10,33 +11,75 @@
       </div>
     </div>
 
-    <div class="form-group">
+    <!-- Description -->
+    <div class="form-group mt-3">
       <label>Description :</label>
       <input type="text" class="form-control" formControlName="description" />
       <div *ngIf="consultationForm.get('description')?.touched && consultationForm.get('description')?.invalid" class="text-danger">
-        <small *ngIf="consultationForm.get('description')?.hasError('required')">The 'Description' field is required..</small>
+        <small *ngIf="consultationForm.get('description')?.hasError('required')">The 'Description' field is required.</small>
       </div>
     </div>
 
-    <div class="form-group">
-      <label>Duration (HH:mm:ss) :</label>
+    <!-- Enhance with AI Button -->
+    <div class="form-group mt-2">
+      <button type="button" class="btn btn-secondary" (click)="enhanceDescription()" 
+        [disabled]="isLoading || consultationForm.get('description')?.invalid">
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span *ngIf="!isLoading">Correct Description with AI 🤖</span>
+      </button>
+      <div *ngIf="enhanceError" class="text-danger mt-2">
+        <small>Error correcting description. Please try again.</small>
+      </div>
+    </div>
+
+    <!-- Actual Duration -->
+    <div class="form-group mt-3">
+      <label>Duration (HH:mm) :</label>
       <input type="time" class="form-control" formControlName="actualDuration" />
       <div *ngIf="consultationForm.get('actualDuration')?.touched && consultationForm.get('actualDuration')?.invalid" class="text-danger">
         <small *ngIf="consultationForm.get('actualDuration')?.hasError('required')">Duration is required.</small>
-        <small *ngIf="consultationForm.get('actualDuration')?.hasError('invalidTime')">Please enter a valid time in the format HH:mm:ss (e.g., 14:30:00)</small>
+        <small *ngIf="consultationForm.get('actualDuration')?.hasError('invalidTime')">Please enter a valid time in the format HH:mm (e.g., 14:30)</small>
       </div>
     </div>
 
-    <div class="form-group">
+    <!-- Appointment -->
+    <div class="form-group mt-3">
       <label>Appointment :</label>
       <select class="form-control" formControlName="appointment">
-        <option *ngFor="let a of appointments" [ngValue]="a">{{ a.date }} à {{ a.startTime }}</option>
+        <option *ngFor="let a of appointments" [ngValue]="a">{{ a.date }} at {{ a.startTime }}</option>
       </select>
       <div *ngIf="consultationForm.get('appointment')?.touched && consultationForm.get('appointment')?.invalid" class="text-danger">
         <small *ngIf="consultationForm.get('appointment')?.hasError('required')">The 'Appointment' field is required.</small>
       </div>
     </div>
 
-    <button type="submit" class="btn btn-primary mt-3" [disabled]="consultationForm.invalid">Add</button>
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary mt-4" [disabled]="consultationForm.invalid || isLoading">
+      Add Consultation
+    </button>
   </form>
+
+  <!-- Modal for Previewing Enhanced Description -->
+  <div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="descriptionModalLabel">Corrected Description</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ enhancedDescription }}</p>
+          <div *ngIf="isLoading" class="text-center">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span>Retrying...</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="retryEnhance()" [disabled]="isLoading">Retry</button>
+          <button type="button" class="btn btn-primary" (click)="acceptEnhancedDescription()">Accept</button>
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

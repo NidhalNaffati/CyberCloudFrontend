@@ -58,7 +58,8 @@ import { JitsiComponent } from './jitsi/jitsi.component';
     EditConsultationComponent,
     CalendarComponent,
     EventDialogComponent,
-    JitsiComponent,
+    JitsiComponent
+    
     
     
 

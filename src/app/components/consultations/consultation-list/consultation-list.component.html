@@ -21,8 +21,13 @@
           <td>{{ consultation.description }}</td>
           <td>{{ consultation.actualDuration }}</td>
           <td>
-            {{ consultation.appointment.date }} {{ consultation.appointment.startTime }}
-          </td>
+            <ng-container *ngIf="consultation.appointment; else noAppointment">
+              {{ consultation.appointment.date }} {{ consultation.appointment.startTime }}
+            </ng-container>
+            <ng-template #noAppointment>
+              Pas de rendez-vous
+            </ng-template>
+          </td>          
           <td>
             <button  class="btn btn-sm btn-warning me-2" (click)="editConsultation(consultation.id!)">Edit</button>
             <button class="btn btn-sm btn-danger" (click)="deleteConsultation(consultation.id!)">Delete</button>

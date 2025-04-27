@@ -106,7 +106,10 @@ export class CalendarComponent implements OnInit {
       ...originalAppointment,
       date: newStart.toISOString().split('T')[0], // Format YYYY-MM-DD
       startTime: newStart.toISOString().split('T')[1].substring(0, 8), // Format HH:mm:ss
-      endTime: newEnd.toISOString().split('T')[1].substring(0, 8) // Format HH:mm:ss
+      endTime: newEnd.toISOString().split('T')[1].substring(0, 8), // Format HH:mm:ss
+      getStartDateTime: () => newStart,
+      getEndDateTime: () => newEnd,
+      getDurationMinutes: () => (newEnd.getTime() - newStart.getTime()) / (1000 * 60)
     };
     
     console.log('Mise à jour du rendez-vous:', updatedAppointment);
@@ -190,7 +193,14 @@ export class CalendarComponent implements OnInit {
       startTime: startTime,
       endTime: endTime,
       userId: 1, // Remplacer par l'ID de l'utilisateur connecté
-      isAvailable: true
+      isAvailable: true,
+      getStartDateTime: () => new Date(`${selectedDate}T${startTime}`),
+      getEndDateTime: () => new Date(`${selectedDate}T${endTime}`),
+      getDurationMinutes: () => {
+        const start = new Date(`${selectedDate}T${startTime}`);
+        const end = new Date(`${selectedDate}T${endTime}`);
+        return (end.getTime() - start.getTime()) / (1000 * 60);
+      }
     };
     
     const dialogRef = this.dialog.open(EventDialogComponent, {
