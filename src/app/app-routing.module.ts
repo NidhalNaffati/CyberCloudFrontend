@@ -72,7 +72,6 @@ const routes: Routes = [
       { path: 'complaints', component: ListComplaintsComponent },
       { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent }
     
-    
     ]
   },
   { path: '404', component: NotfoundComponent },

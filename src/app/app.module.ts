@@ -6,8 +6,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-
+import { NgChartsModule } from 'ng2-charts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -104,7 +103,7 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     BrowserAnimationsModule,
     RouterModule,
     CommonModule,
-   
+    NgChartsModule,
     NgxChartsModule,
 
     NgxPaginationModule,
