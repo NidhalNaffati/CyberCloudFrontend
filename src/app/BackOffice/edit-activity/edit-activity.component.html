@@ -1,0 +1,131 @@
+<div class="container-fluid py-4">
+  <div class="card shadow-lg animate__animated animate__fadeIn">
+    <div class="card-header pink-header text-white">
+      <h2 class="mb-0"><i class="fas fa-edit me-2"></i>Modifier l'Activité</h2>
+    </div>
+
+    <div class="card-body p-4">
+      <form [formGroup]="activityForm" (ngSubmit)="updateActivity()" class="needs-validation" novalidate>
+
+        <!-- Nom de l'activité -->
+        <div class="mb-4">
+          <label for="name" class="form-label fw-bold text-primary">
+            <i class="fas fa-tag me-2"></i>Nom de l'activité
+          </label>
+          <input type="text" id="name" class="form-control form-control-lg border-primary"
+                 formControlName="name" placeholder="Entrez le nom de l'activité">
+          <div *ngIf="activityForm.get('name')?.invalid && activityForm.get('name')?.touched"
+               class="invalid-feedback d-block mt-2 animate__animated animate__fadeIn">
+            <i class="fas fa-exclamation-circle me-2"></i>Le nom est requis et doit contenir uniquement des lettres.
+          </div>
+        </div>
+
+        <!-- Détails de l'activité -->
+        <div class="mb-4">
+          <label for="details" class="form-label fw-bold text-primary">
+            <i class="fas fa-align-left me-2"></i>Détails
+          </label>
+          <textarea id="details" class="form-control border-primary" rows="4"
+                    formControlName="details" placeholder="Décrivez l'activité en détail..."></textarea>
+          <div *ngIf="activityForm.get('details')?.invalid && activityForm.get('details')?.touched"
+               class="invalid-feedback d-block mt-2 animate__animated animate__fadeIn">
+            <i class="fas fa-exclamation-circle me-2"></i>Les détails sont requis et ne doivent pas contenir uniquement des chiffres.
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Localisation -->
+          <div class="col-md-6 mb-4">
+            <label for="location" class="form-label fw-bold text-primary">
+              <i class="fas fa-map-marker-alt me-2"></i>Localisation
+            </label>
+            <select id="location" class="form-select border-primary" formControlName="location">
+              <option value="" disabled selected hidden>Sélectionnez une région</option>
+              <option *ngFor="let region of regions" [value]="region">{{ region }}</option>
+            </select>
+            <div *ngIf="activityForm.get('location')?.invalid && activityForm.get('location')?.touched"
+                 class="invalid-feedback d-block mt-2 animate__animated animate__fadeIn">
+              <i class="fas fa-exclamation-circle me-2"></i>La localisation est requise.
+            </div>
+          </div>
+
+          <!-- Date de l'activité -->
+          <div class="col-md-6 mb-4">
+            <label for="date" class="form-label fw-bold text-primary">
+              <i class="fas fa-calendar-day me-2"></i>Date
+            </label>
+            <input type="date" id="date" class="form-control border-primary" formControlName="date">
+            <div *ngIf="activityForm.get('date')?.invalid && activityForm.get('date')?.touched"
+                 class="invalid-feedback d-block mt-2 animate__animated animate__fadeIn">
+              <i class="fas fa-exclamation-circle me-2"></i>La date doit être dans le futur.
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Places disponibles -->
+          <div class="col-md-6 mb-4">
+            <label for="availableSeats" class="form-label fw-bold text-primary">
+              <i class="fas fa-users me-2"></i>Places Disponibles
+            </label>
+            <input type="number" id="availableSeats" class="form-control border-primary"
+                   formControlName="availableSeats" placeholder="Nombre de places">
+            <div *ngIf="activityForm.get('availableSeats')?.invalid && activityForm.get('availableSeats')?.touched"
+                 class="invalid-feedback d-block mt-2 animate__animated animate__fadeIn">
+              <i class="fas fa-exclamation-circle me-2"></i>Le nombre de places doit être un nombre positif.
+            </div>
+          </div>
+
+          <!-- Prix de l'activité -->
+          <div class="col-md-6 mb-4">
+            <label for="price" class="form-label fw-bold text-primary">
+              <i class="fas fa-euro-sign me-2"></i>Prix
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-primary text-white">€</span>
+              <input type="number" id="price" class="form-control border-primary"
+                     formControlName="price" placeholder="Prix par personne">
+            </div>
+            <div *ngIf="activityForm.get('price')?.invalid && activityForm.get('price')?.touched"
+                 class="invalid-feedback d-block mt-2 animate__animated animate__fadeIn">
+              <i class="fas fa-exclamation-circle me-2"></i>Le prix doit être un nombre positif.
+            </div>
+          </div>
+        </div>
+
+        <!-- Sélecteur d'image -->
+        <div class="mb-4">
+          <label for="image" class="form-label fw-bold text-primary">
+            <i class="fas fa-image me-2"></i>Image
+          </label>
+          <div class="file-upload-wrapper">
+            <input type="file" id="image" class="form-control border-primary"
+                   (change)="onImageChanged($event)" accept="image/*">
+          </div>
+
+          <!-- Aperçu de l'image -->
+          <div *ngIf="imagePreview" class="mt-3 text-center animate__animated animate__fadeIn">
+            <div class="image-preview-container position-relative d-inline-block">
+              <img [src]="imagePreview" alt="Aperçu de l'image"
+                   class="img-thumbnail shadow" style="max-width: 200px; max-height: 200px;">
+              <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
+                      (click)="removeImage()" title="Supprimer l'image">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Boutons de soumission -->
+        <div class="d-flex justify-content-end mt-4">
+          <button type="button" class="btn btn-outline-secondary me-3 px-4" (click)="cancel()">
+            <i class="fas fa-times me-2"></i>Annuler
+          </button>
+          <button type="submit" class="btn btn-primary px-4" [disabled]="activityForm.invalid">
+            <i class="fas fa-save me-2"></i>Mettre à jour
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
