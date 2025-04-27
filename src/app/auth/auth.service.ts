@@ -91,7 +91,7 @@ export class AuthService {
   async register(registerData: RegisterRequest): Promise<string> {
     try {
       return await firstValueFrom(
-        this.http.post(`${this.apiUrl}/register`, registerData, {
+        this.http.post(`${this.apiUrl}/register/user`, registerData, {
           responseType: 'text'  // Handle plain text response
         })
       );
