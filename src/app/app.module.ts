@@ -17,6 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { NgxEditorModule } from 'ngx-editor';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,16 +26,18 @@ import { AppComponent } from './app.component';
 import { HeaderFrontComponent } from './FrontOffice/header-front/header-front.component';
 import { FooterFrontComponent } from './FrontOffice/footer-front/footer-front.component';
 import { AllTemplateFrontComponent } from './FrontOffice/all-template-front/all-template-front.component';
-import { HomeComponent } from './FrontOffice/home/home.component';
 import { HomeFrontComponent } from './FrontOffice/home-front/home-front.component';
+import { HomeComponent } from './FrontOffice/home/home.component';
 import { ReservationComponent } from './FrontOffice/reservation/reservation.component';
+import { BlogModule } from './FrontOffice/blog/blog.module';
 
 // BackOffice Components
-import { FooterBackComponent } from './BackOffice/footer-back/footer-back.component';
 import { NavbarBackComponent } from './BackOffice/navbar-back/navbar-back.component';
 import { SidebarBackComponent } from './BackOffice/sidebar-back/sidebar-back.component';
-import { HomeBackComponent } from './BackOffice/home-back/home-back.component';
+import { FooterBackComponent } from './BackOffice/footer-back/footer-back.component';
 import { AllTemplateBackComponent } from './BackOffice/all-template-back/all-template-back.component';
+import { HeaderBackComponent } from './BackOffice/header-back/header-back.component';
+import { HomeBackComponent } from './BackOffice/home-back/home-back.component';
 import { AddActivityComponent } from './BackOffice/add-activity/add-activity.component';
 import { EditActivityComponent } from './BackOffice/edit-activity/edit-activity.component';
 import { DashboardComponent } from './BackOffice/dashboard/dashboard.component';
@@ -65,15 +68,16 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     HeaderFrontComponent,
     FooterFrontComponent,
     AllTemplateFrontComponent,
-    HomeComponent,
     HomeFrontComponent,
+    HomeComponent,
     ReservationComponent,
     // BackOffice
-    FooterBackComponent,
     NavbarBackComponent,
     SidebarBackComponent,
-    HomeBackComponent,
+    FooterBackComponent,
     AllTemplateBackComponent,
+    HeaderBackComponent,
+    HomeBackComponent,
     AddActivityComponent,
     EditActivityComponent,
     DashboardComponent,
@@ -94,7 +98,6 @@ import { AuthInterceptor } from './auth/auth.interceptor';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
     NotfoundComponent,
@@ -107,16 +110,23 @@ import { AuthInterceptor } from './auth/auth.interceptor';
 
     NgxPaginationModule,
     NgPipesModule,
+    NotfoundComponent,
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
+    AppRoutingModule,
+    BlogModule,
+    EditorModule,
     FullCalendarModule,
     NgxEditorModule
   ],
   providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
+
+export class AppModule { }

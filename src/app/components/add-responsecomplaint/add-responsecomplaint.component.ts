@@ -7,6 +7,7 @@ import { Complaint } from 'src/app/models/complaint';
 import { ResponseComplaint } from 'src/app/models/response-complaint';
 import { Editor, Toolbar } from 'ngx-editor';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AuthService } from 'src/app/auth/auth.service';
 @Component({
   selector: 'app-add-responsecomplaint',
   templateUrl: './add-responsecomplaint.component.html',
@@ -44,11 +45,11 @@ export class AddResponsecomplaintComponent implements OnInit, OnChanges {
     private complaintService: ComplaintService,
     private responseService: ResponseComplaintService,
     private fb: FormBuilder,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public authService: AuthService
 
   ) {
     this.responseForm = this.fb.group({
-      userId: ['', Validators.required],
       content: ['', Validators.required]
     });
   }
@@ -152,29 +153,27 @@ export class AddResponsecomplaintComponent implements OnInit, OnChanges {
   }
   addResponse(): void {
     if (this.responseForm.invalid) {
-      alert('Please fill in all fields.');
+      alert('Please fill in the content.');
       return;
     }
   
     const responseContent = this.responseForm.value.content;
     const currentComplaintId = this.responseComplaint?.complaintId || this.complaintId;
+    const userId = this.authService.getUserId(); // Récupérer l'ID utilisateur connecté
   
-    // Vérification des mots inappropriés avant d'ajouter ou modifier
-    this.responseService.checkForBadWords(responseContent).subscribe({
-      next: (apiResponse) => {
-        const answer = apiResponse.choices?.[0]?.message?.content?.trim().toUpperCase();
-        
-        if (answer === 'YES') {
-          alert('Your response contains inappropriate language and cannot be submitted.');
-          return;
-        }
+    if (!userId) {
+      alert('You must be logged in to submit a response.');
+      return;
+    }
   
-        // Si pas de mots inappropriés, procéder à l'ajout/modification
+    // Vérification des mots inappropriés...
+  
+  
         const response: ResponseComplaint = {
           responseId: this.editingResponse ? this.responseToEdit!.responseId : 0,
-          userId: this.responseForm.value.userId,
+          userId: userId, // Utiliser l'ID utilisateur connecté
           content: responseContent,
-          complaintId: currentComplaintId, // Utiliser le bon complaintId
+          complaintId: currentComplaintId,
           dateRep: new Date().toISOString(),
           isReadRep: false
         };
@@ -184,14 +183,7 @@ export class AddResponsecomplaintComponent implements OnInit, OnChanges {
         } else {
           this.createResponse(response);
         }
-      },
-      error: (err) => {
-        console.error('Error checking for bad words:', err);
-        alert('Error during content verification. Please try again.');
       }
-    });
-  }
-
   createResponse(response: ResponseComplaint): void {
     this.responseService.addResponse(response.complaintId, response).subscribe({
       next: (newResponse: ResponseComplaint) => {
@@ -230,17 +222,16 @@ export class AddResponsecomplaintComponent implements OnInit, OnChanges {
       }
     });
   }
+  
   shouldShowEditButton(response: ResponseComplaint): boolean {
-    // Si nous avons une réponse sélectionnée avec sa plainte associée
-    if (this.selectedResponse && this.responseComplaint) {
-      return response.userId !== this.responseComplaint.userId;
+    // Si l'utilisateur est admin, toujours afficher les boutons
+    if (this.authService.isAdmin()) {
+      return true;
     }
-    // Sinon, utiliser la plainte principale
-    else if (this.complaint) {
-      return response.userId !== this.complaint.userId;
-    }
-    // Par défaut, ne pas afficher le bouton
-    return false;
+    
+    // Sinon, vérifier si l'utilisateur est l'auteur de la réponse
+    const currentUserId = this.authService.getUserId();
+    return currentUserId === response.userId;
   }
   toggleResponses(): void {
     this.showResponses = !this.showResponses;
@@ -296,14 +287,7 @@ export class AddResponsecomplaintComponent implements OnInit, OnChanges {
 
   editResponse(response: ResponseComplaint): void {
     // Vérifier le contenu avant d'ouvrir le formulaire d'édition
-    this.responseService.checkForBadWords(response.content).subscribe({
-      next: (apiResponse) => {
-        const answer = apiResponse.choices?.[0]?.message?.content?.trim().toUpperCase();
-        
-        if (answer === 'YES') {
-          alert('This response contains inappropriate language and cannot be edited.');
-          return;
-        }
+  
   
         // Si le contenu est acceptable, permettre l'édition
         this.responseForm.setValue({
@@ -314,13 +298,7 @@ export class AddResponsecomplaintComponent implements OnInit, OnChanges {
         this.responseToEdit = response;
         this.showResponseForm = true;
         this.scrollToResponseForm();
-      },
-      error: (err) => {
-        console.error('Error checking response content:', err);
-        alert('Error verifying response content. Please try again.');
       }
-    });
-  }
 
   // Méthode pour confirmer la suppression
 confirmDelete(response: ResponseComplaint): void {

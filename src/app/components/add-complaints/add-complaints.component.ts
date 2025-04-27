@@ -321,7 +321,7 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
             error: () => alert('Error updating complaint.')
           });
         } else {
-          this.complaintService.addComplaint(complaint).subscribe({
+          this.complaintService.addComplaint(complaint, currentUserId).subscribe({
             next: () => {
               alert('Complaint added!');
               this.refreshComplaints();
@@ -366,5 +366,3 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
     }
   }
 } 
-
-

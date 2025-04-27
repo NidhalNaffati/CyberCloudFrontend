@@ -8,6 +8,7 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 interface AuthenticationResponse {
   access_token: string;
   refresh_token: string;
+  user_id: number;
 }
 
 interface RegisterRequest {
@@ -60,7 +61,7 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse): never {
-    console.error('API Error:', error.message);
+    console.error('API Error:', error);
 
     let errorMessage = 'An error occurred while processing your request.';
 
@@ -87,37 +88,13 @@ export class AuthService {
     throw enhancedError;
   }
 
-  async register(registerData: RegisterRequest, file?: File): Promise<string> {
+  async register(registerData: RegisterRequest): Promise<string> {
     try {
-      // If role is MEDECIN and file is provided, use FormData to submit
-      if (registerData.role === 'ROLE_MEDECIN' && file) {
-        const formData = new FormData();
-
-        // Convert registerData to JSON string and append as request part
-        formData.append('request', new Blob([JSON.stringify(registerData)], {
-          type: 'application/json'
-        }));
-
-        // Append file
-        formData.append('document', file);
-
-        return await firstValueFrom(
-          this.http.post(`${this.apiUrl}/register/medecin`, formData, {
-            responseType: 'text'
-          })
-        );
-      } else {
-        // Regular user registration
-        const endpoint = registerData.role === 'ROLE_USER'
-          ? `${this.apiUrl}/register/user`
-          : `${this.apiUrl}/register`;
-
-        return await firstValueFrom(
-          this.http.post(endpoint, registerData, {
-            responseType: 'text'
-          })
-        );
-      }
+      return await firstValueFrom(
+        this.http.post(`${this.apiUrl}/register`, registerData, {
+          responseType: 'text'  // Handle plain text response
+        })
+      );
     } catch (error) {
       return this.handleError(error as HttpErrorResponse);
     }
@@ -146,7 +123,7 @@ export class AuthService {
       // Store tokens
       localStorage.setItem('access_token', response.access_token);
       localStorage.setItem('refresh_token', response.refresh_token);
-
+      localStorage.setItem('user_id', response.user_id.toString());
       // Set auth headers
       this.setAuthHeaders();
 
@@ -165,7 +142,7 @@ export class AuthService {
     // Clear tokens from storage
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-
+localStorage.removeItem('user_id');
     // Update auth state
     this.isAuthenticatedSubject.next(false);
     this.userRoleSubject.next(null);
@@ -245,20 +222,6 @@ export class AuthService {
     }
   }
 
-  getUserId(): number | null {
-    const token = this.getAccessToken();
-    if (!token) return null;
-
-    try {
-      const decodedToken = this.jwtHelper.decodeToken(token);
-      return decodedToken.id_user ?? null;
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      return null;
-    }
-  }
-
-
   isAdmin(): boolean {
     return this.getUserRole() === 'ROLE_ADMIN';
   }
@@ -317,6 +280,18 @@ export class AuthService {
       return decodedToken.phoneNumber || null;
     } catch (error) {
       console.error('Error decoding token for phone number:', error);
+      return null;
+    }
+  }
+  getUserId(): number | null {
+    const token = this.getAccessToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      return decodedToken.id_user ?? null;
+    } catch (error) {
+      console.error('Error decoding token:', error);
       return null;
     }
   }
