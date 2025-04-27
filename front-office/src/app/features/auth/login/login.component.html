@@ -1,0 +1,65 @@
+<div class="login-form-container">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <mat-error *ngIf="error$ | async as error" class="error-message">
+      {{ error.error || 'Login failed. Please check your credentials.' }}
+    </mat-error>
+    
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Username or Email</mat-label>
+      <input 
+        matInput 
+        placeholder="Enter your username or email" 
+        formControlName="usernameOrEmail"
+        autocomplete="username"
+      >
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-error *ngIf="usernameOrEmail?.hasError('required')">
+        Username or email is required
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Password</mat-label>
+      <input 
+        matInput 
+        [type]="hidePassword ? 'password' : 'text'" 
+        placeholder="Enter your password" 
+        formControlName="password"
+        autocomplete="current-password"
+      >
+      <mat-icon matPrefix>lock</mat-icon>
+      <button 
+        type="button"
+        mat-icon-button 
+        matSuffix 
+        (click)="hidePassword = !hidePassword"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hidePassword"
+      >
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+      <mat-error *ngIf="password?.hasError('required')">
+        Password is required
+      </mat-error>
+      <mat-error *ngIf="password?.hasError('minlength')">
+        Password must be at least 8 characters
+      </mat-error>
+    </mat-form-field>
+    
+    <div class="form-actions">
+      <button 
+        mat-flat-button 
+        color="primary" 
+        type="submit" 
+        class="submit-button"
+        [disabled]="loginForm.invalid || (loading$ | async)"
+      >
+        <mat-spinner diameter="20" *ngIf="loading$ | async"></mat-spinner>
+        <span *ngIf="!(loading$ | async)">Login</span>
+      </button>
+    </div>
+    
+    <div class="form-footer">
+    </div>
+  </form>
+</div>

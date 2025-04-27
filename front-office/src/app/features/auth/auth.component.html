@@ -1,0 +1,128 @@
+<div class="auth-container">
+  <div class="auth-content">
+    <div class="auth-form-section">
+      <div class="auth-header">
+        <div class="logo">
+          <mat-icon>whatshot</mat-icon>
+          <h1>Speekly Connect</h1>
+        </div>
+        <h2>Welcome to the Buzz!</h2>
+      </div>
+
+      <mat-card>
+        <mat-tab-group animationDuration="300ms" mat-stretch-tabs="false">
+          <mat-tab label="Login">
+            <app-login></app-login>
+          </mat-tab>
+          <mat-tab label="Register">
+            <app-register></app-register>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card>
+
+      <!-- Beautiful Security Notice -->
+      <div class="auth-note">
+        <mat-icon color="primary">lock</mat-icon>
+        <div class="auth-note-text">
+          <h3>Important Notice</h3>
+          <p>
+            Already registered on Speekly?<br>
+            Please log in once when first using Speekly Connect to secure your account.<br>
+            Thank you for being with us!
+          </p>
+        </div>
+        
+      </div>
+
+    </div>
+
+    <div class="auth-hero-section">
+      <div class="hero-content">
+        <h1>Find Your Voice!</h1>
+        <p>Connect, practice, and grow with a community dedicated to speech and communication.</p>
+
+        <div class="hero-features">
+          <div class="feature">
+            <mat-icon>forum</mat-icon>
+            <div class="feature-text">
+              <h3>Share Your Journey</h3>
+              <p>Post updates, celebrate progress, and inspire others in their speech journey.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <mat-icon>trending_up</mat-icon>
+            <div class="feature-text">
+              <h3>Practice and Progress</h3>
+              <p>Access daily challenges, exercises, and tips to boost your communication skills.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <mat-icon>people</mat-icon>
+            <div class="feature-text">
+              <h3>Connect and Support</h3>
+              <p>Meet people, share advice, and find encouragement in a vibrant therapy community.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Styles -->
+<style>
+/* --- Nice Security Info Box --- */
+.auth-note {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #fce4ec 0%, #e3f2fd 100%);
+  border: 2px solid #fc4c4c;
+  border-radius: 20px;
+  padding: 24px;
+  margin-top: 30px;
+  box-shadow: 0 6px 18px rgba(240, 109, 233, 0.3);
+  animation: fadeIn 1s ease-out forwards;
+  opacity: 0; /* Start hidden */
+  transition: all 0.3s ease;
+}
+
+.auth-note:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(240, 109, 233, 0.4);
+}
+
+.auth-note mat-icon {
+  font-size: 48px;
+  margin-right: 20px;
+  color: #a10e7d;
+}
+
+.auth-note-text h3 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  color: #e71a99;
+  font-weight: 700;
+}
+
+.auth-note-text p {
+  margin: 0;
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

@@ -1,0 +1,66 @@
+.create-buzz-container {
+  padding: 24px 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.create-buzz-card {
+  margin-bottom: 40px;
+}
+
+.form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.preview-section {
+  margin: 16px 0 24px;
+  
+  h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 12px;
+  }
+}
+
+.media-preview {
+  max-width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  
+  img {
+    max-width: 100%;
+    max-height: 400px;
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  gap: 16px;
+}
+
+.error-message {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 4px;
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+@media (max-width: 599px) {
+  .form-actions {
+    flex-direction: column-reverse;
+    
+    button {
+      width: 100%;
+    }
+  }
+}

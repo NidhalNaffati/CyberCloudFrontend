@@ -1,0 +1,7 @@
+# Node modules
+node_modules/
+
+# Angular build output & caches
+dist/
+out-tsc/
+.angular/

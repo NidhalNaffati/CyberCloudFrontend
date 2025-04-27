@@ -1,0 +1,288 @@
+<div class="home-container">
+  <div class="container">
+    <div class="home-layout">
+      <!-- Left Sidebar - User Profile Summary -->
+      <div style="position: relative ; right: 15px;"> 
+        <div class="user-profile-summary" *ngIf="currentUser$ | async as user">
+        <mat-card class="user-card">
+          <div class="user-banner" *ngIf="user.bannerUrl">
+            <img [src]="user.bannerUrl" alt="User banner">
+          </div>
+          <div class="user-avatar">
+            <div *ngIf="user.avatarUrl; else userInitial">
+              <img [src]="user.avatarUrl" alt="{{ user.username }}">
+            </div>
+            <ng-template #userInitial>
+              <div class="avatar-initial">
+                {{ user.fullName?.charAt(0) || user.username.charAt(0) || '' }}
+              </div>
+            </ng-template>
+          </div>
+          <div class="user-info">
+            <h3 class="user-name">{{ user.fullName || user.username }}</h3>
+            <p class="user-username">{{'@'}}{{ user.username }}</p>
+          </div>
+          <div class="user-stats">
+            <div class="stat-item">
+              <span class="stat-count">{{ user.buzzCount }}</span>
+              <span class="stat-label">Buzzs</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-count">{{ user.followersCount }}</span>
+              <span class="stat-label">Followers</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-count">{{ user.followingsCount }}</span>
+              <span class="stat-label">Following</span>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button mat-stroked-button color="primary" [routerLink]="['/profile', user.username]">
+              View Profile
+            </button>
+            <button mat-flat-button color="primary" routerLink="/create">
+              <mat-icon>add</mat-icon> Create Buzz
+            </button>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+      
+      <!-- Main Content - Feed -->
+      <div class="feed-container">
+        <div class="feed-tabs-container">
+          <mat-tab-group [selectedIndex]="activeTab" (selectedIndexChange)="onTabChange($event)" mat-align-tabs="center" animationDuration="300ms" backgroundColor="primary">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="tab-icon">public</mat-icon>
+                <span class="tab-label">Mainstream</span>
+              </ng-template>
+              
+              <div class="feed-tab-content">
+                <h2 class="feed-title">Mainstream Feed</h2>
+                
+                <div class="feed-loading-container" *ngIf="loading$ | async">
+                  <div class="feed-loading pulse-animation">
+                    <div class="loading-icon-container">
+                      <mat-icon class="loading-icon">public</mat-icon>
+                      <mat-progress-spinner mode="indeterminate" diameter="80" strokeWidth="4"></mat-progress-spinner>
+                    </div>
+                    <p>Discovering trending conversations...</p>
+                  </div>
+                </div>
+                
+                <div class="feed-empty" *ngIf="!(loading$ | async) && (feed$ | async)?.length === 0">
+                  <mat-icon>filter_drama</mat-icon>
+                  <h2>Mainstream feed is refreshing</h2>
+                  <p>Check back soon for the latest popular conversations from around the world.</p>
+                  <div class="feed-empty-actions">
+                    <button mat-stroked-button color="primary" routerLink="/trending">
+                      <mat-icon>trending_up</mat-icon> Trending Buzzs
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="feed-list" *ngIf="(feed$ | async)?.length">
+                  <app-buzz-card 
+                    *ngFor="let buzz of feed$ | async; trackBy: trackByBuzzId" 
+                    [buzz]="buzz"
+                    class="card-animation">
+                  </app-buzz-card>
+                  
+                  <div class="load-more">
+                    <button 
+                      mat-flat-button 
+                      color="primary" 
+                      (click)="loadMoreFollowingBuzzs()" 
+                      [disabled]="loading$ | async"
+                      class="load-more-button"
+                    >
+                      <mat-icon>autorenew</mat-icon> Load More
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+            
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="tab-icon">people</mat-icon>
+                <span class="tab-label">Following</span>
+              </ng-template>
+              
+              <div class="feed-tab-content">
+                <h2 class="feed-title">Friends & Connections</h2>
+                
+                <div class="feed-loading-container" *ngIf="loading$ | async">
+                  <div class="feed-loading pulse-animation">
+                    <div class="loading-icon-container">
+                      <mat-icon class="loading-icon">people</mat-icon>
+                      <mat-progress-spinner mode="indeterminate" diameter="80" strokeWidth="4"></mat-progress-spinner>
+                    </div>
+                    <p>Loading updates from people you follow...</p>
+                  </div>
+                </div>
+                
+                <div class="feed-empty" *ngIf="!(loading$ | async) && (popularBuzzs$ | async)?.length === 0">
+                  <mat-icon>group_add</mat-icon>
+                  <h2>Your following feed is empty</h2>
+                  <p>Follow some users to see their buzzs here, or explore new connections.</p>
+                  <div class="feed-empty-actions">
+                    <button mat-flat-button color="primary" routerLink="/search">
+                      <mat-icon>person_search</mat-icon> Find People
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="feed-list" *ngIf="(popularBuzzs$ | async)?.length">
+                  <app-buzz-card 
+                    *ngFor="let buzz of popularBuzzs$ | async; trackBy: trackByBuzzId" 
+                    [buzz]="buzz"
+                    class="card-animation">
+                  </app-buzz-card>
+                  
+                  <div class="load-more">
+                    <button 
+                      mat-flat-button 
+                      color="primary" 
+                      (click)="loadMorePopularBuzzs()" 
+                      [disabled]="loading$ | async"
+                      class="load-more-button"
+                    >
+                      <mat-icon>autorenew</mat-icon> Load More
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+            
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="tab-icon">emoji_objects</mat-icon>
+                <span class="tab-label">Unpopular</span>
+              </ng-template>
+              
+              <div class="feed-tab-content">
+                <h2 class="feed-title">Hidden Gems</h2>
+                
+                <div class="feed-loading-container" *ngIf="loading$ | async">
+                  <div class="feed-loading pulse-animation">
+                    <div class="loading-icon-container">
+                      <mat-icon class="loading-icon">emoji_objects</mat-icon>
+                      <mat-progress-spinner mode="indeterminate" diameter="80" strokeWidth="4"></mat-progress-spinner>
+                    </div>
+                    <p>Discovering underrated content...</p>
+                  </div>
+                </div>
+                
+                <div class="feed-empty" *ngIf="!(loading$ | async) && (unpopularBuzzs$ | async)?.length === 0">
+                  <mat-icon>explore</mat-icon>
+                  <h2>Time to explore new ideas</h2>
+                  <p>We're finding fresh content that hasn't gone viral yet. Check back soon!</p>
+                  <div class="feed-empty-actions">
+                    <button mat-flat-button color="primary" routerLink="/create">
+                      <mat-icon>create</mat-icon> Create Your Own
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="feed-list" *ngIf="(unpopularBuzzs$ | async)?.length">
+                  <app-buzz-card 
+                    *ngFor="let buzz of unpopularBuzzs$ | async; trackBy: trackByBuzzId" 
+                    [buzz]="buzz"
+                    class="card-animation">
+                  </app-buzz-card>
+                  
+                  <div class="load-more">
+                    <button 
+                      mat-flat-button 
+                      color="primary" 
+                      (click)="loadMoreUnpopularBuzzs()" 
+                      [disabled]="loading$ | async"
+                      class="load-more-button"
+                    >
+                      <mat-icon>autorenew</mat-icon> Load More
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </div>
+      
+      <!-- Right Sidebar - Suggested Users -->
+       <div style="position: relative;left: 50px;"> <!-- //masitoo ana w rabii-->
+      <div class="suggested-users-container">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Suggested Users</mat-card-title>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <div *ngIf="!(suggestedUsers$ | async)?.length" class="no-suggestions">
+              <p>No suggestions available right now.</p>
+            </div>
+            
+            <mat-list style="display: flex
+            ;
+                flex-direction: column;
+                gap: 16px;">
+              <mat-list-item *ngFor="let user of suggestedUsers$ | async; trackBy: trackByUserId">
+                <div class="suggested-user-item">
+                  <div 
+                    mat-list-avatar 
+                    class="user-avatar-small" 
+                    [routerLink]="['/profile', user.username]"
+                  >
+                    <div *ngIf="user.avatarUrl; else suggestedUserInitial">
+                      <img [src]="user.avatarUrl" alt="{{ user.username }}">
+                    </div>
+                    <ng-template #suggestedUserInitial>
+                      <div class="avatar-initial">
+                        {{ user.fullName?.charAt(0) || user.username.charAt(0) || '' }}
+                      </div>
+                    </ng-template>
+                  </div>
+                  
+                  <div class="user-details" [routerLink]="['/profile', user.username]">
+                    <h3 mat-line>{{ user.fullName || user.username }}</h3>
+                    <p mat-line>{{'@'}}{{ user.username }}</p>
+                  </div>
+                  
+                  <button 
+                    mat-stroked-button 
+                    color="primary"
+                    [class.followed]="user.isFollowed"
+                    (click)="user.isFollowed ? unfollowUser(user) : followUser(user)"
+                  >
+                    {{ user.isFollowed ? 'Unfollow' : 'Follow' }}
+                  </button>
+                </div>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+          
+          <mat-card-actions class="view-more-action">
+            <button mat-button color="primary" routerLink="/search">
+              Find More People
+            </button>
+          </mat-card-actions>
+        </mat-card>
+        
+        <mat-card class="trending-card">
+          <mat-card-header>
+            <mat-card-title>Trending Now</mat-card-title>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <button mat-button color="primary" routerLink="/trending">
+              <mat-icon>trending_up</mat-icon> View Trending Buzzs
+            </button>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>

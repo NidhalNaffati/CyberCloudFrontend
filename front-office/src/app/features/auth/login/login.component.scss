@@ -1,0 +1,47 @@
+.login-form-container {
+  padding: 24px 0;
+}
+
+.form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.submit-button {
+  min-width: 120px;
+  height: 44px;
+  
+  mat-spinner {
+    margin: 0 auto;
+  }
+}
+
+.form-footer {
+  margin-top: 24px;
+  text-align: center;
+  
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    
+    &:hover {
+      color: var(--secondary-color);
+      text-decoration: underline;
+    }
+  }
+}
+
+.error-message {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 4px;
+  background-color: rgba(244, 67, 54, 0.1);
+}

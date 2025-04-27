@@ -1,0 +1,16 @@
+<div class="not-found-container">
+  <div class="not-found-content">
+    <mat-icon class="not-found-icon">sentiment_very_dissatisfied</mat-icon>
+    <h1>404</h1>
+    <h2>Page Not Found</h2>
+    <p>The page you are looking for doesn't exist or has been moved.</p>
+    <div class="not-found-actions">
+      <button mat-flat-button color="primary" (click)="router.navigate(['/'])">
+        Go to Home
+      </button>
+      <button mat-stroked-button color="primary" (click)="router.navigate(['/trending'])">
+        Explore Trending
+      </button>
+    </div>
+  </div>
+</div>

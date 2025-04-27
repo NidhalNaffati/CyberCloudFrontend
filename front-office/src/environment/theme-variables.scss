@@ -1,0 +1,43 @@
+// Theme variables for Speekly Connect
+// These colors match the configuration in environment.ts
+
+// Primary colors
+$primary-light: #ffecef;
+$primary: #ff4081;
+$primary-dark: #c60055;
+
+// Accent colors
+$accent: #e91e63;
+$accent-dark: #b0003a;
+
+// Text colors
+$text-light: white;
+$text-dark: #333;
+
+// Shadow color
+$shadow-color: rgba(255, 64, 129, 0.2);
+
+// Additional colors
+$success: #4caf50;
+$warning: #ff9800;
+$error: #f44336;
+$info: #2196f3;
+
+// Card and component styling
+$card-border-radius: 12px;
+$card-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+$card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+$card-gradient: linear-gradient(135deg, $primary-light 0%, white 100%);
+$card-border: 1px solid rgba($primary, 0.1);
+
+// Animation timings
+$transition-fast: 0.2s;
+$transition-medium: 0.3s;
+$transition-slow: 0.5s;
+
+// Breakpoints
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;

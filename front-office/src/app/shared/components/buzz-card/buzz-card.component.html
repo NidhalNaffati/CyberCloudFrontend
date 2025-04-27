@@ -1,0 +1,174 @@
+<mat-card class="buzz-card" (click)="navigateToBuzz()">
+  <mat-card-header>
+    <div mat-card-avatar class="buzz-card-avatar" (click)="navigateToProfile($event, buzz.user.username)">
+      <div *ngIf="buzz.user.avatarUrl; else userInitial">
+        <img [src]="buzz.user.avatarUrl" alt="{{ buzz.user.username }}">
+      </div>
+      <div *ngIf="buzz.user.avatarUrl; else userInitial">
+  <img [src]="buzz.user.avatarUrl" alt="{{ buzz.user.username }}">
+</div>
+<ng-template #userInitial>
+  <div class="avatar-initial">
+    {{ buzz.user.fullName?.charAt(0) || buzz.user.username.charAt(0) || '' }}
+  </div>
+</ng-template>
+    </div>
+    <mat-card-title (click)="navigateToProfile($event, buzz.user.username)">{{ buzz.user.fullName || buzz.user.username }}</mat-card-title>
+    <mat-card-subtitle (click)="navigateToProfile($event, buzz.user.username)">
+      {{'@'}}{{ buzz.user.username }} · {{ formatDate(buzz.createdAt) }}
+    </mat-card-subtitle>
+    <button 
+      *ngIf="(currentUser$ | async)?.id === buzz.user.id"
+      mat-icon-button 
+      [matMenuTriggerFor]="menu" 
+      class="buzz-options"
+      (click)="$event.stopPropagation()">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="deleteBuzz($event)">
+        <mat-icon color="warn">delete</mat-icon>
+        <span>Delete Buzz</span>
+      </button>
+    </mat-menu>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <h3 class="buzz-title">{{ buzz.title }}</h3>
+    <p class="buzz-content">{{ buzz.content }}</p>
+    <div *ngIf="buzz.mediaUrl" class="buzz-media">
+      <img [src]="buzz.mediaUrl" alt="Buzz media">
+    </div>
+  </mat-card-content>
+  
+  <mat-card-actions>
+    <div class="action-buttons">
+      <button 
+        mat-icon-button 
+        (click)="toggleLike($event)" 
+        [ngClass]="{'like-button': true, 'active': buzz.likedByCurrentUser}">
+        <mat-icon style="overflow:visible;">{{ buzz.likedByCurrentUser ? 'favorite' : 'favorite_border' }}</mat-icon>
+        <span class="action-count" *ngIf="buzz.likeCount > 0">{{ buzz.likeCount }}</span>
+      </button>
+      
+      <button 
+        mat-icon-button 
+        (click)="navigateToBuzz()"
+        class="comment-button">
+        <mat-icon style="overflow:visible;">comment</mat-icon>
+        <span class="action-count" *ngIf="buzz.commentCount > 0">{{ buzz.commentCount }}</span>
+      </button>
+      
+      <button 
+        mat-icon-button 
+        (click)="toggleBookmark($event)" 
+        [ngClass]="{'bookmark-button': true, 'active': buzz.bookmarkedByCurrentUser}">
+        <mat-icon>{{ buzz.bookmarkedByCurrentUser ? 'bookmark' : 'bookmark_border' }}</mat-icon>
+      </button>
+    </div>
+    
+    <div class="secondary-buttons">
+      <button 
+        mat-icon-button 
+        (click)="shareBuzz($event)" 
+        class="share-button" 
+        matTooltip="Share Buzz">
+        <mat-icon>share</mat-icon>
+      </button>
+      
+      <button 
+        mat-icon-button 
+        (click)="reportBuzz($event)" 
+        class="report-button" 
+        matTooltip="Report Buzz">
+        <mat-icon>flag</mat-icon>
+      </button>
+    </div>
+  </mat-card-actions>
+  
+  <!-- Share Dialog -->
+  <ng-template #shareDialog>
+    <div class="share-modal">
+      <h2 mat-dialog-title>Share this Buzz</h2>
+      <mat-dialog-content>
+        <div class="share-options">
+          <div class="share-option" (click)="shareVia('twitter')">
+            <mat-icon>alternate_email</mat-icon>
+            <span>Twitter</span>
+          </div>
+          <div class="share-option" (click)="shareVia('facebook')">
+            <mat-icon>facebook</mat-icon>
+            <span>Facebook</span>
+          </div>
+          <div class="share-option" (click)="shareVia('whatsapp')">
+            <mat-icon>chat</mat-icon>
+            <span>WhatsApp</span>
+          </div>
+          <div class="share-option" (click)="shareVia('email')">
+            <mat-icon>email</mat-icon>
+            <span>Email</span>
+          </div>
+        </div>
+        
+        <div class="share-link">
+          <input 
+            type="text" 
+            [value]="getShareLink()" 
+            #shareLink
+            readonly
+            (click)="shareLink.select()">
+          <button (click)="copyShareLink(shareLink)">Copy</button>
+        </div>
+      </mat-dialog-content>
+      <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Close</button>
+      </mat-dialog-actions>
+    </div>
+  </ng-template>
+  
+  <!-- Report Dialog -->
+  <ng-template #reportDialog>
+    <div class="report-modal">
+      <h2 mat-dialog-title>Report this Buzz</h2>
+      <mat-dialog-content>
+        <p>Please select a reason for reporting this Buzz:</p>
+        <div class="report-options">
+          <div 
+            class="report-option" 
+            *ngFor="let reason of reportReasons" 
+            [ngClass]="{'selected': selectedReportReason === reason}"
+            (click)="selectedReportReason = reason">
+            {{ reason }}
+          </div>
+        </div>
+      </mat-dialog-content>
+      <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button 
+          mat-flat-button 
+          color="warn" 
+          [disabled]="!selectedReportReason"
+          (click)="submitReport()">
+          Report
+        </button>
+      </mat-dialog-actions>
+    </div>
+  </ng-template>
+  
+  <mat-card-footer>
+    <div class="buzz-stats">
+      <span class="buzz-stat">
+        <mat-icon>visibility</mat-icon> {{ buzz.viewCount }}
+      </span>
+      <span class="buzz-stat">
+        <mat-icon>share</mat-icon> {{ buzz.shareCount }}
+      </span>
+      <span class="buzz-stat">
+        <mat-icon>explore</mat-icon> {{ buzz.exploreCount }}
+      </span>
+      <span class="buzz-score" *ngIf="buzz.totalBuzzScore > 0">
+        Buzz Score: {{ buzz.totalBuzzScore }}
+      </span>
+    </div>
+  </mat-card-footer>
+</mat-card>

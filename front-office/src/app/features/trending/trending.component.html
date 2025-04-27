@@ -1,0 +1,73 @@
+<div class="trending-container">
+  <div class="container">
+    <div class="trending-header">
+      <h1>Trending on BuzzHub</h1>
+      <p>Discover what's popular and buzzing right now</p>
+    </div>
+
+    <mat-tab-group [(selectedIndex)]="activeTab" mat-stretch-tabs="false" animationDuration="300ms">
+      <mat-tab label="Trending Topics">
+        <div class="tab-content">
+          <div class="loading-spinner" *ngIf="loading$ | async">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>Loading trending topics...</p>
+          </div>
+
+          <div class="no-results" *ngIf="!(loading$ | async) && (trendingBuzzs$ | async)?.length === 0">
+            <mat-icon>trending_flat</mat-icon>
+            <p>No trending topics at the moment. Check back later!</p>
+          </div>
+
+          <mat-card class="trending-list" *ngIf="(trendingBuzzs$ | async)?.length">
+            <mat-list>
+              <mat-list-item *ngFor="let trend of trendingBuzzs$ | async; trackBy: trackByTrendingBuzzId" [routerLink]="['/buzz', trend.id]">
+                <div class="trending-item">
+                  <mat-icon class="trending-icon">trending_up</mat-icon>
+                  <div class="trending-info">
+                    <h3 class="trending-title">{{ trend.title }}</h3>
+                    <span class="trending-meta">
+                      <span class="trending-time">{{ formatDate(trend.createdAt) }}</span>
+                      <span class="trending-score">Score: {{ trend.totalBuzzScore }}</span>
+                    </span>
+                  </div>
+                </div>
+              </mat-list-item>
+            </mat-list>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Popular Buzzs">
+        <div class="tab-content">
+          <div class="loading-spinner" *ngIf="loading$ | async">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>Loading popular buzzs...</p>
+          </div>
+
+          <div class="no-results" *ngIf="!(loading$ | async) && (popularBuzzs$ | async)?.length === 0">
+            <mat-icon>sentiment_dissatisfied</mat-icon>
+            <p>No popular buzzs found. Be the first to create one!</p>
+          </div>
+
+          <div class="popular-buzzs" *ngIf="(popularBuzzs$ | async)?.length">
+            <app-buzz-card 
+              *ngFor="let buzz of popularBuzzs$ | async; trackBy: trackByBuzzId" 
+              [buzz]="buzz">
+            </app-buzz-card>
+            
+            <div class="load-more">
+              <button 
+                mat-button 
+                color="primary" 
+                (click)="loadMorePopularBuzzs()" 
+                [disabled]="loading$ | async"
+              >
+                <mat-icon>refresh</mat-icon> Load More
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

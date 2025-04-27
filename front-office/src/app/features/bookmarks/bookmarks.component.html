@@ -1,0 +1,43 @@
+<div class="bookmarks-container">
+  <div class="container">
+    <div class="bookmarks-header">
+      <h1>Your Bookmarks</h1>
+      <p>Buzzs you've saved for later</p>
+    </div>
+
+    <div class="bookmarks-content">
+      <div class="loading-spinner" *ngIf="loading$ | async">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading your bookmarks...</p>
+      </div>
+
+      <div class="no-bookmarks" *ngIf="!(loading$ | async) && (bookmarkedBuzzs$ | async)?.length === 0">
+        <mat-icon>bookmark_border</mat-icon>
+        <h2>No bookmarks yet</h2>
+        <p>When you bookmark a buzz, it will appear here for easy access.</p>
+        <button mat-flat-button color="primary" routerLink="/trending">
+          Discover Buzzs to Bookmark
+        </button>
+      </div>
+
+      <div class="bookmarks-list" *ngIf="(bookmarkedBuzzs$ | async)?.length">
+        <app-buzz-card 
+          *ngFor="let buzz of bookmarkedBuzzs$ | async; trackBy: trackByBuzzId" 
+          [buzz]="buzz"
+          (deleted)="onBuzzDeleted($event)">
+        </app-buzz-card>
+        
+        <div class="load-more">
+          <button 
+            mat-button 
+            color="primary" 
+            (click)="loadMoreBuzzs()" 
+            [disabled]="loading$ | async"
+          >
+            <mat-icon>refresh</mat-icon> Load More
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

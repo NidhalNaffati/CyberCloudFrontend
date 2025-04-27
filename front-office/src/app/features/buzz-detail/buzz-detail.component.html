@@ -1,0 +1,170 @@
+
+<div class="buzz-detail-container">
+  <div class="container">
+    <div class="buzz-loading" *ngIf="loading$ | async">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading buzz...</p>
+    </div>
+    
+    <div class="buzz-not-found" *ngIf="!(loading$ | async) && !(buzz$ | async)">
+      <mat-icon>sentiment_very_dissatisfied</mat-icon>
+      <h2>Buzz not found</h2>
+      <p>The buzz you're looking for doesn't exist or has been deleted.</p>
+      <button mat-flat-button color="primary" routerLink="/">Go to Homepage</button>
+    </div>
+    
+    <div class="buzz-content" *ngIf="buzz$ | async as buzz">
+      <!-- Buzz Detail Card -->
+      <mat-card class="buzz-detail-card">
+        <mat-card-header>
+          <div class="header-top">
+            <button mat-icon-button (click)="router.navigate(['/'])">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <h1>Buzz</h1>
+            
+            <button 
+              *ngIf="(currentUser$ | async)?.id === buzz.user.id"
+              mat-icon-button 
+              [matMenuTriggerFor]="menu" 
+              class="buzz-options"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="deleteBuzz(buzz)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span>Delete Buzz</span>
+              </button>
+            </mat-menu>
+          </div>
+          
+          <div mat-card-avatar class="buzz-avatar" [routerLink]="['/profile', buzz.user.username]">
+            <div *ngIf="buzz.user.avatarUrl; else userInitial">
+              <img [src]="buzz.user.avatarUrl" alt="{{ buzz.user.username }}">
+            </div>
+            <ng-template #userInitial>
+              <div class="avatar-initial">
+                {{ buzz.user.fullName?.charAt(0) || buzz.user.username.charAt(0) || '' }}
+              </div>
+            </ng-template>
+          </div>
+          <mat-card-title [routerLink]="['/profile', buzz.user.username]">{{ buzz.user.fullName || buzz.user.username }}</mat-card-title>
+          <mat-card-subtitle [routerLink]="['/profile', buzz.user.username]">{{'@'}}{{ buzz.user.username }}</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <h2 class="buzz-title">{{ buzz.title }}</h2>
+          <p class="buzz-text">{{ buzz.content }}</p>
+          <div *ngIf="buzz.mediaUrl" class="buzz-media">
+            <img [src]="buzz.mediaUrl" alt="Buzz media">
+          </div>
+          <div class="buzz-timestamp">
+            {{ formatDate(buzz.createdAt) }}
+          </div>
+        </mat-card-content>
+        
+        <mat-divider></mat-divider>
+        
+        <div class="buzz-stats">
+          <div class="buzz-stat">
+            <span class="count">{{ buzz.likeCount }}</span>
+            <span class="label">Likes</span>
+          </div>
+          <div class="buzz-stat">
+            <span class="count">{{ buzz.commentCount }}</span>
+            <span class="label">Comments</span>
+          </div>
+          <div class="buzz-stat">
+            <span class="count">{{ buzz.viewCount }}</span>
+            <span class="label">Views</span>
+          </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+        
+        <mat-card-actions>
+          <button mat-button (click)="toggleLike(buzz)" [color]="buzz.likedByCurrentUser ? 'accent' : ''">
+            <mat-icon>{{ buzz.likedByCurrentUser ? 'favorite' : 'favorite_border' }}</mat-icon>
+            <span>Like</span>
+          </button>
+          
+          <button mat-button (click)="toggleBookmark(buzz)" [color]="buzz.bookmarkedByCurrentUser ? 'primary' : ''">
+            <mat-icon>{{ buzz.bookmarkedByCurrentUser ? 'bookmark' : 'bookmark_border' }}</mat-icon>
+            <span>Bookmark</span>
+          </button>
+          
+          <button mat-button>
+            <mat-icon>share</mat-icon>
+            <span>Share</span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+      
+      <!-- Comments Section -->
+      <div class="comments-section">
+        <h2>Comments</h2>
+        
+        <!-- Comment Form -->
+        <div class="comment-form">
+          <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
+            <mat-form-field appearance="outline" class="comment-input">
+              <mat-label>Write a comment</mat-label>
+              <textarea 
+                matInput 
+                placeholder="What are your thoughts?" 
+                formControlName="content"
+                rows="3"
+              ></textarea>
+              <mat-error *ngIf="commentForm.get('content')?.hasError('required')">
+                Comment cannot be empty
+              </mat-error>
+              <mat-error *ngIf="commentForm.get('content')?.hasError('maxlength')">
+                Comment is too long (max 500 characters)
+              </mat-error>
+            </mat-form-field>
+            <div class="comment-actions">
+              <button 
+                mat-flat-button 
+                color="primary" 
+                type="submit"
+                [disabled]="commentForm.invalid || (loading$ | async)"
+              >
+                Comment
+              </button>
+            </div>
+          </form>
+        </div>
+        
+        <!-- Comments List -->
+        <div class="comments-list">
+          <div class="comments-loading" *ngIf="loading$ | async">
+            <mat-spinner diameter="30"></mat-spinner>
+            <p>Loading comments...</p>
+          </div>
+          
+          <div class="no-comments" *ngIf="!(loading$ | async) && (comments$ | async)?.length === 0">
+            <mat-icon>comment</mat-icon>
+            <p>No comments yet. Be the first to comment!</p>
+          </div>
+          
+          <app-comment-card 
+            *ngFor="let comment of comments$ | async; trackBy: trackByCommentId" 
+            [comment]="comment">
+          </app-comment-card>
+          
+          <div class="load-more" *ngIf="(comments$ | async)?.length">
+            <button 
+              mat-button 
+              color="primary" 
+              (click)="loadMoreComments()" 
+              [disabled]="loading$ | async"
+            >
+              <mat-icon>refresh</mat-icon> Load More Comments
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

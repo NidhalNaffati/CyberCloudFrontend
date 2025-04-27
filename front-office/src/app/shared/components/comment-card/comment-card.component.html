@@ -1,0 +1,56 @@
+<div class="comment-card">
+  <div class="comment-avatar" (click)="navigateToProfile($event, comment.user.username)">
+    <div *ngIf="comment.user.avatarUrl; else userInitial">
+      <img [src]="comment.user.avatarUrl" alt="{{ comment.user.username }}">
+    </div>
+    <ng-template #userInitial>
+      <div class="avatar-initial">
+        {{ comment.user.fullName?.charAt(0) || comment.user.username.charAt(0) || '' }}      </div>
+    </ng-template>
+  </div>
+  
+  <div class="comment-content">
+    <div class="comment-header">
+      <div class="user-info">
+        <span class="fullname" (click)="navigateToProfile($event, comment.user.username)">
+          {{ comment.user.fullName || comment.user.username }}
+        </span>
+        <span class="username" (click)="navigateToProfile($event, comment.user.username)">
+          {{'@'}}{{ comment.user.username }}
+        </span>
+        <span class="comment-time">
+          {{ formatDate(comment.createdAt) }}
+        </span>
+      </div>
+      
+      <button 
+        *ngIf="(currentUser$ | async)?.id === comment.user.id"
+        mat-icon-button 
+        [matMenuTriggerFor]="menu" 
+        class="comment-options"
+        (click)="$event.stopPropagation()">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="deleteComment($event)">
+          <mat-icon color="warn">delete</mat-icon>
+          <span>Delete Comment</span>
+        </button>
+      </mat-menu>
+    </div>
+    
+    <p class="comment-text">{{ comment.content }}</p>
+    
+    <div class="comment-actions">
+      <button mat-icon-button (click)="likeComment($event)" [color]="comment.likedByCurrentUser ? 'accent' : ''">
+        <mat-icon>thumb_up</mat-icon>
+        <span class="action-count" *ngIf="comment.likeCount > 0">{{ comment.likeCount }}</span>
+      </button>
+      
+      <button mat-icon-button (click)="dislikeComment($event)" [color]="comment.dislikedByCurrentUser ? 'warn' : ''">
+        <mat-icon>thumb_down</mat-icon>
+        <span class="action-count" *ngIf="comment.dislikeCount > 0">{{ comment.dislikeCount }}</span>
+      </button>
+    </div>
+  </div>
+</div>

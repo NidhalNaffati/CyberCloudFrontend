@@ -1,0 +1,130 @@
+<div class="register-form-container">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <mat-error *ngIf="error$ | async as error" class="error-message">
+      {{ error.error || 'Registration failed. Please check your information.' }}
+    </mat-error>
+    
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Full Name</mat-label>
+      <input 
+        matInput 
+        placeholder="Enter your full name" 
+        formControlName="fullName"
+        autocomplete="name"
+      >
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-error *ngIf="fullName?.hasError('required')">
+        Full name is required
+      </mat-error>
+      <mat-error *ngIf="fullName?.hasError('minlength')">
+        Full name must be at least 2 characters
+      </mat-error>
+      <mat-error *ngIf="fullName?.hasError('maxlength')">
+        Full name must be at most 50 characters
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Username</mat-label>
+      <input 
+        matInput 
+        placeholder="Choose a username" 
+        formControlName="username"
+        autocomplete="username"
+      >
+      <mat-icon matPrefix>alternate_email</mat-icon>
+      <mat-error *ngIf="username?.hasError('required')">
+        Username is required
+      </mat-error>
+      <mat-error *ngIf="username?.hasError('minlength')">
+        Username must be at least 3 characters
+      </mat-error>
+      <mat-error *ngIf="username?.hasError('maxlength')">
+        Username must be at most 30 characters
+      </mat-error>
+      <mat-error *ngIf="username?.hasError('pattern')">
+        Username can only contain letters, numbers, and underscores
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Email</mat-label>
+      <input 
+        matInput 
+        placeholder="Enter your email" 
+        formControlName="email"
+        autocomplete="email"
+        type="email"
+      >
+      <mat-icon matPrefix>email</mat-icon>
+      <mat-error *ngIf="email?.hasError('required')">
+        Email is required
+      </mat-error>
+      <mat-error *ngIf="email?.hasError('email')">
+        Please enter a valid email address
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Birth Date</mat-label>
+      <input 
+        matInput 
+        [matDatepicker]="picker" 
+        placeholder="MM/DD/YYYY" 
+        formControlName="birthDate"
+        [max]="maxDate"
+      >
+      <mat-icon matPrefix>cake</mat-icon>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="birthDate?.hasError('required')">
+        Birth date is required
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Password</mat-label>
+      <input 
+        matInput 
+        [type]="hidePassword ? 'password' : 'text'" 
+        placeholder="Create a password" 
+        formControlName="password"
+        autocomplete="new-password"
+      >
+      <mat-icon matPrefix>lock</mat-icon>
+      <button 
+        type="button"
+        mat-icon-button 
+        matSuffix 
+        (click)="hidePassword = !hidePassword"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hidePassword"
+      >
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+      <mat-error *ngIf="password?.hasError('required')">
+        Password is required
+      </mat-error>
+      <mat-error *ngIf="password?.hasError('minlength')">
+        Password must be at least 8 characters
+      </mat-error>
+    </mat-form-field>
+    
+    <div class="form-actions">
+      <button 
+        mat-flat-button 
+        color="primary" 
+        type="submit" 
+        class="submit-button"
+        [disabled]="registerForm.invalid || (loading$ | async)"
+      >
+        <mat-spinner diameter="20" *ngIf="loading$ | async"></mat-spinner>
+        <span *ngIf="!(loading$ | async)">Register</span>
+      </button>
+    </div>
+    
+    <div class="form-footer">
+      <p>By registering, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+    </div>
+  </form>
+</div>

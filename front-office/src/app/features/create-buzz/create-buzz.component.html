@@ -1,0 +1,91 @@
+<div class="create-buzz-container">
+  <div class="container">
+    <mat-card class="create-buzz-card">
+      <mat-card-header>
+        <mat-card-title>Create a New Buzz</mat-card-title>
+        <mat-card-subtitle>Share what's on your mind with the community</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <form [formGroup]="buzzForm" (ngSubmit)="onSubmit()">
+          <mat-error *ngIf="error$ | async as error" class="error-message">
+            {{ error.error || 'Failed to create buzz. Please try again.' }}
+          </mat-error>
+          
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Title</mat-label>
+            <input 
+              matInput 
+              placeholder="A catchy title for your buzz" 
+              formControlName="title"
+              maxlength="100"
+            >
+            <mat-hint align="end">{{ getCharacterCount('title') }}/{{ getMaxLength('title') }}</mat-hint>
+            <mat-error *ngIf="title?.hasError('required')">
+              Title is required
+            </mat-error>
+            <mat-error *ngIf="title?.hasError('minlength')">
+              Title must be at least 3 characters
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Content</mat-label>
+            <textarea 
+              matInput 
+              placeholder="What's buzzing in your mind?" 
+              formControlName="content"
+              rows="6"
+              maxlength="1000"
+            ></textarea>
+            <mat-hint align="end">{{ getCharacterCount('content') }}/{{ getMaxLength('content') }}</mat-hint>
+            <mat-error *ngIf="content?.hasError('required')">
+              Content is required
+            </mat-error>
+            <mat-error *ngIf="content?.hasError('minlength')">
+              Content must be at least 10 characters
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Media URL (Optional)</mat-label>
+            <input 
+              matInput 
+              placeholder="Add an image URL to enhance your buzz" 
+              formControlName="mediaUrl"
+            >
+            <mat-hint>Add a link to an image to make your buzz more engaging</mat-hint>
+          </mat-form-field>
+          
+          <div class="preview-section" *ngIf="mediaUrl?.value">
+            <h3>Media Preview</h3>
+            <div class="media-preview">
+              <img [src]="mediaUrl?.value" alt="Media preview">
+            </div>
+          </div>
+          <mat-error *ngIf="profanityError" class="error-message">
+            {{ profanityError }}
+          </mat-error>
+          <div class="form-actions">
+            <button 
+              mat-stroked-button 
+              type="button" 
+              routerLink="/"
+            >
+              Cancel
+            </button>
+            <button 
+            mat-flat-button 
+            color="primary" 
+            type="submit" 
+            [disabled]="buzzForm.invalid || (loading$ | async) || isCheckingProfanity"
+          >
+            <mat-spinner diameter="20" *ngIf="(loading$ | async) || isCheckingProfanity"></mat-spinner>
+            <span *ngIf="!(loading$ | async) && !isCheckingProfanity">Publish Buzz</span>
+          </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
