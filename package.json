@@ -40,7 +40,7 @@
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.3",
     "ng2-charts": "^4.1.1",
-    "ngx-editor": "^18.0.0",
+    "ngx-editor": "^16.0.0",
     "ngx-pagination": "^6.0.2",
     "ngx-pipes": "^3.2.2",
     "ngx-quill": "^22.0.0",
