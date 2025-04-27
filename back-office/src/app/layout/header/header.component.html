@@ -1,0 +1,41 @@
+<mat-toolbar color="primary" class="header-toolbar">
+  <button 
+    mat-icon-button 
+    class="menu-button" 
+    aria-label="Toggle sidebar"
+    (click)="toggleSidenav()" 
+    *ngIf="isMobile">
+    <mat-icon>menu</mat-icon>
+  </button>
+  
+  <span class="header-title">
+    <span class="title-main">Speekly Connect</span>
+    <span class="title-separator">|</span>
+    <span class="title-secondary">Admin</span>
+  </span>
+  
+  <span class="spacer"></span>
+  
+  <div class="header-actions">
+    <button mat-button [matMenuTriggerFor]="userMenu" class="user-profile-button">
+      <div class="avatar" *ngIf="!currentUser?.avatarUrl">
+        {{ (currentUser?.username || 'A').charAt(0).toUpperCase() }}
+      </div>
+      <img 
+        *ngIf="currentUser?.avatarUrl" 
+        [src]="currentUser?.avatarUrl || ''" 
+        alt="Profile picture"
+        class="avatar-img" 
+      />
+      <span class="username">{{ currentUser?.username || 'Admin' }}</span>
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    
+    <mat-menu #userMenu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>

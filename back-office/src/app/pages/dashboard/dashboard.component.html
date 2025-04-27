@@ -1,0 +1,154 @@
+<div class="dashboard-container">
+  <div class="page-title">
+    <h1>Dashboard</h1>
+    <button mat-icon-button (click)="reload()" [disabled]="loading" matTooltip="Refresh data">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <div *ngIf="error" class="error-container">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h2>Failed to load dashboard data</h2>
+    <p>There was an error retrieving the dashboard statistics.</p>
+    <button mat-raised-button color="primary" (click)="reload()">Try Again</button>
+  </div>
+
+  <div *ngIf="!loading && !error && stats" class="dashboard-content">
+    <!-- Stats Cards Row -->
+    <div class="stats-cards-row">
+      <!-- Users Stats Card -->
+      <mat-card class="stats-card users-card">
+        <div class="stats-icon users-icon">
+          <mat-icon>people</mat-icon>
+        </div>
+        <h3 class="stats-title">Total Users</h3>
+        <p class="stats-value">{{ stats.userStats.totalUsers | number }}</p>
+        <div class="stats-trend" [ngClass]="getTrendClass(stats.userStats.usersTrend || 0)">
+          <mat-icon>{{ getTrendIcon(stats.userStats.usersTrend || 0) }}</mat-icon>
+          <span>{{ (stats.userStats.usersTrend || 0) | number: '1.1-1' }}%</span>
+        </div>
+        <div class="stats-details">
+          <div class="detail-item">
+            <span class="detail-label">Admin Users</span>
+            <span class="detail-value">{{ stats.userStats.adminUsers | number }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Regular Users</span>
+            <span class="detail-value">{{ stats.userStats.regularUsers | number }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Banned</span>
+            <span class="detail-value">{{ stats.userStats.bannedUsers | number }}</span>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Content Stats Card -->
+      <mat-card class="stats-card content-card">
+        <div class="stats-icon content-icon">
+          <mat-icon>article</mat-icon>
+        </div>
+        <h3 class="stats-title">Total Content</h3>
+        <p class="stats-value">{{ stats.contentStats.totalBuzzs + stats.contentStats.totalComments | number }}</p>
+        <div class="stats-trend" [ngClass]="getTrendClass(stats.contentStats.contentTrend || 0)">
+          <mat-icon>{{ getTrendIcon(stats.contentStats.contentTrend || 0) }}</mat-icon>
+          <span>{{ (stats.contentStats.contentTrend || 0) | number: '1.1-1' }}%</span>
+        </div>
+        <div class="stats-details">
+          <div class="detail-item">
+            <span class="detail-label">Buzz Posts</span>
+            <span class="detail-value">{{ stats.contentStats.totalBuzzs | number }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Comments</span>
+            <span class="detail-value">{{ stats.contentStats.totalComments | number }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Reports</span>
+            <span class="detail-value">{{ stats.contentStats.totalReports | number }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Pending Reports</span>
+            <span class="detail-value">{{ stats.contentStats.pendingReports | number }}</span>
+          </div>
+        </div>
+      </mat-card>
+
+      <!-- Engagement Stats Card -->
+      <mat-card class="stats-card engagement-card">
+        <div class="stats-icon engagement-icon">
+          <mat-icon>favorite</mat-icon>
+        </div>
+        <h3 class="stats-title">Engagement</h3>
+        <p class="stats-value">{{ stats.engagementStats.averageCommentsPerBuzz | number: '1.1-1' }}</p>
+        <div class="stats-trend" [ngClass]="getTrendClass(stats.engagementStats.engagementTrend || 0)">
+          <mat-icon>{{ getTrendIcon(stats.engagementStats.engagementTrend || 0) }}</mat-icon>
+          <span>{{ (stats.engagementStats.engagementTrend || 0) | number: '1.1-1' }}%</span>
+        </div>
+        <div class="stats-details">
+          <div class="detail-item">
+            <span class="detail-label">Likes</span>
+            <span class="detail-value">{{ stats.engagementStats.totalLikes | number }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Avg. Comments</span>
+            <span class="detail-value">{{ stats.engagementStats.averageCommentsPerBuzz | number: '1.1-1' }}</span>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+      <!-- User Growth Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>User Growth</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas baseChart
+              [data]="userGrowthChartData"
+              [options]="userGrowthChartOptions"
+              [type]="userGrowthChartType">
+            </canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Content Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Content Overview</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas baseChart
+              [data]="contentChartData"
+              [options]="contentChartOptions"
+              [type]="contentChartType">
+            </canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Engagement Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Engagement Distribution</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas baseChart
+              [data]="engagementChartData"
+              [options]="engagementChartOptions"
+              [type]="engagementChartType">
+            </canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

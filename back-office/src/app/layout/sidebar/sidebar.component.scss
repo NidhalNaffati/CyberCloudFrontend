@@ -1,0 +1,116 @@
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: 1px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar-header {
+  padding: 20px 16px;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #eee;
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 16px;
+      margin-right: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    .app-name {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+  }
+  
+  .app-desc {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+  }
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding-top: 8px;
+  
+  a {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    margin: 4px 8px;
+    border-radius: 8px;
+    color: #555;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    
+    mat-icon {
+      margin-right: 12px;
+      color: #777;
+    }
+    
+    &.active {
+      background-color: rgba(211, 47, 47, 0.1);
+      color: #d32f2f;
+      font-weight: 600;
+      
+      mat-icon {
+        color: #d32f2f;
+      }
+    }
+    
+    &:hover:not(.active) {
+      background-color: rgba(0, 0, 0, 0.04);
+      color: #333;
+    }
+  }
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 8px;
+  border-top: 1px solid #eee;
+  
+  a {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    margin: 4px 8px;
+    border-radius: 8px;
+    color: #666;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    
+    mat-icon {
+      margin-right: 12px;
+      color: #777;
+    }
+    
+    &:hover {
+      background-color: rgba(211, 47, 47, 0.1);
+      color: #d32f2f;
+      
+      mat-icon {
+        color: #d32f2f;
+      }
+    }
+  }
+}

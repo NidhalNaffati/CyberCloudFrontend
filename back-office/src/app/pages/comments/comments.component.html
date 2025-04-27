@@ -1,0 +1,123 @@
+<div class="comments-container">
+  <div class="page-title">
+    <h1>Comment Management</h1>
+    <button mat-icon-button (click)="reload()" matTooltip="Refresh comments" [disabled]="loading">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+  
+  <mat-card>
+    <mat-card-content>
+      <div class="search-filter-container">
+        <mat-form-field class="search-box" appearance="outline">
+          <mat-label>Search Comments</mat-label>
+          <input matInput [formControl]="searchControl" placeholder="Search in comment content">
+          <mat-icon matPrefix>search</mat-icon>
+          <button 
+            *ngIf="searchControl.value" 
+            matSuffix 
+            mat-icon-button 
+            aria-label="Clear" 
+            (click)="clearSearch()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      
+      <div class="table-container">
+        <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+        
+        <table mat-table [dataSource]="dataSource" matSort *ngIf="!loading">
+          <!-- Author Column -->
+          <ng-container matColumnDef="author">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Author </th>
+            <td mat-cell *matCellDef="let comment">
+              <div class="user-info">
+                <div class="user-avatar">
+                  <div *ngIf="!comment.user.avatarUrl" class="avatar-placeholder">
+                    {{ comment.user.username.substring(0, 1).toUpperCase() }}
+                  </div>
+                  <img *ngIf="comment.user.avatarUrl" [src]="comment.user.avatarUrl" alt="User avatar">
+                </div>
+                <div class="user-details">
+                  <span class="username">{{ comment.user.username }}</span>
+                  <span class="user-status" *ngIf="comment.user.isBanned">Banned</span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+          
+          <!-- Content Column -->
+          <ng-container matColumnDef="content">
+            <th mat-header-cell *matHeaderCellDef> Content </th>
+            <td mat-cell *matCellDef="let comment">
+              <div class="comment-content" [matTooltip]="comment.content.length > 100 ? comment.content : ''">
+                {{ truncateContent(comment.content) }}
+              </div>
+            </td>
+          </ng-container>
+          
+          <!-- Buzz ID Column -->
+          <ng-container matColumnDef="buzzId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Buzz ID </th>
+            <td mat-cell *matCellDef="let comment">
+              <span class="buzz-id">{{ comment.buzz.id }}</span>
+            </td>
+          </ng-container>
+          
+          <!-- Buzz Content Column -->
+          <ng-container matColumnDef="buzzContent">
+            <th mat-header-cell *matHeaderCellDef> Buzz Content </th>
+            <td mat-cell *matCellDef="let comment"> 
+              <div class="buzz-content" [matTooltip]="comment.buzz.content.length > 50 ? comment.buzz.content : ''">
+                {{ truncateContent(comment.buzz.content, 50) }}
+              </div>
+            </td>
+          </ng-container>
+          
+          <!-- Created At Column -->
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Posted </th>
+            <td mat-cell *matCellDef="let comment"> {{ formatDate(comment.createdAt) }} </td>
+          </ng-container>
+          
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let comment"> 
+              <button 
+                mat-mini-fab 
+                color="warn"
+                aria-label="Delete comment"
+                matTooltip="Delete comment"
+                (click)="deleteComment(comment)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          
+          <!-- No Data Row -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+              <div class="no-data-message">
+                <mat-icon class="no-data-icon">comment_off</mat-icon>
+                <span>No comments found</span>
+                <p *ngIf="searchControl.value" class="filter-notice">Try clearing your search or try a different search term</p>
+              </div>
+            </td>
+          </tr>
+        </table>
+        
+        <mat-paginator 
+          [pageSizeOptions]="[10, 25, 50, 100]"
+          showFirstLastButtons
+        ></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

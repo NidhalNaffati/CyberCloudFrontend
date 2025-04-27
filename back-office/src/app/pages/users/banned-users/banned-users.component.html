@@ -1,0 +1,138 @@
+<div class="banned-users-container">
+  <div class="page-title">
+    <h1>Banned Users</h1>
+    <div class="actions">
+      <button mat-icon-button (click)="reload()" matTooltip="Refresh list" [disabled]="loading">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button mat-raised-button color="primary" (click)="backToUsers()">
+        <mat-icon>arrow_back</mat-icon>
+        Back to All Users
+      </button>
+    </div>
+  </div>
+  
+  <mat-card>
+    <mat-card-content>
+      <div class="search-filter-container">
+        <mat-form-field class="search-box" appearance="outline">
+          <mat-label>Filter Banned Users</mat-label>
+          <input matInput [(ngModel)]="searchTerm" placeholder="Filter by username, email, or name">
+          <mat-icon matPrefix>search</mat-icon>
+          <button 
+            *ngIf="searchTerm" 
+            matSuffix 
+            mat-icon-button 
+            aria-label="Clear" 
+            (click)="clearFilter()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <button mat-button color="primary" [disabled]="!searchTerm" (click)="applyFilter()">Apply Filter</button>
+      </div>
+      
+      <div class="table-container">
+        <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+        
+        <ng-container *ngIf="error">
+          <div class="error-container">
+            <mat-icon class="error-icon">error_outline</mat-icon>
+            <h2>Failed to load banned users</h2>
+            <p>There was an error retrieving the banned user list.</p>
+            <button mat-raised-button color="primary" (click)="reload()">Try Again</button>
+          </div>
+        </ng-container>
+        
+        <ng-container *ngIf="!loading && !error">
+          <table mat-table [dataSource]="bannedUsers" class="banned-users-table">          
+            <!-- Avatar Column -->
+            <ng-container matColumnDef="avatarUrl">
+              <th mat-header-cell *matHeaderCellDef> Avatar </th>
+              <td mat-cell *matCellDef="let user">
+                <div class="user-avatar">
+                  <div *ngIf="!user.avatarUrl" class="avatar-placeholder">
+                    {{ user.username.substring(0, 1).toUpperCase() }}
+                  </div>
+                  <img *ngIf="user.avatarUrl" [src]="user.avatarUrl" alt="User avatar">
+                </div>
+              </td>
+            </ng-container>
+            
+            <!-- Username Column -->
+            <ng-container matColumnDef="username">
+              <th mat-header-cell *matHeaderCellDef> Username </th>
+              <td mat-cell *matCellDef="let user"> {{ user.username }} </td>
+            </ng-container>
+            
+            <!-- Email Column -->
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef> Email </th>
+              <td mat-cell *matCellDef="let user"> {{ user.email }} </td>
+            </ng-container>
+            
+            <!-- Full Name Column -->
+            <ng-container matColumnDef="fullName">
+              <th mat-header-cell *matHeaderCellDef> Full Name </th>
+              <td mat-cell *matCellDef="let user"> {{ user.fullName || 'N/A' }} </td>
+            </ng-container>
+            
+            <!-- Followers Count Column -->
+            <ng-container matColumnDef="followersCount">
+              <th mat-header-cell *matHeaderCellDef> Followers </th>
+              <td mat-cell *matCellDef="let user" class="clickable" (click)="viewFollowers(user)"> 
+                {{ user.followersCount | number }} 
+                <mat-icon class="small-icon">visibility</mat-icon>
+              </td>
+            </ng-container>
+            
+            <!-- Followings Count Column -->
+            <ng-container matColumnDef="followingsCount">
+              <th mat-header-cell *matHeaderCellDef> Following </th>
+              <td mat-cell *matCellDef="let user" class="clickable" (click)="viewFollowings(user)"> 
+                {{ user.followingsCount | number }} 
+                <mat-icon class="small-icon">visibility</mat-icon>
+              </td>
+            </ng-container>
+            
+            <!-- Created At Column -->
+            <ng-container matColumnDef="createdAt">
+              <th mat-header-cell *matHeaderCellDef> Banned Since </th>
+              <td mat-cell *matCellDef="let user"> {{ formatDate(user.updatedAt) }} </td>
+            </ng-container>
+            
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef> Actions </th>
+              <td mat-cell *matCellDef="let user"> 
+                <button 
+                  mat-mini-fab 
+                  color="primary"
+                  aria-label="Unban user"
+                  matTooltip="Unban user"
+                  (click)="unbanUser(user)"
+                >
+                  <mat-icon>restore</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            
+            <!-- No Banned Users Row -->
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+                <div class="no-data-message">
+                  <mat-icon class="no-data-icon">block</mat-icon>
+                  <span>No banned users found</span>
+                  <p *ngIf="searchTerm" class="filter-notice">Try clearing your filter or try a different search term</p>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </ng-container>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
