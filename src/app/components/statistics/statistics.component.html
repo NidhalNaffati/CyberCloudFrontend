@@ -1,0 +1,39 @@
+<div class="dashboard-container">
+    <h2 class="dashboard-title">Dashboard Statistics</h2>
+  
+    <div class="chart-row">
+      <!-- Read Status Chart -->
+      <div class="chart-box">
+        <h3>Read Status</h3>
+        <canvas *ngIf="readStatusChart"
+                baseChart
+                [data]="readStatusChart.data"
+                [type]="readStatusChart.type"
+                [options]="readStatusChart.options">
+        </canvas>
+      </div>
+  
+      <!-- Urgency Chart -->
+      <div class="chart-box">
+        <h3>Urgency Level</h3>
+        <canvas *ngIf="urgencyChart"
+                baseChart
+                [data]="urgencyChart.data"
+                [type]="urgencyChart.type"
+                [options]="urgencyChart.options">
+        </canvas>
+      </div>
+  
+      <!-- Rating Chart -->
+      <div class="chart-box">
+        <h3>Rating Distribution</h3>
+        <canvas *ngIf="ratingChart"
+                baseChart
+                [data]="ratingChart.data"
+                [type]="ratingChart.type"
+                [options]="ratingChart.options">
+        </canvas>
+      </div>
+    </div>
+  </div>
+  

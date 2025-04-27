@@ -9,7 +9,7 @@
 .pdf-content {
   position: absolute;
   left: -9999px;
-  width: 210mm; 
+  width: 210mm;
 }
 
 .pdf-content table {
@@ -47,4 +47,15 @@ th:hover {
 
 .fas.fa-sort-up, .fas.fa-sort-down {
   margin-left: 5px;
+}
+.fas.fa-sort-up {
+  color: #007bff;
+}
+.pdf-logo {
+  display: none;
+}
+@media print {
+  .pdf-logo {
+    display: block !important;
+  }
 }

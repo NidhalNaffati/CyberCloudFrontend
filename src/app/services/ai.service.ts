@@ -7,7 +7,7 @@ export class AiService {
   constructor(private http: HttpClient) {}
 
   generateDescription(title: string): Observable<string> {
-  
+
     const url = 'http://localhost:8089/activities/ai/describe';
     const token = localStorage.getItem('jwt');
     const headers = token

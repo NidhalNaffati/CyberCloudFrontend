@@ -100,7 +100,12 @@
               "browserTarget": "gestion_appointment:build:production"
             },
             "development": {
-              "browserTarget": "gestion_appointment:build:development"
+              "browserTarget": "gestion_appointment:build:development",
+              "port": 4200,
+              "host": "0.0.0.0",
+              "liveReload": true,
+              "open": true,
+              "ssl": false
             }
           },
           "defaultConfiguration": "development"
