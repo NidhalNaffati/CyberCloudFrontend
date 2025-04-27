@@ -247,4 +247,52 @@ localStorage.removeItem('user_id');
       console.log('Setting auth header with token');
     }
   }
+  getUserEmail(): string | null {
+    const token = this.getAccessToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      return decodedToken.sub || decodedToken.email || null;
+    } catch (error) {
+      console.error('Error decoding token for email:', error);
+      return null;
+    }
+  }
+  getUserFullName(): string | null {
+    const token = this.getAccessToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      return `${decodedToken.firstName} ${decodedToken.lastName}`;
+    } catch (error) {
+      console.error('Error decoding token for full name:', error);
+      return null;
+    }
+  }
+  getUserPhoneNumber(): string | null {
+    const token = this.getAccessToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      return decodedToken.phoneNumber || null;
+    } catch (error) {
+      console.error('Error decoding token for phone number:', error);
+      return null;
+    }
+  }
+  getUserId(): number | null {
+    const token = this.getAccessToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      return decodedToken.id_user ?? null;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  }
 }

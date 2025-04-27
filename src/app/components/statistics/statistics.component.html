@@ -1,0 +1,52 @@
+<!-- Complaint Statistics Section -->
+<div class="row mt-4">
+  <h3 class="mb-3 fw-semibold text-secondary" style="letter-spacing:0.5px;">
+    <i class="fas fa-exclamation-circle me-2"></i>Complaint Statistics
+  </h3>
+  
+  <!-- Read/Unread Pie Chart -->
+  <div class="col-md-4 mb-4">
+    <h4 class="text-center">Read vs Unread Complaints</h4>
+    <ngx-charts-pie-chart
+    [results]="readUnreadData"
+    [view]="[400,300]"
+    [scheme]="colorScheme" 
+    [legend]="true"
+    [labels]="true"
+    [doughnut]="false">
+  </ngx-charts-pie-chart>
+  </div>
+  
+  <!-- Urgency Bar Chart -->
+  <div class="col-md-4 mb-4">
+    <h4 class="text-center">Urgent vs Normal Complaints</h4>
+    <ngx-charts-bar-vertical
+      [results]="urgencyData"
+      [view]="[400,300]"
+      [scheme]="colorScheme" 
+      [xAxis]="true"
+      [yAxis]="true"
+      [showXAxisLabel]="false"
+      [showYAxisLabel]="false"
+      [gradient]="gradient">
+    </ngx-charts-bar-vertical>
+  </div>
+  
+  <!-- Ratings Line Chart -->
+  <div class="col-md-4 mb-4">
+    <h4 class="text-center">Complaint Ratings</h4>
+    <ngx-charts-line-chart
+      [results]="ratingsData"
+      [view]="[400,300]"
+      [scheme]="colorScheme" 
+      [legend]="false"
+      [showXAxisLabel]="true"
+      [showYAxisLabel]="true"
+      [xAxis]="true"
+      [yAxis]="true"
+      [xAxisLabel]="xAxisLabel"
+      [yAxisLabel]="yAxisLabel"
+      [timeline]="timeline">
+    </ngx-charts-line-chart>
+  </div>
+</div>

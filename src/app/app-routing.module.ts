@@ -22,6 +22,11 @@ import { BlogStatisticsComponent } from './BackOffice/statistics/blog-statistics
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 
+// Complaints Components
+import { ListComplaintsComponent } from './components/list-complaints/list-complaints.component';
+import { AddComplaintsComponent } from './components/add-complaints/add-complaints.component';
+import { AddResponsecomplaintComponent } from './components/add-responsecomplaint/add-responsecomplaint.component';
+
 const routes: Routes = [
   {
     path: 'auth',
@@ -31,21 +36,24 @@ const routes: Routes = [
     path: '',
     component: AllTemplateFrontComponent,
     children: [
-      { path: '', component: HomeFrontComponent },
+      { path: '', component: HomeFrontComponent, pathMatch: 'full' },
       { path: 'home', component: HomeComponent },
       { path: 'home-front', component: HomeFrontComponent },
       { path: 'reservation/:id', component: ReservationComponent },
-      { path: 'confirmation', component: ConfirmationComponent },
       { path: 'blog', component: BlogComponent },
-      { path: 'blog/post/:id', component: BlogDetailComponent }
+      { path: 'blog/post/:id', component: BlogDetailComponent },
+      { path: 'add-complaint', component: AddComplaintsComponent },
+      { path: 'edit/:id', component: AddComplaintsComponent },
+      { path: 'confirmation', component: ConfirmationComponent }
     ]
   },
   {
     path: 'admin',
     component: AllTemplateBackComponent,
     children: [
-      { path: '', component: HomeBackComponent },
+      { path: '', component: HomeBackComponent, pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'home', component: HomeBackComponent },
       { path: 'add-activity', component: AddActivityComponent },
       { path: 'edit-activity/:id', component: EditActivityComponent },
       { path: 'reservation-form/:id', component: ReservationFormComponent },
@@ -55,8 +63,16 @@ const routes: Routes = [
       { path: 'blog-statistics', component: BlogStatisticsComponent },
       { 
         path: 'reservations',
-        loadChildren: () => import('./BackOffice/reservations/reservations-routing.module').then(m => m.ReservationsRoutingModule)
-      }
+        loadChildren: () =>
+          import('./BackOffice/reservations/reservations-routing.module').then(
+            (m) => m.ReservationsRoutingModule
+          )
+      },
+      { path: 'reservation-form/:id', component: ReservationFormComponent },
+      { path: 'complaints', component: ListComplaintsComponent },
+      { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent }
+    
+    
     ]
   },
   { path: '404', component: NotfoundComponent },

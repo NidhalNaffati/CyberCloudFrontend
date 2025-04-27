@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AiService {
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  // Méthode factice pour la génération de description (à remplacer par un vrai appel API)
   generateDescription(title: string): Observable<string> {
-    // Remplacer ceci par l'appel à votre backend ou API d'IA
-    return of(`Description générée pour : ${title}`);
+
+    const url = 'http://localhost:8089/activities/ai/describe';
+    const token = localStorage.getItem('jwt');
+    const headers = token
+      ? new HttpHeaders({ 'Authorization': `Bearer ${token}` })
+      : undefined;
+
+    return this.http.post(url, { title }, { headers, responseType: 'text' });
   }
 }

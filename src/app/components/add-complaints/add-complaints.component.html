@@ -1,0 +1,369 @@
+<div class="container-fluid py-4">
+  <div class="row g-4">
+    
+    <!-- Sidebar - Liste des plaintes -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-20 rounded-lg">
+        <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 text-primary fw-bold"><i class="fas fa-inbox me-2"></i>All Feedbacks</h5>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-danger btn-sm" (click)="clearSidebar()" title="Clear sidebar">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+            <button class="btn btn-primary btn-sm" (click)="startAddingNewComplaint()">Add New</button>
+          </div>
+        </div>
+        <div class="list-group list-group-flush mailbox-list" style="max-height: 115vh; overflow-y: auto;">
+          <a *ngFor="let complaint of getSortedComplaints() | paginate: { id: 'complaints', itemsPerPage: 10, currentPage: p }"
+             class="list-group-item list-group-item-action p-3 d-flex align-items-start border-0 hover-shadow-sm position-relative"
+             [class.bg-light-blue]="selectedComplaintId === complaint.complaintId" 
+             (click)="getComplaint(complaint)">
+   
+   <div class="avatar me-3">
+     <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
+          style="width: 40px; height: 40px;">
+       <i class="fas fa-user"></i>
+     </div>
+   </div>
+   
+   <div class="flex-grow-1">
+     <div class="d-flex justify-content-between mb-1">
+       <span class="fw-bold text-dark">{{ complaint.subject }}</span> <!-- Changé de Consultation # à Subject -->
+       <small class="text-muted">{{ complaint.date | date:'short' }}</small>
+     </div>
+     
+     <p class="text-muted mb-1" [innerHTML]="getSafeHtml(complaint.content)"></p>
+     
+     <div class="d-flex justify-content-between align-items-end">
+       <div class="star-rating small">
+         <i *ngFor="let star of [1,2,3,4,5]" 
+            class="fas fa-star{{ star > complaint.starRatingConsultation ? '-empty' : '' }} text-warning"></i>
+       </div>
+       
+       <div class="d-flex align-items-center">
+         <span class="badge bg-warning me-2" *ngIf="complaint.isUrgent">URGENT</span>
+         <span [title]="complaint.isRead ? 'Read' : 'Unread'">
+           <i class="fas fa-fw" 
+              [class.fa-envelope-open]="complaint.isRead" 
+              [class.fa-envelope]="!complaint.isRead"
+              [class.text-secondary]="complaint.isRead"
+              [class.text-primary]="!complaint.isRead"></i>
+         </span>
+       </div>
+     </div>
+   </div>
+</a>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-container">
+          <pagination-controls id="complaints" (pageChange)="p = $event"></pagination-controls>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main form - Ajouter une nouvelle plainte ou afficher les détails -->
+    <div class="col-md-8">
+      <div class="card shadow-lg h-100 rounded-lg">
+        <div class="card-header bg-white border-bottom p-4">
+          <h4 class="mb-0 text-primary fw-bold">
+            <i class="fas fa-comment me-2"></i>
+            <ng-container *ngIf="selectedComplaintId === null">Add New Feedback</ng-container>
+            <ng-container *ngIf="selectedComplaintId !== null && !isEditMode">Feedback Details</ng-container>
+            <ng-container *ngIf="selectedComplaintId !== null && isEditMode">Edit Feedback</ng-container>
+          </h4>
+        </div>
+        <div class="card-body">
+          
+          <!-- Si une plainte est sélectionnée, afficher les détails et les réponses -->
+          <div *ngIf="selectedComplaintId !== null && !isEditMode" class="complaint-details-container">
+            <!-- Header with complaint info and actions -->
+            <div class="detail-header bg-light p-4 rounded-top">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                  <h3 class="text-primary mb-1 fw-bold fst-italic">{{ selectedComplaint?.subject }}</h3>
+                  <div class="d-flex align-items-center text-muted">
+                    <i class="far fa-clock me-2"></i>
+                    <span>{{ selectedComplaint?.date | date:'medium' }}</span>
+                    <span class="mx-2">•</span>
+                    <span class="badge rounded-pill" 
+                          [ngClass]="selectedComplaint?.isUrgent ? 'bg-danger' : 'bg-secondary'">
+                      {{ selectedComplaint?.isUrgent ? 'URGENT' : 'Standard' }}
+                    </span>
+                  </div>
+                </div>
+                <button class="btn btn-outline-primary rounded-pill" (click)="enableEditMode()">
+                  <i class="fas fa-edit me-1"></i> Edit
+                </button>
+              </div>
+              
+              <!-- Rating display -->
+              <div class="rating-display mb-3">
+                <span class="me-2 fw-bold">Rating:</span>
+                <div class="star-rating d-inline-block">
+                  <i *ngFor="let star of [1,2,3,4,5]" 
+                     class="fas fa-star{{ star > selectedComplaint?.starRatingConsultation! ? '-empty' : '' }} text-warning"></i>
+                </div>
+                <span class="ms-2 badge bg-light text-dark">
+                  {{ selectedComplaint?.starRatingConsultation }}/5
+                </span>
+              </div>
+            </div>
+          
+            <!-- Complaint content -->
+            <div class="complaint-content bg-white p-4 border-bottom">
+              <div class="content-card p-3 rounded shadow-sm">
+                <div class="d-flex align-items-start">
+                  <div class="avatar me-3">
+                    <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
+                         style="width: 40px; height: 40px;">
+                      <i class="fas fa-user"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h6 class="fw-bold mb-2">Your Feedback</h6>
+                    <div class="content-text" [innerHTML]="getSafeHtml(selectedComplaint?.content!)"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+            <!-- Responses section -->
+            <div class="responses-section p-4">
+              <h5 class="mb-4 d-flex align-items-center">
+                <i class="fas fa-comments text-primary me-2"></i>
+                Responses
+                <span class="badge bg-primary rounded-pill ms-2">{{ responses.length || 0 }}</span>
+              </h5>
+          
+              <div *ngIf="!responses?.length" class="empty-state text-center py-4">
+                <i class="far fa-comment-dots fa-2x text-muted mb-3"></i>
+                <p class="text-muted">No responses yet. Be the first to reply!</p>
+              </div>
+          
+              <div class="responses-list">
+                <div *ngIf="responses.length > 4 && !allResponsesVisible" class="text-center mb-3">
+                  <button class="btn btn-outline-secondary btn-sm rounded-pill" (click)="showAllResponses()">
+                    <i class="bi bi-clock-history me-1"></i> Show older responses ({{ responses.length - 4 }} more)
+                  </button>
+                </div>
+                <div *ngFor="let response of getVisibleResponses()" class="response-card mb-4 p-3 rounded shadow-sm">
+                  <div class="d-flex align-items-start">
+                    <div class="avatar me-3">
+                      <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+                           style="width: 40px; height: 40px;"
+                           [ngClass]="response.userId === selectedComplaint?.userId ? 'bg-primary' : 'bg-success'">
+                        <i [class]="response.userId === selectedComplaint?.userId ? 'fas fa-user' : 'fas fa-user-shield'"></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold" [ngClass]="response.userId === selectedComplaint?.userId ? 'text-primary' : 'text-success'">
+                          {{ response.userId === selectedComplaint?.userId ? 'You' : 'Administrator' }}
+                        </span>
+                        <small class="text-muted">{{ response.dateRep | date:'short' }}</small>
+                      </div>
+                      <div class="content-text mb-2" [innerHTML]="getSafeHtml(response.content)"></div>
+                      
+                      <div *ngIf="response.userId === selectedComplaint?.userId" class="action-buttons mt-2">
+                        <button class="btn btn-sm btn-outline-primary me-2" (click)="editResponse(response)">
+                          <i class="fas fa-edit me-1"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="deleteResponse(response.responseId)">
+                          <i class="fas fa-trash me-1"></i> Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+            <!-- Response form -->
+            <div class="response-form p-4 bg-light rounded-bottom">
+              <h5 class="mb-3">
+                <i class="fas fa-reply text-primary me-2"></i>
+                {{ isEditingResponse ? 'Edit Your Response' : 'Add a Response' }}
+              </h5>
+              
+              <form [formGroup]="responseForm" (ngSubmit)="isEditingResponse ? onUpdateResponse() : onSubmitResponse()">
+                <div class="editor-container mb-3">
+                  <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+                  <ngx-editor
+                    [editor]="editor"
+                    formControlName="responseContent"
+                    [placeholder]="isEditingResponse ? 'Edit your response...' : 'Write your response here...'"
+                    [spellcheck]="true"
+                    style="min-height: 150px;"
+                  ></ngx-editor>
+                </div>
+              
+                <div class="d-flex justify-content-end gap-2">
+                  <button *ngIf="isEditingResponse" type="button" class="btn btn-outline-secondary" 
+                          (click)="cancelEditResponse()">
+                    Cancel
+                  </button>
+                  <button type="submit" [disabled]="responseForm.invalid" class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-1"></i>
+                    {{ isEditingResponse ? 'Update Response' : 'Send Response' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <!-- Si aucune plainte n'est sélectionnée, afficher le formulaire d'ajout -->
+      <!-- Si aucune plainte n'est sélectionnée, afficher le formulaire d'ajout -->
+      <div *ngIf="selectedComplaintId === null || isEditMode" class="add-complaint-container">
+        <div class="add-complaint-header bg-light p-4 rounded-top">
+          <h3 class="text-primary mb-0">
+            <i class="fas fa-plus-circle me-2"></i>
+            {{ isEditMode ? 'Edit feedback' : 'Create a feedback' }}
+          </h3>
+          <p class="text-muted mb-0 mt-2">Fill out the form below to submit a new feedback</p>
+        </div>
+
+        <form [formGroup]="complaintForm" (ngSubmit)="onSubmit()" class="p-4">
+          <!-- Subject Field -->
+          <div class="mb-4">
+            <label for="subject" class="form-label fw-bold">
+              <i class="fas fa-heading me-2 text-primary"></i>Subject
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light rounded-start-pill">
+                <i class="fas fa-tag text-muted"></i>
+              </span>
+              <input type="text" formControlName="subject" 
+                     class="form-control form-control-lg rounded-end-pill" 
+                     id="subject" 
+                     placeholder="Enter feedback subject">
+            </div>
+            <div class="form-text text-end">
+              <small>Briefly describe the subject of your feedback</small>
+            </div>
+            <div class="invalid-feedback d-block">
+              <small *ngIf="complaintForm.get('subject')?.invalid && complaintForm.get('subject')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Required field
+              </small>
+            </div>
+          </div>
+
+
+              <!-- Complaint Content -->
+              <div class="mb-4">
+                <label class="form-label fw-bold d-flex align-items-center">
+                  <i class="fas fa-comment-dots me-2 text-primary"></i>
+                  feedback Details
+                  <span class="badge bg-primary-soft text-primary ms-auto">Required</span>
+                </label>
+                
+                <div class="editor-container border rounded-3 overflow-hidden shadow-sm">
+                  <div class="editor-toolbar bg-light px-3 py-2 border-bottom">
+                    <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+                  </div>
+                  
+                  <div class="editor-content px-3 py-2">
+                    <ngx-editor
+                      [editor]="editor"
+                      formControlName="content"
+                      placeholder="Describe your feedback in detail..."
+                      [spellcheck]="true"
+                      [autofocus]="true"
+                    ></ngx-editor>
+                  </div>
+                </div>
+                <div class="invalid-feedback d-block">
+                  <small *ngIf="complaintForm.get('content')?.invalid && complaintForm.get('content')?.touched" class="text-danger">
+                    <i class="fas fa-exclamation-circle me-1"></i>Please provide feedback details
+                  </small>
+                </div>
+              </div>
+
+              <!-- User ID and Rating -->
+              <div class="row g-3 mb-4">
+              
+
+                <!-- Rating -->
+                <div class="col-md-6">
+                  <label class="form-label fw-bold">
+                    <i class="fas fa-star me-2 text-warning"></i>Service Rating
+                  </label>
+                  
+                  <div class="rating-container">
+                    <input type="hidden" formControlName="starRatingConsultation" required>
+                    
+                    <div class="star-rating interactive">
+                      <i *ngFor="let star of [1,2,3,4,5]; let i = index" 
+                         class="fas fa-star rating-star"
+                         [class.filled]="i < (hoverRating || complaintForm.get('starRatingConsultation')?.value)"
+                         [class.text-warning]="i < (hoverRating || complaintForm.get('starRatingConsultation')?.value)"
+                         [class.text-muted]="i >= (hoverRating || complaintForm.get('starRatingConsultation')?.value)"
+                         (click)="setRating(star)"
+                         (mouseenter)="hoverRating = star"
+                         (mouseleave)="hoverRating = null"
+                         title="Rate {{star}} star{{star > 1 ? 's' : ''}}">
+                      </i>
+                    </div>
+                    
+                    <div class="rating-text small text-muted mt-1">
+                      {{ getRatingText(complaintForm.get('starRatingConsultation')?.value) }}
+                    </div>
+                    
+                    <div class="invalid-feedback d-block mt-1">
+                      <small *ngIf="complaintForm.get('starRatingConsultation')?.invalid && complaintForm.get('starRatingConsultation')?.touched">
+                        <i class="fas fa-exclamation-circle me-1"></i>Please rate the service
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Urgent Toggle -->
+              <div class="urgent-container mb-4 p-3 border rounded-3 bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="fw-bold mb-1 d-flex align-items-center">
+                      <i class="fas fa-exclamation-triangle me-2 text-danger"></i>
+                      Urgency Status
+                    </h6>
+                    <p class="small text-muted mb-0">Enable if this requires immediate attention</p>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-0">
+                    <input class="form-check-input urgent-switch" 
+                           type="checkbox" 
+                           formControlName="isUrgent" 
+                           id="isUrgent">
+                    <label class="form-check-label" for="isUrgent"></label>
+                  </div>
+                </div>
+
+                <div class="urgent-status mt-2 text-end small fw-medium" 
+                     [class.text-danger]="complaintForm.get('isUrgent')?.value"
+                     [class.text-success]="!complaintForm.get('isUrgent')?.value">
+                  <span *ngIf="complaintForm.get('isUrgent')?.value">
+                    <i class="fas fa-bell me-1"></i>This complaint is marked as URGENT
+                  </span>
+                  <span *ngIf="!complaintForm.get('isUrgent')?.value">
+                    <i class="fas fa-check-circle me-1"></i>Standard priority
+                  </span>
+                </div>
+              </div>
+
+              <!-- Form Actions -->
+              <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+                <button *ngIf="isEditMode" type="button" class="btn btn-outline-secondary px-4 rounded-pill" (click)="cancelEdit()">
+                  <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="submit" class="btn btn-primary px-4 rounded-pill" [disabled]="complaintForm.invalid">
+                  <i class="fas fa-paper-plane me-2"></i>
+                  {{ isEditMode ? 'Update' : 'Submit ' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

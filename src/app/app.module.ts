@@ -1,3 +1,4 @@
+
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -5,14 +6,18 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+
+
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+
 import { NgxPaginationModule } from 'ngx-pagination';
-// import { NgPipesModule } from 'ngx-pipes'; // Removed due to module issue
+import { NgPipesModule } from 'ngx-pipes';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { NgxEditorModule } from 'ngx-editor';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -40,12 +45,20 @@ import { DashboardComponent } from './BackOffice/dashboard/dashboard.component';
 import { ReservationFormComponent } from './BackOffice/reservations/reservation-form/reservation-form.component';
 import { ReservationDashboardComponent } from './BackOffice/reservations/reservation-dashboard/reservation-dashboard.component';
 
+// Complaints Components
+import { AddComplaintsComponent } from './components/add-complaints/add-complaints.component';
+import { ListComplaintsComponent } from './components/list-complaints/list-complaints.component';
+import { AddResponsecomplaintComponent } from './components/add-responsecomplaint/add-responsecomplaint.component';
+
 // Shared
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { RangePipe } from './shared/pipes/range.pipe';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
+
+// Statistics
+import { StatisticsComponent } from './components/statistics/statistics.component';
 
 import { AuthInterceptor } from './auth/auth.interceptor';
 
@@ -71,22 +84,31 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     DashboardComponent,
     ReservationFormComponent,
     ReservationDashboardComponent,
+    // Complaints
+    AddComplaintsComponent,
+    ListComplaintsComponent,
+    AddResponsecomplaintComponent,
     // Shared
     NavbarComponent,
     FooterComponent,
     RangePipe,
-    ConfirmationComponent
+    ConfirmationComponent,
+    StatisticsComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule,
+    NotfoundComponent,
     FormsModule,
     BrowserAnimationsModule,
     RouterModule,
     CommonModule,
+   
     NgxChartsModule,
+
     NgxPaginationModule,
+    NgPipesModule,
     NotfoundComponent,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -95,7 +117,8 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     AppRoutingModule,
     BlogModule,
     EditorModule,
-    FullCalendarModule
+    FullCalendarModule,
+    NgxEditorModule
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
