@@ -8,7 +8,6 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 interface AuthenticationResponse {
   access_token: string;
   refresh_token: string;
-  user_id: number;
 }
 
 interface RegisterRequest {
@@ -18,6 +17,14 @@ interface RegisterRequest {
   password: string;
   confirmPassword: string;
   role: string;
+}
+
+export interface EditProfileRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 }
 
 interface AuthenticationRequest {
@@ -61,40 +68,42 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse): never {
-    console.error('API Error:', error);
+    console.error('API Error:', error.message);
 
     let errorMessage = 'An error occurred while processing your request.';
-
-    // Extract message from Spring Boot error response
     if (error.error) {
       if (typeof error.error === 'string') {
         try {
-          // Try to parse it as JSON first
           const parsedError = JSON.parse(error.error);
           errorMessage = parsedError.message || errorMessage;
         } catch {
-          // If not valid JSON, use as is
           errorMessage = error.error;
         }
       } else if (error.error.message) {
         errorMessage = error.error.message;
       }
     }
-
     const enhancedError = new Error(errorMessage);
     (enhancedError as any).originalError = error;
     (enhancedError as any).status = error.status;
-
     throw enhancedError;
   }
 
-  async register(registerData: RegisterRequest): Promise<string> {
+  async register(registerData: RegisterRequest, file?: File): Promise<string> {
     try {
-      return await firstValueFrom(
-        this.http.post(`${this.apiUrl}/register`, registerData, {
-          responseType: 'text'  // Handle plain text response
-        })
-      );
+      if (registerData.role === 'ROLE_MEDECIN' && file) {
+        const formData = new FormData();
+        formData.append('request', new Blob([JSON.stringify(registerData)], {type: 'application/json'}));
+        formData.append('document', file);
+        return await firstValueFrom(
+          this.http.post(`${this.apiUrl}/register/medecin`, formData, {responseType: 'text'})
+        );
+      } else {
+        const endpoint = registerData.role === 'ROLE_USER' ? `${this.apiUrl}/register/user` : `${this.apiUrl}/register`;
+        return await firstValueFrom(
+          this.http.post(endpoint, registerData, {responseType: 'text'})
+        );
+      }
     } catch (error) {
       return this.handleError(error as HttpErrorResponse);
     }
@@ -104,9 +113,7 @@ export class AuthService {
     try {
       const verifyRequest: VerifyAccountRequest = {email, code};
       return await firstValueFrom(
-        this.http.post<string>(`${this.apiUrl}/verify-user`, verifyRequest, {
-          responseType: 'text' as 'json'
-        })
+        this.http.post<string>(`${this.apiUrl}/verify-user`, verifyRequest, {responseType: 'text' as 'json'})
       );
     } catch (error) {
       return this.handleError(error as HttpErrorResponse);
@@ -119,18 +126,20 @@ export class AuthService {
       const response = await firstValueFrom(
         this.http.post<AuthenticationResponse>(`${this.apiUrl}/authenticate`, authRequest)
       );
-
-      // Store tokens
       localStorage.setItem('access_token', response.access_token);
       localStorage.setItem('refresh_token', response.refresh_token);
-      localStorage.setItem('user_id', response.user_id.toString());
       // Set auth headers
       this.setAuthHeaders();
-
-      // Update auth state
       const userRole = this.extractUserRoleFromToken(response.access_token);
       this.isAuthenticatedSubject.next(true);
       this.userRoleSubject.next(userRole);
+
+      // Add redirection logic here
+      if (userRole === 'ROLE_ADMIN') {
+        await this.router.navigate(['/admin']); // Adjust the admin route as needed
+      } else {
+        await this.router.navigate(['/']); // Home page for regular users
+      }
 
       return response;
     } catch (error) {
@@ -139,18 +148,13 @@ export class AuthService {
   }
 
   logout(): void {
-    // Clear tokens from storage
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-localStorage.removeItem('user_id');
+
     // Update auth state
     this.isAuthenticatedSubject.next(false);
     this.userRoleSubject.next(null);
-
-    // Navigate to login
-    this.router
-      .navigate(['auth/login'])
-      .then(r => console.log('logged out'));
+    this.router.navigate(['auth/login']).then(r => console.log('logged out'));
   }
 
   async requestPasswordReset(email: string): Promise<string> {
@@ -166,13 +170,7 @@ localStorage.removeItem('user_id');
 
   async resetPassword(email: string, code: string, newPassword: string, confirmPassword: string): Promise<string> {
     try {
-      const request: ResetPasswordRequest = {
-        email,
-        code,
-        newPassword,
-        confirmPassword
-      };
-
+      const request: ResetPasswordRequest = {email, code, newPassword, confirmPassword};
       return await firstValueFrom(
         this.http.post<string>(`${this.apiUrl}/reset-password`, request)
       );
@@ -187,16 +185,12 @@ localStorage.removeItem('user_id');
       this.logout();
       throw new Error('No refresh token available');
     }
-
     try {
       const response = await firstValueFrom(
         this.http.post<{ access_token: string }>(`${this.apiUrl}/refresh-token`, {refresh_token: refreshToken})
       );
-
-      // Update the access token in local storage
       localStorage.setItem('access_token', response.access_token);
       this.setAuthHeaders();
-
       return response;
     } catch (error) {
       console.error('Refresh token error:', error);
@@ -212,7 +206,6 @@ localStorage.removeItem('user_id');
   getUserRole(): string | null {
     const token = this.getAccessToken();
     if (!token) return null;
-
     try {
       const decodedToken = this.jwtHelper.decodeToken(token);
       return decodedToken.role;
@@ -247,6 +240,7 @@ localStorage.removeItem('user_id');
       console.log('Setting auth header with token');
     }
   }
+
   getUserEmail(): string | null {
     const token = this.getAccessToken();
     if (!token) return null;
@@ -271,6 +265,7 @@ localStorage.removeItem('user_id');
       return null;
     }
   }
+
   getUserPhoneNumber(): string | null {
     const token = this.getAccessToken();
     if (!token) return null;
@@ -293,6 +288,26 @@ localStorage.removeItem('user_id');
     } catch (error) {
       console.error('Error decoding token:', error);
       return null;
+    }
+  }
+
+  async getUserProfile(): Promise<any> {
+    try {
+      return await firstValueFrom(
+        this.http.get<any>(`${this.apiUrl}/profile`)
+      );
+    } catch (error) {
+      return this.handleError(error as HttpErrorResponse);
+    }
+  }
+
+  async updateProfile(editProfile: EditProfileRequest): Promise<string> {
+    try {
+      return await firstValueFrom(
+        this.http.put(`${this.apiUrl}/profile`, editProfile, {responseType: 'text'})
+      );
+    } catch (error) {
+      return this.handleError(error as HttpErrorResponse);
     }
   }
 }
