@@ -1,4 +1,3 @@
-
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -8,7 +7,6 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgPipesModule } from 'ngx-pipes';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -59,7 +57,11 @@ import { NotfoundComponent } from './components/notfound/notfound.component';
 // Statistics
 import { StatisticsComponent } from './components/statistics/statistics.component';
 
+// Auth
 import { AuthInterceptor } from './auth/auth.interceptor';
+
+// Other Components
+import { MedecinList } from './components/medecin-list/medecin-list.component';
 
 @NgModule({
   declarations: [
@@ -96,16 +98,15 @@ import { AuthInterceptor } from './auth/auth.interceptor';
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    NotfoundComponent,
     FormsModule,
     BrowserAnimationsModule,
     RouterModule,
     CommonModule,
     NgChartsModule,
     NgxChartsModule,
-
     NgxPaginationModule,
     NgPipesModule,
     NotfoundComponent,
@@ -113,11 +114,11 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     MatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
-    AppRoutingModule,
     BlogModule,
     EditorModule,
     FullCalendarModule,
-    NgxEditorModule
+    NgxEditorModule,
+    MedecinList
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },

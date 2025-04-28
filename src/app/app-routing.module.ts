@@ -27,6 +27,10 @@ import { ListComplaintsComponent } from './components/list-complaints/list-compl
 import { AddComplaintsComponent } from './components/add-complaints/add-complaints.component';
 import { AddResponsecomplaintComponent } from './components/add-responsecomplaint/add-responsecomplaint.component';
 
+// Additional Components
+import { RealtimeTranscriptionComponent } from './components/realtime-transcription/realtime-transcription.component';
+import { MedecinList } from './components/medecin-list/medecin-list.component';
+
 const routes: Routes = [
   {
     path: 'auth',
@@ -44,7 +48,8 @@ const routes: Routes = [
       { path: 'blog/post/:id', component: BlogDetailComponent },
       { path: 'add-complaint', component: AddComplaintsComponent },
       { path: 'edit/:id', component: AddComplaintsComponent },
-      { path: 'confirmation', component: ConfirmationComponent }
+      { path: 'confirmation', component: ConfirmationComponent },
+      { path: 'speech-to-text', component: RealtimeTranscriptionComponent }
     ]
   },
   {
@@ -61,17 +66,16 @@ const routes: Routes = [
       { path: 'comments', loadChildren: () => import('./BackOffice/comment-management/comment-management.module').then(m => m.CommentManagementModule) },
       { path: 'responses', loadChildren: () => import('./BackOffice/response-management/response-management.module').then(m => m.ResponseManagementModule) },
       { path: 'blog-statistics', component: BlogStatisticsComponent },
-      { 
+      {
         path: 'reservations',
         loadChildren: () =>
           import('./BackOffice/reservations/reservations-routing.module').then(
             (m) => m.ReservationsRoutingModule
           )
       },
-      { path: 'reservation-form/:id', component: ReservationFormComponent },
       { path: 'complaints', component: ListComplaintsComponent },
-      { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent }
-    
+      { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent },
+      { path: 'medecins', component: MedecinList }
     ]
   },
   { path: '404', component: NotfoundComponent },

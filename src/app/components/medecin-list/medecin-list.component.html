@@ -1,0 +1,46 @@
+<div class="col-12 grid-margin">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">All Medecins</h4>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+          <tr>
+            <th> Name </th>
+            <th> Email </th>
+            <th> Status </th>
+            <th> Created Date </th>
+            <th> Documents Verified </th>
+            <th> Actions </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let medecin of medecins">
+            <td>
+              {{medecin.firstName}} {{medecin.lastName}}
+            </td>
+            <td> {{medecin.email}} </td>
+            <td>
+              <label class="badge badge-gradient-success" *ngIf="medecin.enabled && medecin.accountNonLocked">ACTIVE</label>
+              <label class="badge badge-gradient-warning" *ngIf="!medecin.enabled">PENDING</label>
+              <label class="badge badge-gradient-danger" *ngIf="!medecin.accountNonLocked">LOCKED</label>
+            </td>
+            <td> {{medecin.createdAt | date:'MMM d, y'}} </td>
+            <td>
+              <label class="badge badge-gradient-success" *ngIf="medecin.documentsVerified">VERIFIED</label>
+              <label class="badge badge-gradient-warning" *ngIf="!medecin.documentsVerified">PENDING</label>
+            </td>
+            <td>
+              <button class="btn btn-gradient-primary btn-sm" *ngIf="!medecin.documentsVerified" (click)="verifyMedecin(medecin.email)">Verify Documents</button>
+              <button class="btn btn-gradient-warning btn-sm" *ngIf="medecin.documentsVerified" (click)="unverifyMedecin(medecin.email)">Unverify</button>
+              <button class="btn btn-gradient-danger btn-sm ml-2" *ngIf="medecin.accountNonLocked" (click)="lockUser(medecin.email)">Lock</button>
+              <button class="btn btn-gradient-success btn-sm ml-2" *ngIf="!medecin.accountNonLocked" (click)="unlockUser(medecin.email)">Unlock</button>
+              <button class="btn btn-gradient-info btn-sm ml-2" (click)="downloadDocuments(medecin.id)">View Documents</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
