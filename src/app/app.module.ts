@@ -29,6 +29,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -58,7 +59,8 @@ import { JitsiComponent } from './jitsi/jitsi.component';
     EditConsultationComponent,
     CalendarComponent,
     EventDialogComponent,
-    JitsiComponent
+    JitsiComponent,
+    
     
     
     
@@ -82,6 +84,7 @@ import { JitsiComponent } from './jitsi/jitsi.component';
     MatSelectModule,
     MatSnackBarModule,
     MatInputModule,
+    MatIconModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppointmentService } from 'src/app/services/appointment.service';
 import { Appointment } from 'src/app/models/appointment';
 import { EventDialogComponent } from '../event-dialog/event-dialog.component';
+import { Router } from '@angular/router';
 
 
 
@@ -39,7 +40,8 @@ export class CalendarComponent implements OnInit {
   constructor(
     private appointmentService: AppointmentService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -246,5 +248,8 @@ export class CalendarComponent implements OnInit {
       verticalPosition: 'top',
       panelClass: type === 'success' ? ['success-snackbar'] : ['error-snackbar']
     });
+  }
+  goToAdminPage(): void {
+    this.router.navigate(['/admin']);
   }
 }
