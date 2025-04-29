@@ -146,30 +146,34 @@
               </button>
             </div>
 
-        <!-- Section Waitlist - Seulement pour les activités complètes -->
-<div *ngIf="activity.availableSeats <= 0" class="mt-3">
-  <div *ngIf="!isOnWaitlist(activity.activityId)" class="card border-warning">
-    <div class="card-body">
-      <h5 class="card-title text-warning">
-        <i class="fas fa-hourglass-half me-2"></i>Liste d'attente
-      </h5>
-      <p class="small text-muted mb-2">
-        Cliquez sur "Rejoindre" pour être notifié si une place se libère.
-      </p>
-      <button class="btn btn-warning w-100"
-              (click)="joinWaitlist(activity.activityId)">
-        <i class="fas fa-paper-plane me-2"></i>
-        Rejoindre
-      </button>
+            <!-- Section Waitlist - Seulement pour les activités complètes -->
+            <div *ngIf="activity.availableSeats <= 0" class="mt-3">
+              <div *ngIf="!isOnWaitlist(activity.activityId)" class="card border-warning">
+                <div class="card-body">
+                  <h5 class="card-title text-warning">
+                    <i class="fas fa-hourglass-half me-2"></i>Liste d'attente
+                  </h5>
+                  <p class="small text-muted mb-2">
+                    Cliquez sur "Rejoindre" pour être notifié si une place se libère.
+                  </p>
+                  <button class="btn btn-warning w-100"
+                          (click)="joinWaitlist(activity.activityId)">
+                    <i class="fas fa-paper-plane me-2"></i>
+                    Rejoindre
+                  </button>
+                </div>
+              </div>
+              <div *ngIf="isOnWaitlist(activity.activityId)" class="alert alert-info mt-3">
+                <i class="fas fa-check-circle me-2"></i>
+                Vous êtes sur la liste d'attente pour cette activité
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-  <div *ngIf="isOnWaitlist(activity.activityId)" class="alert alert-info mt-3">
-    <i class="fas fa-check-circle me-2"></i>
-    Vous êtes sur la liste d'attente pour cette activité
-  </div>
-</div>
 
-    <!-- Pagination -->
+    <!-- Pagination: Place this OUTSIDE the *ngFor loop and after the activities grid -->
     <div class="d-flex justify-content-center mt-5" *ngIf="filteredActivities.length > itemsPerPage">
       <nav aria-label="Navigation des activités">
         <ul class="pagination">
@@ -178,8 +182,8 @@
               <i class="fas fa-chevron-left"></i>
             </a>
           </li>
-          <li class="page-item" *ngFor="let page of totalPages | range:1" [class.active]="page === currentPage">
-            <a class="page-link" (click)="changePage(page)">{{page}}</a>
+          <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="i + 1 === currentPage">
+            <a class="page-link" (click)="changePage(i + 1)">{{i + 1}}</a>
           </li>
           <li class="page-item" [class.disabled]="currentPage === totalPages">
             <a class="page-link" (click)="nextPage()">

@@ -6,7 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./all-template-front.component.css']
 })
 export class AllTemplateFrontComponent {
-// Fonction pour charger les scripts JavaScript dynamiquement
 loadScript(path: string) {
   const script = document.createElement('script');
   script.src = path;

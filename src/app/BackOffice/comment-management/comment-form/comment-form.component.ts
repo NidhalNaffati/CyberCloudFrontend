@@ -37,27 +37,9 @@ export class CommentFormComponent implements OnInit {
       if (id) {
         this.isEditMode = true;
         this.commentId = +id;
-        this.loadComment(this.commentId);
-        
-        // En mode édition, on retire les validateurs pour les champs cachés
-        this.commentForm.get('userId')?.clearValidators();
-        this.commentForm.get('userName')?.clearValidators();
-        this.commentForm.get('postId')?.clearValidators();
-        
-        // On met à jour l'état des validateurs
-        this.commentForm.get('userId')?.updateValueAndValidity();
-        this.commentForm.get('userName')?.updateValueAndValidity();
-        this.commentForm.get('postId')?.updateValueAndValidity();
+        this.loadComment(+id);
       } else {
-        // En mode création, on utilise les valeurs par défaut pour l'admin connecté
-        // Dans un cas réel, ces valeurs seraient récupérées depuis un service d'authentification
-        this.commentForm.patchValue({
-          userId: 1, // ID de l'admin connecté
-          userName: 'Admin' // Nom de l'admin connecté
-        });
-      }
-      
-      // Get postId from query params if available
+        // Get postId from query params if available (for new comment creation)
       this.route.queryParamMap.subscribe(queryParams => {
         const postId = queryParams.get('postId');
         if (postId) {
@@ -65,6 +47,7 @@ export class CommentFormComponent implements OnInit {
           this.commentForm.patchValue({ postId: this.postId });
         }
       });
+      }
     });
   }
 
@@ -73,13 +56,17 @@ export class CommentFormComponent implements OnInit {
     this.commentService.getCommentById(id).subscribe({
       next: (comment) => {
         if (comment) {
+          // Extract IDs from nested objects if they exist
+          const postId = comment.blogPost?.postId || comment.postId || null;
+          const userId = comment.user?.id || comment.userId;
+          
           this.commentForm.patchValue({
             content: comment.content,
-            userId: comment.userId,
-            userName: comment.userName,
-            postId: comment.postId
+            userId: userId,
+            userName: comment.userName || (comment.user?.firstName ? (comment.user.firstName + ' ' + comment.user.lastName) : 'Admin'),
+            postId: postId
           });
-          this.postId = comment.postId;
+          this.postId = postId;
         }
         this.loading = false;
       },
@@ -97,38 +84,52 @@ export class CommentFormComponent implements OnInit {
     }
 
     this.loading = true;
-    const comment: Comment = {
-      ...this.commentForm.value,
-      commentId: this.isEditMode ? this.commentId! : undefined,
-      createdAt: new Date()
-    };
-    
-    // En mode création, on s'assure que les informations de l'admin sont bien définies
-    if (!this.isEditMode) {
-      // Dans un cas réel, ces valeurs seraient récupérées depuis un service d'authentification
-      comment.userId = 1; // ID de l'admin connecté
-      comment.userName = 'Admin'; // Nom de l'admin connecté
-    }
+    const formValues = this.commentForm.value;
 
     if (this.isEditMode && this.commentId) {
-      this.commentService.updateComment(this.commentId, comment).subscribe({
-        next: () => {
+      const content = formValues.content;
+      
+      // Débogage
+      console.log(`[COMPONENT] Tentative de mise à jour du commentaire ID=${this.commentId}`, content);
+      
+      // Utiliser la méthode directe
+      this.commentService.updateCommentDirect(this.commentId, content).subscribe({
+        next: (response) => {
+          console.log('[COMPONENT] Mise à jour réussie!', response);
           this.router.navigate(['/admin/comments']);
         },
         error: (err) => {
-          console.error('Error updating comment:', err);
-          this.error = 'Failed to update comment. Please try again later.';
+          console.error('[COMPONENT] Erreur lors de la mise à jour:', err);
+          this.error = 'Échec de la mise à jour. Veuillez réessayer. Erreur: ' + (err.message || err);
           this.loading = false;
         }
       });
     } else {
-      this.commentService.createComment(comment.postId, comment).subscribe({
+      // Mode création
+      const newComment = {
+        content: formValues.content,
+        createdAt: new Date(),
+        userId: 1,
+        userName: 'Admin',
+        postId: formValues.postId || this.postId
+      };
+      
+      // Vérifier que nous avons un postId valide
+      if (!newComment.postId) {
+        this.error = 'ID d\'article manquant. Impossible de créer le commentaire.';
+        this.loading = false;
+        return;
+      }
+      
+      console.log('Création d\'un nouveau commentaire:', newComment);
+      
+      this.commentService.createComment(newComment.postId, newComment as Comment).subscribe({
         next: () => {
           this.router.navigate(['/admin/comments']);
         },
         error: (err) => {
-          console.error('Error creating comment:', err);
-          this.error = 'Failed to create comment. Please try again later.';
+          console.error('Erreur lors de la création:', err);
+          this.error = 'Échec de la création. Veuillez réessayer.';
           this.loading = false;
         }
       });

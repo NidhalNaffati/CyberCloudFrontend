@@ -1,0 +1,43 @@
+
+
+<div class="container mt-4">
+    <h2>Liste des Consultations</h2>
+  
+    <table class="table table-bordered table-striped mt-3">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Details</th>
+          <th>Description</th>
+          <th>Duration</th>
+          <th>Appointment</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let consultation of consultations">
+          <td>{{ consultation.id }}</td>
+          <td>{{ consultation.details }}</td>
+          <td>{{ consultation.description }}</td>
+          <td>{{ consultation.actualDuration }}</td>
+          <td>
+            <ng-container *ngIf="consultation.appointment; else noAppointment">
+              {{ consultation.appointment.date }} {{ consultation.appointment.startTime }}
+            </ng-container>
+            <ng-template #noAppointment>
+              Pas de rendez-vous
+            </ng-template>
+          </td>          
+          <td>
+            <button  class="btn btn-sm btn-warning me-2" (click)="editConsultation(consultation.id!)">Edit</button>
+            <button class="btn btn-sm btn-danger" (click)="deleteConsultation(consultation.id!)">Delete</button>
+            
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <button class="btn btn-primary mt-3" [routerLink]="['/admin/consultations/add']">Add consultation</button>
+  </div>
+ 
+  

@@ -32,16 +32,12 @@
         </div>
         <div class="card-body">
           <div class="mb-3">
-            <h6 class="fw-bold">ID Article:</h6>
-            <p>{{ comment.postId }}</p>
-          </div>
-          <div class="mb-3">
             <h6 class="fw-bold">ID Utilisateur:</h6>
-            <p>{{ comment.userId || '-' }}</p>
+            <p>{{ comment.user?.id || comment.userId || '-' }}</p>
           </div>
-          <div class="mb-3" *ngIf="comment.userName">
+          <div class="mb-3" *ngIf="comment.userName || comment.user?.firstName">
             <h6 class="fw-bold">Nom d'utilisateur:</h6>
-            <p>{{ comment.userName }}</p>
+            <p>{{ comment.userName || (comment.user?.firstName + ' ' + comment.user?.lastName) }}</p>
           </div>
           <div class="mb-3">
             <h6 class="fw-bold">Contenu:</h6>

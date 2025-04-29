@@ -43,7 +43,19 @@ export class CommentResponseComponent implements OnInit {
           .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       },
       error: () => {
-        Swal.fire('Erreur', 'Impossible de charger les réponses.', 'error');
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: 'Impossible de charger les réponses.',
+          confirmButtonText: 'OK',
+          didClose: () => {
+            document.body.classList.remove('modal-open');
+            const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+            while (modalBackdrops.length > 0) {
+              modalBackdrops[0].parentNode?.removeChild(modalBackdrops[0]);
+            }
+          }
+        });
       }
     });
   }
@@ -85,7 +97,19 @@ export class CommentResponseComponent implements OnInit {
           Swal.fire('Succès', 'Réponse mise à jour avec succès.', 'success');
         },
         error: () => {
-          Swal.fire('Erreur', 'Erreur lors de la mise à jour de la réponse.', 'error');
+          Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Erreur lors de la mise à jour de la réponse.',
+            confirmButtonText: 'OK',
+            didClose: () => {
+              document.body.classList.remove('modal-open');
+              const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+              while (modalBackdrops.length > 0) {
+                modalBackdrops[0].parentNode?.removeChild(modalBackdrops[0]);
+              }
+            }
+          });
         }
       });
     } else {
@@ -96,7 +120,19 @@ export class CommentResponseComponent implements OnInit {
           Swal.fire('Succès', 'Réponse ajoutée avec succès.', 'success');
         },
         error: () => {
-          Swal.fire('Erreur', 'Erreur lors de l\'ajout de la réponse.', 'error');
+          Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Erreur lors de l\'ajout de la réponse.',
+            confirmButtonText: 'OK',
+            didClose: () => {
+              document.body.classList.remove('modal-open');
+              const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+              while (modalBackdrops.length > 0) {
+                modalBackdrops[0].parentNode?.removeChild(modalBackdrops[0]);
+              }
+            }
+          });
         }
       });
     }
@@ -106,7 +142,19 @@ export class CommentResponseComponent implements OnInit {
     this.isEditing = true;
     this.showResponseForm = true;
     if (!response.responseId) {
-      Swal.fire('Erreur', 'ID de la réponse non trouvé', 'error');
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'ID de la réponse non trouvé',
+        confirmButtonText: 'OK',
+        didClose: () => {
+          document.body.classList.remove('modal-open');
+          const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+          while (modalBackdrops.length > 0) {
+            modalBackdrops[0].parentNode?.removeChild(modalBackdrops[0]);
+          }
+        }
+      });
       return;
     }
     this.selectedResponseId = response.responseId;
@@ -131,7 +179,19 @@ export class CommentResponseComponent implements OnInit {
             Swal.fire('Succès', 'Réponse supprimée avec succès.', 'success');
           },
           error: () => {
-            Swal.fire('Erreur', 'Erreur lors de la suppression de la réponse.', 'error');
+            Swal.fire({
+              icon: 'error',
+              title: 'Erreur',
+              text: 'Erreur lors de la suppression de la réponse.',
+              confirmButtonText: 'OK',
+              didClose: () => {
+                document.body.classList.remove('modal-open');
+                const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+                while (modalBackdrops.length > 0) {
+                  modalBackdrops[0].parentNode?.removeChild(modalBackdrops[0]);
+                }
+              }
+            });
           }
         });
       }

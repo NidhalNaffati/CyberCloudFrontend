@@ -1,0 +1,94 @@
+<div class="page-wrapper">
+    <div class="content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a>Factures</a></li>
+                        <li class="breadcrumb-item"><i class="feather icon-chevron-right"></i></li>
+                        <li class="breadcrumb-item active">Factures List</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-table show-entire">
+                    <div class="card-body">
+
+                        <!-- Table Header -->
+                        <div class="page-table-header mb-2">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="facture-table-blk">
+                                        <h3>Remboursement List</h3>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table border-0 custom-table comman-table datatable mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Reference Facture </th>
+                                        <th>Doctor</th>
+                                        <th>Patient</th>
+                                        <th>Valeur</th>
+                                        <th>status</th>
+                                        <th>Raison of refuse </th>
+                                        <th>Actions </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let remboursement of list">
+                                        <td>{{remboursement.facture?.reference}}</td>
+                                        <td>{{remboursement.facture?.doctor?.firstName}}</td>
+                                        <td>{{remboursement.facture?.patient?.firstName}}</td>
+                                        <td>{{remboursement.facture?.montant}}</td>
+                                        <td>{{remboursement.statut}}</td>
+                                        <td>{{remboursement.raison?remboursement.raison:""}}</td>
+                                        <td *ngIf="remboursement.statut==='processing'">
+                                            <button class="btn btn-success me-2 " (click)="acceptRem(remboursement)">
+                                                Accept
+                                            </button>
+                                            <button class="btn btn-danger" (click)="openRefuseDialog(remboursement)">
+                                                Refuse
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <!-- Refuse Modal -->
+                        <div *ngIf="remboursementToRefuse!=null">
+                            <div>
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="refuseModalLabel">Raison du refus</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <textarea [(ngModel)]="raisonOfRefuse" class="form-control" rows="4" placeholder="Saisissez la raison"></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                        <button type="button" class="btn btn-danger" (click)="confirmRefuse()">Confirmer
+                                            le refus</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

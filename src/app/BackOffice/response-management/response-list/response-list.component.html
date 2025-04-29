@@ -36,8 +36,6 @@
           <thead class="table-dark">
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">ID Commentaire</th>
-              <th scope="col">ID Utilisateur</th>
               <th scope="col">Contenu</th>
               <th scope="col">Date de création</th>
               <th scope="col">Actions</th>
@@ -46,8 +44,6 @@
           <tbody>
             <tr *ngFor="let response of responses">
               <td>{{ response.responseId }}</td>
-              <td>{{ response.commentId }}</td>
-              <td>{{ response.userId }}</td>
               <td>{{ response.content | slice:0:50 }}{{ response.content.length > 50 ? '...' : '' }}</td>
               <td>{{ response.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
               <td>
@@ -55,9 +51,7 @@
                   <a [routerLink]="['/admin/responses/view', response.responseId]" class="btn btn-info btn-sm">
                     <i class="fas fa-eye"></i> Voir
                   </a>
-                  <a [routerLink]="['/admin/responses/edit', response.responseId]" class="btn btn-warning btn-sm">
-                    <i class="fas fa-edit"></i> Modifier
-                  </a>
+                 
                   <button (click)="deleteResponse(response.responseId!)" class="btn btn-danger btn-sm">
                     <i class="fas fa-trash"></i> Supprimer
                   </button>

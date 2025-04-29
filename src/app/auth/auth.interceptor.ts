@@ -21,7 +21,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.authService.getAccessToken();
-    if (token && !request.url.includes('refresh-token') && !request.url.includes('authenticate')) {
+    if (token && !request.url.includes('refresh-token') && !request.url.includes('authenticate')&& !request.url.includes('https://generativelanguage.googleapis.com')) {
       request = this.addToken(request, token);
     }
 

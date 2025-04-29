@@ -157,7 +157,7 @@
   100% {
     opacity: 1;
   }
-  
+
 }
 
 /* Conteneur principal */
@@ -347,8 +347,8 @@
   100% { transform: scale(1); }
 }
 /* Add to your component's CSS file */
-:host ::ng-deep .ngx-charts .bar, 
-:host ::ng-deep .ngx-charts .arc, 
+:host ::ng-deep .ngx-charts .bar,
+:host ::ng-deep .ngx-charts .arc,
 :host ::ng-deep .ngx-charts .line {
   stroke-width: 2px;
 }
@@ -12857,7 +12857,7 @@ textarea.is-invalid.tt-hint, .select2-container--default .select2-selection--sin
   .timeline-container {
     padding-left: 24px;
   }
-  
+
   .timeline-item {
     padding-left: 24px;
   }

@@ -1,20 +1,22 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { Complaint } from '../models/complaint';
-import { AuthService } from '../auth/auth.service';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
+import {Complaint} from '../models/complaint';
+import {AuthService} from '../auth/auth.service';
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComplaintService {
-  private apiUrl = 'http://localhost:8089/api/complaints';
+  private apiUrl = 'http://localhost:8080/api/complaints';
 
   constructor(
     private http: HttpClient,
     private authService: AuthService
-  ) {}
+  ) {
+  }
 
   // Vérifie si le contenu contient des mots inappropriés
   private validateComplaintContent(complaint: Complaint): void {

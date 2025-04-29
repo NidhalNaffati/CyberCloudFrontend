@@ -32,7 +32,14 @@ export class CommentDetailComponent implements OnInit {
     this.loading = true;
     this.commentService.getCommentById(id).subscribe({
       next: (comment) => {
-        this.comment = comment;
+        // Extract IDs from nested objects if they exist
+        this.comment = {
+          ...comment,
+          postId: comment.blogPost?.postId || comment.postId,
+          userId: comment.user?.id || comment.userId
+        };
+        
+        console.log('Processed comment details:', this.comment);
         this.loading = false;
       },
       error: (err) => {

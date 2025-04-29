@@ -27,28 +27,25 @@
   <div class="row" *ngIf="!loading">
     <div class="col">
       <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
-        <!-- Champs cachés en mode édition mais conservés pour la création -->
         <!-- Champs visibles uniquement en mode création -->
         <div class="mb-3" *ngIf="!isEditMode">
-          <label for="postId" class="form-label">ID Article</label>
+          <label for="postId" class="form-label">ID Article <span class="text-danger">*</span></label>
           <input type="number" class="form-control" id="postId" formControlName="postId" [readonly]="postId !== null">
           <div *ngIf="commentForm.get('postId')?.invalid && (commentForm.get('postId')?.dirty || commentForm.get('postId')?.touched)" class="text-danger">
             <small *ngIf="commentForm.get('postId')?.errors?.['required']">L'ID de l'article est requis.</small>
           </div>
         </div>
 
-        <!-- Les champs userId et userName ont été supprimés car ils sont automatiquement associés à l'admin connecté -->
-        
-        <!-- Champs cachés en mode édition pour conserver les valeurs -->
-        <div *ngIf="isEditMode">
+        <!-- Champs cachés en mode édition -->
+        <div *ngIf="isEditMode" style="display: none;">
           <input type="hidden" formControlName="postId">
           <input type="hidden" formControlName="userId">
           <input type="hidden" formControlName="userName">
         </div>
 
         <div class="mb-3">
-          <label for="content" class="form-label">Contenu</label>
-          <textarea class="form-control" id="content" rows="4" formControlName="content"></textarea>
+          <label for="content" class="form-label">Contenu <span class="text-danger">*</span></label>
+          <textarea class="form-control" id="content" rows="4" formControlName="content" required></textarea>
           <div *ngIf="commentForm.get('content')?.invalid && (commentForm.get('content')?.dirty || commentForm.get('content')?.touched)" class="text-danger">
             <small *ngIf="commentForm.get('content')?.errors?.['required']">Le contenu est requis.</small>
             <small *ngIf="commentForm.get('content')?.errors?.['minlength']">Le contenu doit contenir au moins 3 caractères.</small>
@@ -56,12 +53,21 @@
         </div>
 
         <div class="d-flex gap-2">
-          <button type="submit" class="btn btn-primary" [disabled]="commentForm.invalid || loading">
+          <button 
+            type="submit" 
+            class="btn btn-primary" 
+            [disabled]="commentForm.invalid">
             {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
           </button>
           <a routerLink="/admin/comments" class="btn btn-secondary">Annuler</a>
         </div>
       </form>
+      
+      <!-- Affichage des informations de débogage en mode développement -->
+      <div class="mt-4" *ngIf="isEditMode">
+        <p><small class="text-muted">ID du commentaire à modifier: {{ commentId }}</small></p>
+        <p><small class="text-muted">État du formulaire: {{ commentForm.valid ? 'Valide' : 'Invalide' }}</small></p>
+      </div>
     </div>
   </div>
 </div>

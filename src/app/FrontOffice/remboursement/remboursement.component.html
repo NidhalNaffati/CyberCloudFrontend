@@ -1,0 +1,29 @@
+<div class="col-10 mx-auto my-4">
+    <div *ngIf="remboursement">
+        <h1 class="mb-3">Résultat du remboursement</h1>
+        <p><strong>Date :</strong> {{ remboursement.dateRemboursement | date }}</p>
+        <p><strong>Statut :</strong> {{ remboursement.statut }}</p>
+        <p><strong>Raison :</strong> {{ remboursement.raison }}</p>
+    </div>
+
+    <div *ngIf="!remboursement">
+        <h2>Créer une demande de remboursement</h2>
+        <form [formGroup]="remboursementForm" (ngSubmit)="submit()">
+            <div class="mb-3">
+                <label for="raison" class="form-label">Raison</label>
+                <textarea id="raison" class="form-control" formControlName="raison" rows="4"></textarea>
+                <div *ngIf="remboursementForm.controls['raison'].invalid && remboursementForm.controls['raison'].touched"
+                    class="text-danger">
+                    La raison est requise.
+                </div>
+            </div>
+            <button class="btn btn-primary me-2" type="button"
+                [disabled]="wordCount(remboursementForm.controls['raison'].value) < 3" (click)="IAhelper()">
+                Corriger avec l'IA
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="remboursementForm.invalid">
+                Soumettre
+            </button>
+        </form>
+    </div>
+</div>

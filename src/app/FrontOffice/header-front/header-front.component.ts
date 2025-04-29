@@ -5,6 +5,8 @@ import { ComplaintService } from '../../services/complaint.service';
 import { ResponseComplaint } from '../../models/response-complaint';
 import { Complaint } from '../../models/complaint';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { NotificationService, Notification } from '../../services/notification.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header-front',
@@ -18,11 +20,17 @@ export class HeaderFrontComponent implements OnInit {
   unreadResponsesCount: number = 0;
   currentUser: any = null;
   private jwtHelper = new JwtHelperService();
+  id_user=localStorage.getItem('user_id');
+  // Propriétés pour les notifications de blog
+  blogNotifications: Notification[] = [];
+  unreadBlogNotificationsCount: number = 0;
 
   constructor(
     private authService: AuthService,
     private responseService: ResponseComplaintService,
-    private complaintService: ComplaintService
+    private complaintService: ComplaintService,
+    private notificationService: NotificationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -44,6 +52,19 @@ export class HeaderFrontComponent implements OnInit {
       this.isAdmin = this.authService.isAdmin();
       this.loadAdminResponses();
     }
+
+    // S'abonner aux notifications de blog
+    this.notificationService.getNotifications().subscribe(notifications => {
+      this.blogNotifications = notifications
+        .filter(notification => notification.iduser !== parseInt(this.id_user!))
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) 
+        .slice(0, 10); 
+      
+    });
+    
+    this.notificationService.getUnreadCount().subscribe(count => {
+      this.unreadBlogNotificationsCount = this.blogNotifications.filter(notification => !notification.read).length;
+    });
 
     // Actualiser périodiquement les notifications
     setInterval(() => {
@@ -203,5 +224,39 @@ export class HeaderFrontComponent implements OnInit {
       },
       error: (err: any) => console.error('Error loading complaint:', err)
     });
+  }
+
+  // Méthodes pour gérer les notifications de blog
+  viewBlogPost(notification: Notification): void {
+    // Marquer la notification comme lue
+    this.notificationService.markAsRead(notification.id);
+    
+    // Naviguer vers le blog post
+    this.router.navigate(['/blog'], { queryParams: { postId: notification.postId } });
+  }
+  
+  markAllBlogNotificationsAsRead(): void {
+    this.notificationService.markAllAsRead();
+  }
+  
+  // Formater la date pour l'affichage
+  formatDate(date: Date): string {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    
+    if (days > 0) {
+      return days === 1 ? 'Hier' : `Il y a ${days} jours`;
+    } else if (hours > 0) {
+      return `Il y a ${hours} h`;
+    } else if (minutes > 0) {
+      return `Il y a ${minutes} min`;
+    } else {
+      return 'À l\'instant';
+    }
   }
 }

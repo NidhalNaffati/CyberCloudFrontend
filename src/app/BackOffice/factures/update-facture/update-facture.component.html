@@ -1,0 +1,82 @@
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a>Factures</a></li>
+                        <li class="breadcrumb-item"><i class="feather icon-chevron-right"></i></li>
+                        <li class="breadcrumb-item active">Modifier Facture</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form #factureForm="ngForm" (ngSubmit)="onSubmit(factureForm)">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4 class="form-heading">Modifier Facture</h4>
+                                </div>
+
+                                <!-- Montant -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="form-group local-forms">
+                                        <label for="montant">Montant <span class="login-danger">*</span></label>
+                                        <input type="number" name="montant" class="form-control" [(ngModel)]="facture.montant" required min="0.01" #montant="ngModel">
+                                        <div class="text-danger" *ngIf="montant.invalid && montant.touched">
+                                            <div *ngIf="montant.errors?.['required']">Montant is required.</div>
+                                            <div *ngIf="montant.errors?.['min']">Montant must be greater than 0.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Doctor -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="form-group local-forms">
+                                        <label for="doctorId">Doctor <span class="login-danger">*</span></label>
+                                        <select id="doctorId" name="doctorId" class="form-control" [(ngModel)]="selectedDoctorId" required #doctor="ngModel">
+                      <option value="" disabled selected>-- Select a doctor --</option>
+                      <option *ngFor="let doc of doctors" [value]="doc.id">
+                        {{ doc.firstName }} {{ doc.lastName }}
+                      </option>
+                    </select>
+                                        <div class="text-danger" *ngIf="doctor.invalid && doctor.touched">
+                                            Doctor is required.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Patient -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="form-group local-forms">
+                                        <label for="patientId">Patient <span class="login-danger">*</span></label>
+                                        <select id="patientId" name="patientId" class="form-control" [(ngModel)]="selectedPatientId" required #patient="ngModel">
+                      <option value="" disabled selected>-- Select a patient --</option>
+                      <option *ngFor="let pat of patients" [value]="pat.id">
+                        {{ pat.firstName }} {{ pat.lastName }}
+                      </option>
+                    </select>
+                                        <div class="text-danger" *ngIf="patient.invalid && patient.touched">
+                                            Patient is required.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-primary me-2" [disabled]="factureForm.invalid">Modifier</button>
+                                    <button type="button" class="btn btn-secondary" (click)="onCancel()">Annuler</button>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

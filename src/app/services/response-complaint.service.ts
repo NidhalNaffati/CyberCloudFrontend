@@ -10,7 +10,7 @@ import { AuthService } from '../auth/auth.service';
   providedIn: 'root'
 })
 export class ResponseComplaintService {
-  private apiUrl = 'http://localhost:8089/api/responses';
+  private apiUrl = 'http://localhost:8080/api/responses';
 
   constructor(
     private http: HttpClient,

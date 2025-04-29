@@ -1,7 +1,7 @@
 <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
     <a class="navbar-brand brand-logo" href="/assets/BackOffice/purple-free/src/index.html">
-      <img src="/assets/BackOffice/purple-free/src/assets/images/logo.svg" alt="logo" />
+      <img src="/assets/BackOffice/purple-free/src/assets/images/speakly.svg.png" alt="logo" style="height: 100px;" />
     </a>
     <a class="navbar-brand brand-logo-mini" href="/assets/BackOffice/purple-free/src/index.html">
       <img src="/assets/BackOffice/purple-free/src/assets/images/logo-mini.svg" alt="logo" />
@@ -11,7 +11,6 @@
     <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
       <span class="mdi mdi-menu"></span>
     </button>
-    
     <ul class="navbar-nav navbar-nav-right">
 <!-- Boîte messages avec plaintes -->
 <li class="nav-item dropdown">
@@ -100,7 +99,26 @@
           <h6 class="p-3 mb-0 text-center">See all notifications</h6>
         </div>
       </li>
-
+      <!-- Profile Dropdown -->
+      <li class="nav-item nav-profile dropdown">
+        <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+          <div class="nav-profile-img">
+            <img src="/assets/BackOffice/purple-free/src/assets/images/faces/face1.jpg" alt="image">
+            <span class="availability-status online"></span>
+          </div>
+          <div class="nav-profile-text">
+            <span class="mb-1 text-black">{{ adminFullName }}</span>
+          </div>
+        </a>
+        <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
+          <a class="dropdown-item" (click)="openEditProfileModal()">
+            <i class="mdi mdi-account-edit me-2 text-primary"></i> Edit Profile </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="logout()">
+            <i class="mdi mdi-logout me-2 text-primary"></i> Logout </a>
+        </div>
+      </li>
+      <!-- Logout and Settings -->
       <li class="nav-item nav-logout d-none d-lg-block">
         <a class="nav-link" href="#">
           <i class="mdi mdi-power"></i>
@@ -118,8 +136,62 @@
   </div>
 </nav>
 
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editProfileForm" (ngSubmit)="updateProfile()">
+          <div class="mb-3">
+            <label for="firstName" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="firstName" formControlName="firstName">
+            <div *ngIf="editProfileForm.get('firstName')?.invalid && editProfileForm.get('firstName')?.touched" class="text-danger">
+              First Name is required
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="lastName" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="lastName" formControlName="lastName">
+            <div *ngIf="editProfileForm.get('lastName')?.invalid && editProfileForm.get('lastName')?.touched" class="text-danger">
+              Last Name is required
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" formControlName="email">
+            <div *ngIf="editProfileForm.get('email')?.invalid && editProfileForm.get('email')?.touched" class="text-danger">
+              Please enter a valid email
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" formControlName="password">
+            <div *ngIf="editProfileForm.get('password')?.invalid && editProfileForm.get('password')?.touched" class="text-danger">
+              Password must be at least 6 characters
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword">
+            <div *ngIf="editProfileForm.get('confirmPassword')?.invalid && editProfileForm.get('confirmPassword')?.touched" class="text-danger">
+              Passwords must match
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="editProfileForm.invalid">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- Modal for showing the response complaint form -->
+<!-- Modal for adding response to complaint -->
 <div class="modal fade" id="responseModal2" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -128,16 +200,13 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <!-- Pass the selected complaintId to the add-responsecomplaint component -->
-<!-- In parent component HTML -->
-    <app-add-responsecomplaint [complaintId]="selectComplaintId ?? 0"></app-add-responsecomplaint>
+        <app-add-responsecomplaint [complaintId]="selectComplaintId ?? 0"></app-add-responsecomplaint>
       </div>
     </div>
   </div>
 </div>
 
-
-<!-- Modal for showing the response -->
+<!-- Modal for showing response details -->
 <div class="modal fade" id="responseModal3" tabindex="-1" aria-labelledby="responsecomplaintModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -146,9 +215,9 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <app-add-responsecomplaint 
+        <app-add-responsecomplaint
           [complaintId]="selectComplaintId ?? 0"
-          [responseId]="selectResponseId ?? 0"> <!-- 👈 Ajoutez cette ligne -->
+          [responseId]="selectResponseId ?? 0">
         </app-add-responsecomplaint>
       </div>
     </div>

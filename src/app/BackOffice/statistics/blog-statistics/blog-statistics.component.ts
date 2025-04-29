@@ -50,6 +50,9 @@ export class BlogStatisticsComponent implements OnInit, AfterViewInit {
       if (!this.isLoading) {
         this.createCharts();
       }
+      
+      // Mettre à jour les styles des boutons
+      this.updateButtonStyles();
     }, 100);
   }
 
@@ -58,6 +61,9 @@ export class BlogStatisticsComponent implements OnInit, AfterViewInit {
     this.currentViewLabel =
       view === 'daily' ? '(par jour)' : view === 'monthly' ? '(par mois)' : '(par an)';
     this.loadData();
+    
+    // Mettre à jour visuellement les boutons
+    this.updateButtonStyles();
   }
 
   loadData(): void {
@@ -249,32 +255,72 @@ export class BlogStatisticsComponent implements OnInit, AfterViewInit {
     const reactionsCtx = this.reactionsChartRef.nativeElement.getContext('2d');
     if (!reactionsCtx) return;
 
+    // Map de couleurs pour chaque type de réaction
+    const reactionColors = {
+      'LOVE': {
+        bg: 'rgba(255, 99, 132, 0.7)',
+        border: 'rgba(255, 99, 132, 1)'
+      },
+      'LIKE': {
+        bg: 'rgba(54, 162, 235, 0.7)',
+        border: 'rgba(54, 162, 235, 1)'
+      },
+      'SAD': {
+        bg: 'rgba(255, 206, 86, 0.7)',
+        border: 'rgba(255, 206, 86, 1)'
+      },
+      'ANGRY': {
+        bg: 'rgba(255, 159, 64, 0.7)',
+        border: 'rgba(255, 159, 64, 1)'
+      },
+      'DISLIKE': {
+        bg: 'rgba(153, 102, 255, 0.7)',
+        border: 'rgba(153, 102, 255, 1)'
+      },
+      'HAHA': {
+        bg: 'rgba(75, 192, 192, 0.7)',
+        border: 'rgba(75, 192, 192, 1)'
+      },
+      // Couleur par défaut pour toute autre réaction
+      'DEFAULT': {
+        bg: 'rgba(201, 203, 207, 0.7)',
+        border: 'rgba(201, 203, 207, 1)'
+      }
+    };
+
     // Trier les réactions par nombre décroissant
     const sortedReactions = Array.from(this.reactionsData.entries())
       .sort((a, b) => b[1] - a[1]);
 
+    // Préparer les couleurs en fonction des réactions
+    const backgroundColors = sortedReactions.map(([label]) => {
+      const color = reactionColors[label as keyof typeof reactionColors] || reactionColors.DEFAULT;
+      return color.bg;
+    });
+
+    const borderColors = sortedReactions.map(([label]) => {
+      const color = reactionColors[label as keyof typeof reactionColors] || reactionColors.DEFAULT;
+      return color.border;
+    });
+
+    // Calculer les pourcentages
+    const data = sortedReactions.map(([_, count]) => count);
+    const total = data.reduce((a, b) => a + b, 0);
+    
+    // Créer des labels personnalisés avec pourcentages
+    const labels = sortedReactions.map(([label, count]) => {
+      const percentage = ((count / total) * 100).toFixed(1);
+      return `${label} (${percentage}%)`;
+    });
+
     this.reactionsChart = new Chart(reactionsCtx, {
       type: 'pie',
       data: {
-        labels: sortedReactions.map(([label]) => label),
+        labels: labels,
         datasets: [{
-          data: sortedReactions.map(([_, count]) => count),
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.7)',
-            'rgba(54, 162, 235, 0.7)',
-            'rgba(255, 206, 86, 0.7)',
-            'rgba(75, 192, 192, 0.7)',
-            'rgba(153, 102, 255, 0.7)',
-            'rgba(255, 159, 64, 0.7)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
+          data: data,
+          backgroundColor: backgroundColors,
+          borderColor: borderColors,
           borderWidth: 2,
           hoverBorderWidth: 3,
           hoverBorderColor: '#ffffff'
@@ -284,7 +330,7 @@ export class BlogStatisticsComponent implements OnInit, AfterViewInit {
         responsive: true,
         maintainAspectRatio: true,
         aspectRatio: 2,
-        cutout: '50%', // Définit la taille du trou au centre (pour un cercle bien défini)
+        cutout: '50%',
         layout: {
           padding: 20
         },
@@ -310,19 +356,11 @@ export class BlogStatisticsComponent implements OnInit, AfterViewInit {
             displayColors: true,
             callbacks: {
               label: function(context) {
-                const label = context.label || '';
-                const value = context.raw || 0;
-                const total = context.dataset.data.reduce((a, b) => Number(a) + Number(b), 0);
-                const percentage = ((Number(value) / total) * 100).toFixed(1);
+                const dataIndex = context.dataIndex;
+                const value = data[dataIndex];
+                const percentage = ((value / total) * 100).toFixed(1);
+                const label = labels[dataIndex].split(' (')[0]; // Récupérer juste le nom sans pourcentage
                 return `${label}: ${value} (${percentage}%)`;
-              },
-              // Ajouter un titre au tooltip avec le pourcentage
-              title: function(tooltipItems) {
-                const item = tooltipItems[0];
-                const value = item.raw || 0;
-                const total = item.dataset.data.reduce((a, b) => Number(a) + Number(b), 0);
-                const percentage = ((Number(value) / total) * 100).toFixed(1);
-                return `${percentage}%`;
               }
             }
           }
@@ -333,5 +371,42 @@ export class BlogStatisticsComponent implements OnInit, AfterViewInit {
         }
       }
     });
+  }
+
+  // Mettre à jour les styles des boutons en fonction de la vue active
+  private updateButtonStyles(): void {
+    // Récupérer tous les boutons du groupe
+    const buttons = document.querySelectorAll('.btn-group .btn');
+    
+    // Réinitialiser tous les boutons
+    buttons.forEach(button => {
+      button.classList.remove('btn-primary');
+      button.classList.add('btn-outline-primary');
+    });
+    
+    // Trouver le bouton actif et mettre à jour son style
+    let activeButtonSelector = '';
+    switch(this.currentView) {
+      case 'daily':
+        activeButtonSelector = '.btn-group .btn:nth-child(1)';
+        break;
+      case 'monthly':
+        activeButtonSelector = '.btn-group .btn:nth-child(2)';
+        break;
+      case 'yearly':
+        activeButtonSelector = '.btn-group .btn:nth-child(3)';
+        break;
+    }
+    
+    const activeButton = document.querySelector(activeButtonSelector);
+    if (activeButton) {
+      activeButton.classList.remove('btn-outline-primary');
+      activeButton.classList.add('btn-primary');
+    }
+  }
+
+  // Vérifie si un Map est vide
+  isEmptyMap(map: Map<any, any>): boolean {
+    return map.size === 0;
   }
 }

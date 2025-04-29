@@ -47,9 +47,7 @@
               <a [routerLink]="['/admin/blogs/view', blog.postId]" class="btn btn-sm btn-info">
                 <i class="fas fa-eye"></i> Voir
               </a>
-              <a [routerLink]="['/admin/blogs/edit', blog.postId]" class="btn btn-sm btn-warning">
-                <i class="fas fa-edit"></i> Modifier
-              </a>
+            
               <button (click)="deleteBlog(blog.postId)" class="btn btn-sm btn-danger">
                 <i class="fas fa-trash"></i> Supprimer
               </button>

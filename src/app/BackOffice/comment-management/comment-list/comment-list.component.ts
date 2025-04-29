@@ -24,7 +24,16 @@ export class CommentListComponent implements OnInit {
     
     this.commentService.getAllComments().subscribe({
       next: (comments) => {
-        this.comments = comments;
+        // Transform the API response to ensure all required fields are present
+        this.comments = comments.map(comment => {
+          // Extract IDs from nested objects if they exist
+          return {
+            ...comment,
+            postId: comment.blogPost?.postId || comment.postId,
+            userId: comment.user?.id || comment.userId
+          };
+        });
+        console.log('Processed comments:', this.comments);
         this.loading = false;
       },
       error: (err) => {
