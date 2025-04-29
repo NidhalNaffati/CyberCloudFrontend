@@ -1,34 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
-  private baseUrl = 'http://localhost:8089/reservations';
+  private baseUrl = `${environment.apiUrl}/reservations`;
 
   constructor(private http: HttpClient) {}
 
-// In your Angular service
-createReservation(activityId: number, reservationData: any): Observable<any> {
-  // Remove duplicate 'reservations' from the URL
-  return this.http.post<any>(
-    `${this.baseUrl}/activity/${activityId}/create`,
-    reservationData
-  ).pipe(
-    catchError(error => {
-      console.error('API Error:', error);
-      let errorMsg = 'Failed to create reservation';
-      if (error.error?.message) {
-        errorMsg = error.error.message;
-      } else if (error.status === 404) {
-        errorMsg = 'Service endpoint not found. Please try again later.';
-      }
-      return throwError(() => new Error(errorMsg));
-    })
-  );
-}
+  createReservation(activityId: number, reservationData: any): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/activity/${activityId}/create`,
+      reservationData
+    ).pipe(
+      catchError(error => {
+        console.error('API Error:', error);
+        let errorMsg = 'Failed to create reservation';
+        if (error.error?.message) {
+          errorMsg = error.error.message;
+        } else if (error.status === 404) {
+          errorMsg = 'Service endpoint not found. Please try again later.';
+        }
+        return throwError(() => new Error(errorMsg));
+      })
+    );
+  }
 
   getAllReservations(): Observable<any[]> {
     return this.http.get<any[]>(this.baseUrl);
@@ -48,6 +47,7 @@ createReservation(activityId: number, reservationData: any): Observable<any> {
       reservationData
     );
   }
+
   sendReminderEmail(reservationId: number): Observable<string> {
     return this.http.post(`${this.baseUrl}/sendReminder/${reservationId}`, {}, { responseType: 'text' });
   }
