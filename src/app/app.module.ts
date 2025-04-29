@@ -130,3 +130,4 @@ import { MedecinList } from './components/medecin-list/medecin-list.component';
   bootstrap: [AppComponent]
 })
 export class AppModule {}
+

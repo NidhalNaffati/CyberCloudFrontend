@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 
 // FrontOffice Components
 import { AllTemplateFrontComponent } from './FrontOffice/all-template-front/all-template-front.component';
@@ -53,8 +53,7 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'admin',
-    component: AllTemplateBackComponent,
+    path: 'admin', component: AllTemplateBackComponent,
     children: [
       { path: '', component: HomeBackComponent, pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
@@ -74,12 +73,14 @@ const routes: Routes = [
           )
       },
       { path: 'complaints', component: ListComplaintsComponent },
+      { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent }
+
       { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent },
       { path: 'medecins', component: MedecinList }
     ]
   },
-  { path: '404', component: NotfoundComponent },
-  { path: '**', redirectTo: '/404', pathMatch: 'full' }
+  {path: '404', component: NotfoundComponent},
+  {path: '**', redirectTo: '/404'}
 ];
 
 @NgModule({
