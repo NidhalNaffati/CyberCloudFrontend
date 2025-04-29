@@ -6,7 +6,6 @@
     transition: opacity .8s ease-out, visibility 0s linear .5s;
     z-index: 99999;
  }
-<<<<<<< HEAD
 /* Style global pour l'éditeur */
 .ngx-editor {
     border-radius: 0.5rem;
@@ -86,15 +85,11 @@
       min-height: 150px;
     }
   }
-=======
-
->>>>>>> e70a74a7f771a5b472d2b3f72cd99c6562599f61
  #spinner.show {
      transition: opacity .8s ease-out, visibility 0s linear .0s;
      visibility: visible;
      opacity: 1;
  }
-<<<<<<< HEAD
 /* Styles pour la section de détail */
 .complaint-detail-container {
     padding: 1.5rem;
@@ -396,11 +391,6 @@
   .star-rating {
     font-size: 0.9em;
   }
-=======
-/*** Spinner End ***/
-
-
->>>>>>> e70a74a7f771a5b472d2b3f72cd99c6562599f61
 /*** Common CSS Start ***/
 .back-to-top {
     position: fixed;

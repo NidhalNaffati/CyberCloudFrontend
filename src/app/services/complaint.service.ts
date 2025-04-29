@@ -10,7 +10,7 @@ import {environment} from "../../environments/environment";
   providedIn: 'root'
 })
 export class ComplaintService {
-  private apiUrl = 'http://localhost:8089/api/complaints';
+  private apiUrl = 'http://localhost:8080/api/complaints';
 
   constructor(
     private http: HttpClient,

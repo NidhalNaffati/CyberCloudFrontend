@@ -1,0 +1,46 @@
+<div class="table-responsive col-10 mx-auto my-4" *ngIf="!isStripeOpen">
+    <table class="table table-hover align-middle text-center shadow-sm">
+        <thead class="table-light">
+            <tr>
+                <th scope="col">Référence</th>
+                <th scope="col">Médecin</th>
+                <th scope="col">Date</th>
+                <th scope="col">Montant</th>
+                <th scope="col">Statut</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let facture of factures">
+                <td>{{ facture.reference }}</td>
+                <td>{{ facture.doctor?.firstName }}</td>
+                <td>{{ facture.date | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ facture.montant | currency:'TND':'symbol':'1.2-2' }}</td>
+                <td>
+                    <span class="badge" [ngClass]="{
+                'bg-success': facture.statut === 'paid',
+                 'bg-danger': facture.statut === 'Not paid'
+              }">
+                        {{ facture.statut }}
+                    </span>
+                </td>
+                <td>
+                    <button *ngIf="facture.statut!='paid'" class="btn btn-sm btn-outline-primary me-1" title="payer " (click)="openStripe(facture)">
+                        <i class="bi bi-credit-card"></i> </button>
+
+                    <a [routerLink]="['/remboursement', facture.id]" *ngIf="facture.statut=='paid'" class="btn btn-sm btn-outline-primary me-1">
+                        <i class="bi bi-cash-coin"></i> Remboursement
+                    </a>
+
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="col-10 mx-auto mt-4 flex-row" *ngIf=" isStripeOpen">
+    <div #cardElement id="card-element">
+    </div>
+    <button class="btn btn-success" (click)="pay()">Pay</button>
+
+</div>

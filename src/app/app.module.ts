@@ -69,6 +69,13 @@ import { AuthInterceptor } from './auth/auth.interceptor';
 
 // Other Components
 import { MedecinList } from './components/medecin-list/medecin-list.component';
+ import { MyFactureComponent } from './FrontOffice/my-facture/my-facture.component';
+import { ListFactureComponent } from './BackOffice/factures/list-facture/list-facture.component';
+import { AddFactureComponent } from './BackOffice/factures/add-facture/add-facture.component';
+import { UpdateFactureComponent } from './BackOffice/factures/update-facture/update-facture.component';
+import { RemboursementComponent } from './FrontOffice/remboursement/remboursement.component';
+import { ListRemboursementComponent } from './BackOffice/list-remboursement/list-remboursement.component';
+
 import { AddAppointmentComponent } from './components/add-appointment/add-appointment.component';
 import { AppointmentListComponent } from './components/appointment-list/appointment-list.component';
 import { EditAppointmentComponent } from './components/edit-appointment/edit-appointment.component';
@@ -78,7 +85,7 @@ import { EditConsultationComponent } from './components/consultations/edit-consu
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { EventDialogComponent } from './components/event-dialog/event-dialog.component';
 import { JitsiComponent } from './jitsi/jitsi.component';
-
+ 
 @NgModule({
   declarations: [
     AppComponent,
@@ -89,6 +96,9 @@ import { JitsiComponent } from './jitsi/jitsi.component';
     HomeFrontComponent,
     HomeComponent,
     ReservationComponent,
+    MyFactureComponent,
+    
+    RemboursementComponent,
     // BackOffice
     NavbarBackComponent,
     SidebarBackComponent,
@@ -101,6 +111,10 @@ import { JitsiComponent } from './jitsi/jitsi.component';
     DashboardComponent,
     ReservationFormComponent,
     ReservationDashboardComponent,
+    ListFactureComponent,
+    AddFactureComponent,
+    UpdateFactureComponent,
+    ListRemboursementComponent,
     // Complaints
     AddComplaintsComponent,
     ListComplaintsComponent,
@@ -111,7 +125,8 @@ import { JitsiComponent } from './jitsi/jitsi.component';
     RangePipe,
     ConfirmationComponent,
     StatisticsComponent,
-    // Other Components
+ 
+     // Other Components
     AddAppointmentComponent,
     AppointmentListComponent,
     EditAppointmentComponent,
@@ -121,7 +136,7 @@ import { JitsiComponent } from './jitsi/jitsi.component';
     CalendarComponent,
     EventDialogComponent,
     JitsiComponent
-  ],
+   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -152,9 +167,8 @@ import { JitsiComponent } from './jitsi/jitsi.component';
     StatisticsModule,
     NgxEditorModule,
     MedecinList,
-    MedecinList,
     NotfoundComponent
-  ],
+   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }

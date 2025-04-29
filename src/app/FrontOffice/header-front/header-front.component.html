@@ -1,14 +1,12 @@
-<!-- Navbar start -->
+<!-- Navbar Start -->
 <div class="container-fluid border-bottom bg-light wow fadeIn" data-wow-delay="0.1s">
-  <!-- Top bar section visible on large screens -->
+  <!-- Top Bar -->
   <div class="container topbar bg-primary d-none d-lg-block py-2" style="border-radius: 0 40px">
     <div class="d-flex justify-content-between">
-      <!-- Contact info -->
       <div class="top-info ps-2">
-        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">Ghazella, Ariana Soghra</a></small>
+        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i><a href="#" class="text-white">Ghazella, Ariana Soghra</a></small>
         <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Speakly</a></small>
       </div>
-      <!-- Social media links -->
       <div class="top-link pe-2">
         <small class="btn btn-light btn-sm-square rounded-circle"><i class="fab fa-facebook-f text-secondary"></i></small>
         <small class="btn btn-light btn-sm-square rounded-circle"><i class="fab fa-twitter text-secondary"></i></small>
@@ -18,18 +16,20 @@
     </div>
   </div>
 
-  <!-- Main Navigation Bar -->
+  <!-- Main Navigation -->
   <div class="container px-0">
     <nav class="navbar navbar-light navbar-expand-xl py-3">
-      <!-- Brand Logo -->
-      <a [routerLink]="['/']" class="navbar-brand"><h1 class="text-primary display-6"><span class="text-secondary">Speakly</span></h1></a>
+      <!-- Brand -->
+      <a [routerLink]="['/']" class="navbar-brand">
+        <h1 class="text-primary display-6"><span class="text-secondary">Speakly</span></h1>
+      </a>
 
-      <!-- Mobile Toggle Button -->
+      <!-- Toggle -->
       <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="fa fa-bars text-primary"></span>
       </button>
 
-      <!-- Navigation Links -->
+      <!-- Navbar links -->
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav mx-auto">
           <a [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item nav-link">Home</a>
@@ -40,98 +40,74 @@
           <a [routerLink]="['/programs']" routerLinkActive="active" class="nav-item nav-link">Programs</a>
           <a [routerLink]="['/add-appointment']" routerLinkActive="active" class="nav-item nav-link">Appointment</a>
 
-          <!-- Dropdown Menu -->
+          <!-- Dropdown -->
           <div class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Our Services</a>
             <div class="dropdown-menu m-0 bg-secondary rounded-0">
               <a [routerLink]="['/blog']" class="dropdown-item">Our Blog</a>
               <a [routerLink]="['/forum']" class="dropdown-item">Our forum</a>
-              <a [routerLink]="['/complaints']" class="dropdown-item">complaints</a>
+              <a [routerLink]="['/complaints']" class="dropdown-item">Complaints</a>
               <a [routerLink]="['/404']" class="dropdown-item">404 Page</a>
             </div>
           </div>
 
           <a [routerLink]="['/contact']" routerLinkActive="active" class="nav-item nav-link">Contact</a>
+          <a [routerLink]="['/myfactures']" *ngIf="isAuthenticated" class="nav-item nav-link">Mes Factures</a>
         </div>
 
-        <!-- Profile and Logout buttons (authenticated users) -->
-        <div *ngIf="isAuthenticated" class="ms-3 me-3 d-flex align-items-center">
-          <!-- Notifications Icon - Moved to the left -->
-          <div *ngIf="isAuthenticated" class="me-3 position-relative">
-            <div class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-bell text-primary fa-lg"></i>
-                <span *ngIf="unreadBlogNotificationsCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {{ unreadBlogNotificationsCount }}
-                  <span class="visually-hidden">notifications non lues</span>
-                </span>
-              </a>
+        <!-- Right Section -->
+        <div class="d-flex align-items-center ms-3">
+          <!-- Notifications -->
+        <div *ngIf="isAuthenticated" class="me-3 position-relative">
+          <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationDropdown" data-bs-toggle="dropdown">
+              <i class="fas fa-bell text-primary fa-lg"></i>
+              <span *ngIf="unreadBlogNotificationsCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ unreadBlogNotificationsCount }}
+              </span>
+            </a>
               <div class="dropdown-menu dropdown-menu-start shadow-lg p-0" aria-labelledby="notificationDropdown">
-                <div class="notification-header text-white d-flex justify-content-between align-items-center p-3">
-                  <h6 class="m-0">Notifications ({{ unreadBlogNotificationsCount }})</h6>
-                  <button class="btn btn-sm btn-light" (click)="markAllBlogNotificationsAsRead()">Tout marquer comme lu</button>
-                </div>
-                <div *ngIf="blogNotifications.length === 0" class="p-3 text-center text-muted">
-                  <p>Pas de notifications</p>
-                </div>
-                <div *ngFor="let notification of blogNotifications" class="dropdown-item d-flex align-items-center" 
-                    [class.unread]="!notification.read"
-                    (click)="viewBlogPost(notification)">
-                  <div class="notification-avatar">
-                    <i class="fas fa-newspaper"></i>
-                  </div>
-                  <div class="notification-content ms-3">
-                    <div class="notification-title d-flex justify-content-between">
-                      <span>{{ notification.userName }}</span>
-                      <small class="notification-time">{{ formatDate(notification.createdAt) }}</small>
+              <div class="notification-header text-white d-flex justify-content-between align-items-center p-3">
+                <h6 class="m-0">Notifications ({{ unreadBlogNotificationsCount }})</h6>
+                <button class="btn btn-sm btn-light" (click)="markAllBlogNotificationsAsRead()">Tout marquer comme lu</button>
+              </div>
+                <div *ngIf="blogNotifications.length === 0" class="p-3 text-center text-muted">Pas de notifications</div>
+              <div *ngFor="let notification of blogNotifications" class="dropdown-item d-flex align-items-center" 
+                   [class.unread]="!notification.read"
+                   (click)="viewBlogPost(notification)">
+                  <div class="notification-avatar"><i class="fas fa-newspaper"></i></div>
+                <div class="notification-content ms-3">
+                    <div class="d-flex justify-content-between">
+                    <span>{{ notification.userName }}</span>
+                      <small>{{ formatDate(notification.createdAt) }}</small>
                     </div>
-                    <p class="notification-text mb-0">{{ notification.message }}</p>
+                    <p class="mb-0">{{ notification.message }}</p>
                     <small class="text-primary">{{ notification.title }}</small>
                   </div>
                 </div>
-                <div class="dropdown-divider m-0"></div>
-                <a routerLink="/blog" class="dropdown-item text-center py-2 text-primary">Voir tous les posts</a>
-              </div>
+              <a routerLink="/blog" class="dropdown-item text-center py-2 text-primary">Voir tous les posts</a>
             </div>
           </div>
-          
-          <a routerLink="/auth/profile/edit" class="btn btn-primary rounded me-2">
-            <i class="fas fa-user-edit me-2"></i>Edit Profile
-          </a>
-        
-        <div class="d-flex me-4">
-          <div id="phone-tada" class="d-flex align-items-center justify-content-center">
-            <a href="" class="position-relative wow tada" data-wow-delay=".9s">
-              <i class="fa fa-phone-alt text-primary fa-2x me-4"></i>
-              <div class="position-absolute" style="top: -7px; left: 20px;">
-                <span><i class="fa fa-comment-dots text-secondary"></i></span>
-              </div>
-            </a>
-          </div>
-          <div class="d-flex flex-column pe-3 border-end border-primary">
-            <span class="text-primary">Have any questions?</span>
-            <a href="#"><span class="text-secondary">Free: + 0123 456 7890</span></a>
-          </div>
         </div>
-
-        <!-- Removed the notifications section from here since it was moved above -->
       
-        <!-- Logout button that only appears when authenticated -->
-        <div *ngIf="isAuthenticated" class="ms-3 me-3">
+          <!-- Edit Profile + Logout -->
+          <ng-container *ngIf="isAuthenticated">
+            <a routerLink="/auth/profile/edit" class="btn btn-primary rounded me-2">
+              <i class="fas fa-user-edit me-2"></i>Edit Profile
+            </a>
           <button (click)="logout()" class="btn btn-danger rounded">
             <i class="fas fa-sign-out-alt me-2"></i>Logout
           </button>
-        </div>
+          </ng-container>
 
-        <!-- Login/Register buttons (non-authenticated users) -->
-        <div *ngIf="!isAuthenticated" class="ms-3 me-3">
+          <!-- Login/Register -->
+          <ng-container *ngIf="!isAuthenticated">
           <a routerLink="/auth/login" class="btn btn-primary rounded me-2">Login</a>
           <a routerLink="/auth/register" class="btn btn-outline-primary rounded">Register</a>
-        </div>
+          </ng-container>
      </div>
      </div>
     </nav>
   </div>
-  
 </div>
 <!-- Navbar End -->
