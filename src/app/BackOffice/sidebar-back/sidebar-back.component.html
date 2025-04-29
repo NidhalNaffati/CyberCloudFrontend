@@ -1,19 +1,5 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
-      <li class="nav-item nav-profile">
-        <a href="#" class="nav-link">
-          <div class="nav-profile-image">
-            <img src="/assets/BackOffice/purple-free/src/assets/images/faces/face1.jpg" alt="profile" />
-            <span class="login-status online"></span>
-            <!--change to offline or busy as needed-->
-          </div>
-          <div class="nav-profile-text d-flex flex-column">
-            <span class="font-weight-bold mb-2">David Grey. H</span>
-            <span class="text-secondary text-small">Project Manager</span>
-          </div>
-          <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
-        </a>
-      </li>
       <li class="nav-item">
         <a class="nav-link" href="/assets/BackOffice/purple-free/src/index.html">
           <span class="menu-title">Dashboard</span>
@@ -29,13 +15,7 @@
         <div class="collapse" id="ui-basic">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
-              <a class="nav-link" href="/assets/BackOffice/purple-free/src/pages/ui-features/buttons.html">Buttons</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/assets/BackOffice/purple-free/src/pages/ui-features/dropdowns.html">Dropdowns</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/assets/BackOffice/purple-free/src/pages/ui-features/typography.html">Typography</a>
+              <a class="nav-link" routerLink="/video-call">Video call</a>
             </li>
           </ul>
         </div>
@@ -54,16 +34,12 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#forms" aria-expanded="false" aria-controls="forms">
-          <span class="menu-title">Forms</span>
+        <a class="nav-link" data-bs-toggle="collapse" href="#forms" aria-expanded="false" aria-controls="Speakly connect">
+          <span class="menu-title">Speakly connect</span>
           <i class="mdi mdi-format-list-bulleted menu-icon"></i>
         </a>
         <div class="collapse" id="forms">
-          <ul class="nav flex-column sub-menu">
-            <li class="nav-item">
-              <a class="nav-link" href="/assets/BackOffice/purple-free/src/pages/forms/basic_elements.html">Form Elements</a>
-            </li>
-          </ul>
+
         </div>
       </li>
       <li class="nav-item">
@@ -80,11 +56,11 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+        <a class="nav-link" data-bs-toggle="collapse" href="#tables-appointments" aria-expanded="false" aria-controls="tables-appointments">
           <span class="menu-title">Appointments</span>
           <i class="mdi mdi-table-large menu-icon"></i>
         </a>
-        <div class="collapse" id="tables">
+        <div class="collapse" id="tables-appointments">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
               <a class="nav-link" routerLink="appointments">Appointments list</a>
@@ -116,11 +92,11 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+        <a class="nav-link" data-bs-toggle="collapse" href="#tables-consultations" aria-expanded="false" aria-controls="tables-consultations">
           <span class="menu-title">Consultations</span>
           <i class="mdi mdi-table-large menu-icon"></i>
         </a>
-        <div class="collapse" id="tables">
+        <div class="collapse" id="tables-consultations">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
               <a class="nav-link" routerLink="consultations">Consultations list</a>
@@ -129,12 +105,11 @@
         </div>
       </li>
       <li class="nav-item">
-
-        <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+        <a class="nav-link" data-bs-toggle="collapse" href="#tables-activities" aria-expanded="false" aria-controls="tables-activities">
           <span class="menu-title">Activites</span>
           <i class="mdi mdi-table-large menu-icon"></i>
         </a>
-        <div class="collapse" id="tables">
+        <div class="collapse" id="tables-activities">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
               <a class="nav-link" routerLink="dashboard">Activity list</a>
@@ -143,11 +118,11 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+        <a class="nav-link" data-bs-toggle="collapse" href="#tables-reservations" aria-expanded="false" aria-controls="tables-reservations">
           <span class="menu-title">Reservations</span>
           <i class="mdi mdi-table-large menu-icon"></i>
         </a>
-        <div class="collapse" id="tables">
+        <div class="collapse" id="tables-reservations">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
               <a class="nav-link" routerLink="reservations">Reservations list</a>
@@ -156,11 +131,11 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+        <a class="nav-link" data-bs-toggle="collapse" href="#tables-complaints" aria-expanded="false" aria-controls="tables-complaints">
           <span class="menu-title">Complaints</span>
           <i class="mdi mdi-table-large menu-icon"></i>
         </a>
-        <div class="collapse" id="tables">
+        <div class="collapse" id="tables-complaints">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item">
               <a class="nav-link" routerLink="complaints">Complaints list</a>
@@ -169,7 +144,7 @@
         </div>
       </li>
 
-    
+
       <li class="nav-item">
 
         <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">

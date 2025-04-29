@@ -29,7 +29,10 @@
               { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/animate.css/animate.min.css",
               "src/styles.css",
               "src/assets/BackOffice/purple-free/src/assets/vendors/mdi/css/materialdesignicons.min.css",
               "src/assets/BackOffice/purple-free/src/assets/vendors/ti-icons/css/themify-icons.css",
@@ -71,13 +74,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "4mb",
-                  "maximumError": "6mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2mb",
-                  "maximumError": "4mb"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
               ],
               "outputHashing": "all"
@@ -100,7 +103,12 @@
               "browserTarget": "gestion_appointment:build:production"
             },
             "development": {
-              "browserTarget": "gestion_appointment:build:development"
+              "browserTarget": "gestion_appointment:build:development",
+              "port": 4200,
+              "host": "0.0.0.0",
+              "liveReload": true,
+              "open": true,
+              "ssl": false
             }
           },
           "defaultConfiguration": "development"
@@ -124,6 +132,7 @@
               "src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
             "scripts": []

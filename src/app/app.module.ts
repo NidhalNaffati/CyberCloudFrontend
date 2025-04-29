@@ -7,13 +7,18 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgPipesModule } from 'ngx-pipes';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { NgxEditorModule } from 'ngx-editor';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
@@ -59,7 +64,20 @@ import { NotfoundComponent } from './components/notfound/notfound.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { StatisticsModule } from './BackOffice/statistics/statistics.module';
 
+// Auth
 import { AuthInterceptor } from './auth/auth.interceptor';
+
+// Other Components
+import { MedecinList } from './components/medecin-list/medecin-list.component';
+import { AddAppointmentComponent } from './components/add-appointment/add-appointment.component';
+import { AppointmentListComponent } from './components/appointment-list/appointment-list.component';
+import { EditAppointmentComponent } from './components/edit-appointment/edit-appointment.component';
+import { ConsultationListComponent } from './components/consultations/consultation-list/consultation-list.component';
+import { AddConsultationComponent } from './components/consultations/add-consultation/add-consultation.component';
+import { EditConsultationComponent } from './components/consultations/edit-consultation/edit-consultation.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
+import { EventDialogComponent } from './components/event-dialog/event-dialog.component';
+import { JitsiComponent } from './jitsi/jitsi.component';
 
 @NgModule({
   declarations: [
@@ -92,13 +110,23 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     FooterComponent,
     RangePipe,
     ConfirmationComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    // Other Components
+    AddAppointmentComponent,
+    AppointmentListComponent,
+    EditAppointmentComponent,
+    ConsultationListComponent,
+    AddConsultationComponent,
+    EditConsultationComponent,
+    CalendarComponent,
+    EventDialogComponent,
+    JitsiComponent
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    NotfoundComponent,
     FormsModule,
     BrowserAnimationsModule,
     RouterModule,
@@ -107,17 +135,25 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     NgxChartsModule,
     NgxPaginationModule,
     NgPipesModule,
-    NotfoundComponent,
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
-    AppRoutingModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatSelectModule,
     BlogModule,
     EditorModule,
     FullCalendarModule,
     NgxEditorModule,
-    StatisticsModule
+    StatisticsModule,
+    NgxEditorModule,
+    MedecinList,
+    MedecinList,
+    NotfoundComponent
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },

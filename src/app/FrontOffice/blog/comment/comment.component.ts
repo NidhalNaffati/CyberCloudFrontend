@@ -52,20 +52,9 @@ export class CommentComponent implements OnInit {
         // Mettre à jour le compteur de commentaires
         this.updateCommentCount(this.comments.length);
       },
-      error: () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Erreur',
-          text: 'Impossible de charger les commentaires.',
-          confirmButtonText: 'OK',
-          didClose: () => {
-            document.body.classList.remove('modal-open');
-            const modalBackdrops = document.getElementsByClassName('modal-backdrop');
-            while (modalBackdrops.length > 0) {
-              modalBackdrops[0].parentNode?.removeChild(modalBackdrops[0]);
-            }
-          }
-        });
+      error: (err) => {
+        console.error('Error loading comments:', err);
+        Swal.fire('Erreur', 'Impossible de charger les commentaires.', 'error');
       }
     });
   }
@@ -139,19 +128,7 @@ export class CommentComponent implements OnInit {
 
   editComment(comment: Comment): void {
     if (!comment.commentId) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Erreur',
-        text: 'ID du commentaire non trouvé',
-        confirmButtonText: 'OK',
-        didClose: () => {
-          document.body.classList.remove('modal-open');
-          const modalBackdrops = document.getElementsByClassName('modal-backdrop');
-          while (modalBackdrops.length > 0) {
-            modalBackdrops[0].parentNode?.removeChild(modalBackdrops[0]);
-          }
-        }
-      });
+      Swal.fire('Erreur', 'ID du commentaire non trouvé', 'error');
       return;
     }
 

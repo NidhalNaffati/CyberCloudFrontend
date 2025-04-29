@@ -17,20 +17,22 @@ import { environment } from 'src/environments/environment';
       private badWordsFilter: BadWordsFilterService
     ) {}
     id_user=localStorage.getItem('user_id');
-    
+
     createComment(postId: number, comment: Comment): Observable<Comment> {
          const  token = localStorage.getItem('access_token');
-      
+
          const  headers = new HttpHeaders({
           'Authorization': `Bearer ${token}`
         });
           
+
+      // Vérifier si le contenu contient des mots inappropriés
       if (!this.badWordsFilter.validateContent(comment.content)) {
         return new Observable(observer => {
           observer.error(new Error('Contenu inapproprié détecté'));
         });
       }
-      
+
       const commentData = {
         ...comment,
         userId: comment.userId,
@@ -38,38 +40,40 @@ import { environment } from 'src/environments/environment';
       };
       return this.http.post<Comment>(`${this.apiUrl}/add/${postId}/${this.id_user}`, commentData, { headers });
     }
-  
-    
+
+
     getAllComments(): Observable<Comment[]> {
       const  token = localStorage.getItem('access_token');
-      
+
       const  headers = new HttpHeaders({
        'Authorization': `Bearer ${token}`
      });
-       
+
       return this.http.get<Comment[]>(`${this.apiUrl}/all`, { headers });
     }
   
     getCommentById(commentId: number): Observable<Comment> {
       const  token = localStorage.getItem('access_token');
-      
+
       const  headers = new HttpHeaders({
        'Authorization': `Bearer ${token}`
      });
-       
+
       return this.http.get<Comment>(`${this.apiUrl}/get/${commentId}`, { headers });
     }
 
     deleteComment(commentId: number): Observable<void> {
       const  token = localStorage.getItem('access_token');
-      
+
       const  headers = new HttpHeaders({
        'Authorization': `Bearer ${token}`
      });
-       
+
       return this.http.delete<void>(`${this.apiUrl}/delete/${commentId}`, { headers });
     }
   
+
+    // Mettre à jour un commentaire
     updateComment(commentId: number, comment: Comment): Observable<Comment> {
       const token = localStorage.getItem('access_token');
       
@@ -77,6 +81,8 @@ import { environment } from 'src/environments/environment';
         'Authorization': `Bearer ${token}`
       });
         
+    
+      // Vérifier si le contenu contient des mots inappropriés
       if (!this.badWordsFilter.validateContent(comment.content)) {
         return new Observable(observer => {
           observer.error(new Error('Contenu inapproprié détecté'));
@@ -90,16 +96,18 @@ import { environment } from 'src/environments/environment';
       console.log(`Sending update to ${this.apiUrl}/update/${commentId} with data:`, updateData);
       
       return this.http.put<Comment>(`${this.apiUrl}/update/${commentId}`, updateData, { headers });
+
+      return this.http.put<Comment>(`${this.apiUrl}/update/${commentId}`, comment, { headers });
     }
-  
-    
+
+
     getCommentsByPostId(postId: number): Observable<Comment[]> {
       const  token = localStorage.getItem('access_token');
-      
+
       const  headers = new HttpHeaders({
        'Authorization': `Bearer ${token}`
      });
-       
+
       return this.http.get<Comment[]>(`${this.apiUrl}/post/${postId}`, { headers });
     }
 
@@ -141,4 +149,3 @@ import { environment } from 'src/environments/environment';
       });
     }
   }
-  

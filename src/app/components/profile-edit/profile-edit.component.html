@@ -1,0 +1,103 @@
+<div class="container-fluid py-5">
+  <div class="container py-5">
+    <div class="p-5 bg-light rounded">
+      <div class="mx-auto text-center wow fadeIn" data-wow-delay="0.1s" style="max-width: 700px;">
+        <h4 class="text-primary mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius">Edit Profile</h4>
+        <h1 class="display-3">Update Your Account</h1>
+        <p class="mb-5">Modify your personal details to keep your Speakly account up to date.</p>
+      </div>
+      <div class="row g-5 justify-content-center">
+        <div class="col-lg-8 wow fadeIn" data-wow-delay="0.3s">
+          <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <label for="firstName" class="form-label">First Name</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  class="w-100 form-control py-3 border-primary"
+                  placeholder="Your first name"
+                  formControlName="firstName">
+                <div *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched"
+                     class="text-danger mt-1">
+                  First name must be between 3 and 16 characters
+                </div>
+              </div>
+              <div class="col-md-6 mb-4">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  class="w-100 form-control py-3 border-primary"
+                  placeholder="Your last name"
+                  formControlName="lastName">
+                <div *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched"
+                     class="text-danger mt-1">
+                  Last name must be between 3 and 16 characters
+                </div>
+              </div>
+              <div class="col-12 mb-4">
+                <label for="email" class="form-label">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  class="w-100 form-control py-3 border-primary"
+                  placeholder="Your email address"
+                  formControlName="email">
+                <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+                     class="text-danger mt-1">
+                  Please enter a valid email address
+                </div>
+              </div>
+              <div class="col-12 mb-4">
+                <label for="password" class="form-label">New Password (Optional)</label>
+                <input
+                  type="password"
+                  id="password"
+                  class="w-100 form-control py-3 border-primary"
+                  placeholder="Enter new password (leave blank to keep current)"
+                  formControlName="password">
+                <div *ngIf="profileForm.get('password')?.invalid && profileForm.get('password')?.touched"
+                     class="text-danger mt-1">
+                  Password must be between 8 and 16 characters
+                </div>
+              </div>
+              <div class="col-12 mb-4">
+                <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  class="w-100 form-control py-3 border-primary"
+                  placeholder="Confirm new password"
+                  formControlName="confirmPassword">
+                <div *ngIf="profileForm.get('confirmPassword')?.touched && profileForm.hasError('passwordMismatch')"
+                     class="text-danger mt-1">
+                  Passwords do not match
+                </div>
+              </div>
+              <div class="col-12">
+                <button
+                  class="w-100 btn btn-primary form-control py-3 border-primary text-white bg-primary btn-border-radius"
+                  type="submit"
+                  [disabled]="profileForm.invalid || isSubmitting">
+                  {{ isSubmitting ? 'Saving...' : 'Save Changes' }}
+                </button>
+              </div>
+              <div class="col-12 mt-3 text-center">
+                <a routerLink="/" class="btn btn-outline-primary btn-border-radius">Cancel</a>
+              </div>
+            </div>
+          </form>
+
+          <div *ngIf="errorMessage" class="alert alert-danger mt-4">
+            {{ errorMessage }}
+          </div>
+
+          <div *ngIf="successMessage" class="alert alert-success mt-4">
+            {{ successMessage }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

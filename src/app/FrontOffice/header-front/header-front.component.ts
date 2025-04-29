@@ -97,14 +97,14 @@ export class HeaderFrontComponent implements OnInit {
     this.responseService.getUnreadResponses().subscribe({
       next: (responses: ResponseComplaint[]) => {
         const filteredResponses: ResponseComplaint[] = [];
-        
+
         responses.forEach(response => {
           this.responseService.getComplaintByResponseId(response.responseId).subscribe({
             next: (complaint: Complaint) => {
               if (response.userId !== complaint.userId) {
                 filteredResponses.push(response);
               }
-              
+
               if (responses.indexOf(response) === responses.length - 1) {
                 this.adminResponses = filteredResponses;
                 this.unreadResponsesCount = this.adminResponses.filter(r => !r.isReadRep).length;
