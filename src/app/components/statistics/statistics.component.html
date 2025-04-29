@@ -1,39 +1,52 @@
-<div class="dashboard-container">
-    <h2 class="dashboard-title">Dashboard Statistics</h2>
+<!-- Complaint Statistics Section -->
+<div class="row mt-4">
+  <h3 class="mb-3 fw-semibold text-secondary" style="letter-spacing:0.5px;">
+    <i class="fas fa-exclamation-circle me-2"></i>Complaint Statistics
+  </h3>
   
-    <div class="chart-row">
-      <!-- Read Status Chart -->
-      <div class="chart-box">
-        <h3>Read Status</h3>
-        <canvas *ngIf="readStatusChart"
-                baseChart
-                [data]="readStatusChart.data"
-                [type]="readStatusChart.type"
-                [options]="readStatusChart.options">
-        </canvas>
-      </div>
-  
-      <!-- Urgency Chart -->
-      <div class="chart-box">
-        <h3>Urgency Level</h3>
-        <canvas *ngIf="urgencyChart"
-                baseChart
-                [data]="urgencyChart.data"
-                [type]="urgencyChart.type"
-                [options]="urgencyChart.options">
-        </canvas>
-      </div>
-  
-      <!-- Rating Chart -->
-      <div class="chart-box">
-        <h3>Rating Distribution</h3>
-        <canvas *ngIf="ratingChart"
-                baseChart
-                [data]="ratingChart.data"
-                [type]="ratingChart.type"
-                [options]="ratingChart.options">
-        </canvas>
-      </div>
-    </div>
+  <!-- Read/Unread Pie Chart -->
+  <div class="col-md-4 mb-4">
+    <h4 class="text-center">Read vs Unread Complaints</h4>
+    <ngx-charts-pie-chart
+    [results]="readUnreadData"
+    [view]="[400,300]"
+    [scheme]="colorScheme" 
+    [legend]="true"
+    [labels]="true"
+    [doughnut]="false">
+  </ngx-charts-pie-chart>
   </div>
   
+  <!-- Urgency Bar Chart -->
+  <div class="col-md-4 mb-4">
+    <h4 class="text-center">Urgent vs Normal Complaints</h4>
+    <ngx-charts-bar-vertical
+      [results]="urgencyData"
+      [view]="[400,300]"
+      [scheme]="colorScheme" 
+      [xAxis]="true"
+      [yAxis]="true"
+      [showXAxisLabel]="false"
+      [showYAxisLabel]="false"
+      [gradient]="gradient">
+    </ngx-charts-bar-vertical>
+  </div>
+  
+  <!-- Ratings Line Chart -->
+  <div class="col-md-4 mb-4">
+    <h4 class="text-center">Complaint Ratings</h4>
+    <ngx-charts-line-chart
+      [results]="ratingsData"
+      [view]="[400,300]"
+      [scheme]="colorScheme" 
+      [legend]="false"
+      [showXAxisLabel]="true"
+      [showYAxisLabel]="true"
+      [xAxis]="true"
+      [yAxis]="true"
+      [xAxisLabel]="xAxisLabel"
+      [yAxisLabel]="yAxisLabel"
+      [timeline]="timeline">
+    </ngx-charts-line-chart>
+  </div>
+</div>

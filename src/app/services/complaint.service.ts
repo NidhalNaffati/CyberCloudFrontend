@@ -1,38 +1,30 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Complaint } from '../models/complaint';
-import { AuthService } from '../auth/auth.service';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
+import {Complaint} from '../models/complaint';
+import {AuthService} from '../auth/auth.service';
+import {environment} from "../../environments/environment";
+
 @Injectable({
   providedIn: 'root'
 })
 export class ComplaintService {
   private apiUrl = 'http://localhost:8089/api/complaints';
-  private badWordsApiUrl = 'https://openrouter.ai/api/v1/chat/completions';
-  private deepSeekApiKey = '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';
 
   constructor(
     private http: HttpClient,
     private authService: AuthService
-  ) {}
+  ) {
+  }
 
-  // Check for inappropriate content
-  checkForBadWords(content: string): Observable<any> {
-    const requestPayload = {
-      model: "openai/gpt-3.5-turbo",
-      messages: [
-        { role: 'system', content: 'Respond only with "YES" if the text contains inappropriate words, otherwise "NO".' },
-        { role: 'user', content: content }
-      ],
-      max_tokens: 5
-    };
-
-    const headers = {
-      'Authorization': `Bearer ${this.deepSeekApiKey}`,
-      'Content-Type': 'application/json'
-    };
-
-    return this.http.post(this.badWordsApiUrl, requestPayload, { headers });
+  // Vérifie si le contenu contient des mots inappropriés
+  private validateComplaintContent(complaint: Complaint): void {
+    // Cette validation est déjà faite côté backend, donc pas besoin de la dupliquer ici
+    // On pourrait ajouter une validation basique côté client si nécessaire
+    if (!complaint.subject || !complaint.content) {
+      throw new Error('Le sujet et le contenu sont obligatoires');
+    }
   }
 
   // Get all complaints
@@ -46,17 +38,33 @@ export class ComplaintService {
   }
 
   // Add new complaint with current user
-  addComplaint(complaint: Complaint): Observable<Complaint> {
-    const userId = this.authService.getUserId();
-    if (!userId) {
-      throw new Error('User not authenticated');
-    }
-    return this.http.post<Complaint>(`${this.apiUrl}/${userId}`, complaint);
+  addComplaint(complaint: Complaint, userId: number): Observable<Complaint> {
+    return this.http.post<Complaint>(`${this.apiUrl}/${userId}`, complaint).pipe(
+      catchError((error) => {
+        // Gestion des erreurs côté backend (dont les bad words)
+        if (error.status === 400 && error.error) {
+          return throwError(() => new Error(error.error.message || 'Contenu inapproprié détecté.'));
+        }
+        return throwError(() => new Error('Erreur lors de l\'envoi de la plainte.'));
+      })
+    );
   }
 
   // Update existing complaint
   updateComplaint(id: number, complaint: Complaint): Observable<Complaint> {
-    return this.http.put<Complaint>(`${this.apiUrl}/${id}`, complaint);
+    try {
+      this.validateComplaintContent(complaint);
+      return this.http.put<Complaint>(`${this.apiUrl}/${id}`, complaint).pipe(
+        catchError(error => {
+          if (error.error && error.error.message) {
+            return throwError(() => new Error(error.error.message));
+          }
+          return throwError(() => new Error('Une erreur est survenue lors de la mise à jour de la plainte'));
+        })
+      );
+    } catch (error) {
+      return throwError(() => error);
+    }
   }
 
   // Delete complaint
@@ -68,7 +76,7 @@ export class ComplaintService {
   getMyComplaints(): Observable<Complaint[]> {
     const userId = this.authService.getUserId();
     if (!userId) {
-      throw new Error('User not authenticated');
+      return throwError(() => new Error('User not authenticated'));
     }
     return this.http.get<Complaint[]>(`${this.apiUrl}/user/${userId}`);
   }
@@ -83,5 +91,3 @@ export class ComplaintService {
     return this.http.put<Complaint>(`${this.apiUrl}/${id}/read`, {});
   }
 }
-
-
