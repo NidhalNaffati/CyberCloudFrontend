@@ -1,0 +1,45 @@
+/* Stripe Element Base Style - Baby Pink Theme */
+
+.StripeElement {
+    padding: 12px;
+    border: 2px solid #f8cce3;
+    border-radius: 12px;
+    background-color: #fff0f5;
+    /* light pink background */
+    margin-bottom: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px;
+    color: #d63384;
+    /* deep pink text */
+    transition: all 0.3s ease;
+}
+
+
+/* Stripe Element Focused */
+
+.StripeElement--focus {
+    border-color: #f78fb3;
+    /* slightly stronger pink */
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(247, 143, 179, 0.4);
+    background-color: #ffe6f0;
+    /* a bit more saturated when focused */
+}
+
+
+/* Placeholder Style */
+
+.StripeElement::placeholder {
+    color: #e495b8;
+    opacity: 0.7;
+}
+
+
+/* Optional Hover Style */
+
+.StripeElement:hover {
+    background-color: #fff5fa;
+    border-color: #f3a6c1;
+}
