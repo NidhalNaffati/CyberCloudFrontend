@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GenerateContentService {
-  private apiUrl = 'http://localhost:8089/api/generate-content';
+  private apiUrl = `${environment.apiUrl}/api/generate-content`;
 
   constructor(private http: HttpClient) {}
 

@@ -5,6 +5,7 @@ import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { BadWordsFilterService } from './bad-words-filter.service';
 import { ImageService } from './image.service';
 import { environment } from 'src/environments/environment';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +15,12 @@ export class BlogpostService {
   private apiUrl = `${environment.apiUrl}/blogposts`
   constructor(
     private http: HttpClient,
+    private authService: AuthService,
     private badWordsFilter: BadWordsFilterService,
     private imageService: ImageService
   ) {}
-  id_user=localStorage.getItem('user_id');
+   id_user = this.authService.getUserId();
+ 
   getAllPosts(): Observable<BlogPost[]> {
    const  token = localStorage.getItem('access_token');
 

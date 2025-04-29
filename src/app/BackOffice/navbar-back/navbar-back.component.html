@@ -29,7 +29,7 @@
           <img src="/assets/BackOffice/purple-free/src/assets/images/faces/face4.jpg" class="profile-pic">
         </div>
         <div class="preview-item-content">
-          <h6 class="preview-subject font-weight-normal mb-1">User {{ complaint.userId }} sent a complaint</h6>
+          <h6 class="preview-subject font-weight-normal mb-1"> {{ complaint.user?.firstName }} {{ ' '}}  {{ complaint.user?.lastName }} sent a complaint</h6>
           <p class="text-gray mb-0">{{ complaint.date | date:'short' }}
             <span *ngIf="complaint.isUrgent" class="badge badge-danger ms-2">Urgent</span>
           </p>

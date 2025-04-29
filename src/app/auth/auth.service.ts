@@ -30,6 +30,7 @@ export interface EditProfileRequest {
 interface AuthenticationRequest {
   email: string;
   password: string;
+ 
 }
 
 interface VerifyAccountRequest {
@@ -128,6 +129,7 @@ export class AuthService {
       );
       localStorage.setItem('access_token', response.access_token);
       localStorage.setItem('refresh_token', response.refresh_token);
+     
       // Set auth headers
       this.setAuthHeaders();
       const userRole = this.extractUserRoleFromToken(response.access_token);

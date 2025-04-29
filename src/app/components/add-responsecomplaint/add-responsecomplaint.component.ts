@@ -232,14 +232,18 @@ export class AddResponsecomplaintComponent implements OnInit, OnChanges {
   }
   
   shouldShowEditButton(response: ResponseComplaint): boolean {
-    // Si l'utilisateur est admin, toujours afficher les boutons
-    if (this.authService.isAdmin()) {
-      return true;
-    }
-    
-    // Sinon, vérifier si l'utilisateur est l'auteur de la réponse
     const currentUserId = this.authService.getUserId();
-    return currentUserId === response.userId;
+  
+    // Vérifie si la réponse est la dernière de la liste
+    const isLastResponse = this.responses.length > 0 && this.responses[this.responses.length - 1].responseId === response.responseId;
+  
+    // Afficher les boutons seulement si c'est la dernière réponse
+    if (!isLastResponse) {
+      return false;
+    }
+  
+    // Si l'utilisateur est admin ou l'auteur de la réponse
+    return this.authService.isAdmin() || currentUserId === response.userId;
   }
   toggleResponses(): void {
     this.showResponses = !this.showResponses;
@@ -276,8 +280,6 @@ export class AddResponsecomplaintComponent implements OnInit, OnChanges {
     if (this.showResponseForm) {
       this.editingResponse = false;
       this.responseForm.reset({
-        // Si on a une selectedResponse, pré-remplir avec son userId
-        userId: this.selectedResponse?.userId || '',
         content: ''
       });
       
@@ -296,10 +298,8 @@ export class AddResponsecomplaintComponent implements OnInit, OnChanges {
   editResponse(response: ResponseComplaint): void {
     // Vérifier le contenu avant d'ouvrir le formulaire d'édition
   
-  
         // Si le contenu est acceptable, permettre l'édition
         this.responseForm.setValue({
-          userId: response.userId,
           content: response.content
         });
         this.editingResponse = true;

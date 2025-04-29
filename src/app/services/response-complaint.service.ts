@@ -5,13 +5,12 @@ import { catchError } from 'rxjs/operators';
 import { ResponseComplaint } from '../models/response-complaint';
 import { Complaint } from '../models/complaint';
 import { AuthService } from '../auth/auth.service';
-
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class ResponseComplaintService {
-  private apiUrl = 'http://localhost:8080/api/responses';
-
+  private apiUrl = `${environment.apiUrl}/api/responses`;
   constructor(
     private http: HttpClient,
     private authService: AuthService

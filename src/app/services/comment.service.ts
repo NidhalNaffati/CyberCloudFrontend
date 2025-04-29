@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Comment } from '../interfaces/Comment';
 import { BadWordsFilterService } from './bad-words-filter.service';
 import { environment } from 'src/environments/environment';
-
+import { AuthService } from '../auth/auth.service';
 @Injectable({
     providedIn: 'root'
   })
@@ -14,10 +14,11 @@ import { environment } from 'src/environments/environment';
   
     constructor(
       private http: HttpClient,
+      private authService: AuthService,
+
       private badWordsFilter: BadWordsFilterService
     ) {}
-    id_user=localStorage.getItem('user_id');
-
+    id_user = this.authService.getUserId();
     createComment(postId: number, comment: Comment): Observable<Comment> {
          const  token = localStorage.getItem('access_token');
 
