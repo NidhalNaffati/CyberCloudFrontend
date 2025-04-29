@@ -62,6 +62,12 @@ import { AuthInterceptor } from './auth/auth.interceptor';
 
 // Other Components
 import { MedecinList } from './components/medecin-list/medecin-list.component';
+import { MyFactureComponent } from './FrontOffice/my-facture/my-facture.component';
+import { ListFactureComponent } from './BackOffice/factures/list-facture/list-facture.component';
+import { AddFactureComponent } from './BackOffice/factures/add-facture/add-facture.component';
+import { UpdateFactureComponent } from './BackOffice/factures/update-facture/update-facture.component';
+import { RemboursementComponent } from './FrontOffice/remboursement/remboursement.component';
+import { ListRemboursementComponent } from './BackOffice/list-remboursement/list-remboursement.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +79,9 @@ import { MedecinList } from './components/medecin-list/medecin-list.component';
     HomeFrontComponent,
     HomeComponent,
     ReservationComponent,
+    MyFactureComponent,
+    
+    RemboursementComponent,
     // BackOffice
     NavbarBackComponent,
     SidebarBackComponent,
@@ -85,6 +94,10 @@ import { MedecinList } from './components/medecin-list/medecin-list.component';
     DashboardComponent,
     ReservationFormComponent,
     ReservationDashboardComponent,
+    ListFactureComponent,
+    AddFactureComponent,
+    UpdateFactureComponent,
+    ListRemboursementComponent,
     // Complaints
     AddComplaintsComponent,
     ListComplaintsComponent,
@@ -94,7 +107,8 @@ import { MedecinList } from './components/medecin-list/medecin-list.component';
     FooterComponent,
     RangePipe,
     ConfirmationComponent,
-    StatisticsComponent
+    StatisticsComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -118,7 +132,7 @@ import { MedecinList } from './components/medecin-list/medecin-list.component';
     EditorModule,
     FullCalendarModule,
     NgxEditorModule,
-    MedecinList
+    MedecinList,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },

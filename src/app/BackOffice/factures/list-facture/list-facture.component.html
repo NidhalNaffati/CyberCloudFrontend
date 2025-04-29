@@ -1,0 +1,118 @@
+<div class="page-wrapper">
+    <div class="content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a>Factures</a></li>
+                        <li class="breadcrumb-item"><i class="feather icon-chevron-right"></i></li>
+                        <li class="breadcrumb-item active">Factures List</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-table show-entire">
+                    <div class="card-body">
+
+                        <!-- Table Header -->
+                        <div class="page-table-header mb-2">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="facture-table-blk">
+                                        <h3>Factures List</h3>
+                                        <div class="facture-search-blk">
+                                            <div class="top-nav-search table-search-blk">
+                                                <input class="form-control" placeholder="Search here" [(ngModel)]="searchDataValue" (ngModelChange)="searchData(searchDataValue)">
+                                            </div>
+                                            <div class="add-group">
+                                                <a class="btn btn-outline-info outline add-pluss ms-2" routerLink="/admin/factures/add-facture"><img src="assets/img/icons/plus.svg" alt=""></a>
+                                                <a (click)="getTableData()" class="btn btn-outline-info outline add-pluss ms-2"><img src="assets/img/icons/re-fresh.svg" alt=""></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Table Header -->
+
+                        <div class="table-responsive">
+                            <table class="table border-0 custom-table comman-table datatable mb-0">
+                                <thead>
+                                    <tr>
+                                        <th (click)="sortBy('reference')">Reference</th>
+                                        <th (click)="sortBy('doctor.nom')">Doctor</th>
+                                        <th (click)="sortBy('patient.nom')">Patient</th>
+                                        <th (click)="sortBy('date')">Date</th>
+                                        <th (click)="sortBy('montant')">Amount</th>
+                                        <th (click)="sortBy('statut')">Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let facture of facturesList">
+                                        <td>{{facture.reference}}</td>
+                                        <td>{{facture.doctor?.firstName}}</td>
+                                        <td>{{facture.patient?.firstName}}</td>
+                                        <td>{{facture.date | date:'dd/MM/yyyy'}}</td>
+                                        <td>{{facture.montant | currency}}</td>
+                                        <td>{{facture.statut}}</td>
+                                        <td class="text-end">
+                                            <div class="dropdown dropdown-action">
+                                                <a href="javascript:void(0);" class="action-icon dropdown-toggle" data-bs-toggle="dropdown">
+                                                    <i class="fa fa-ellipsis-v"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <a class="dropdown-item" [routerLink]="['/admin/factures/update', facture.id]">
+                                                        <i class="fa-solid fa-pen-to-square m-r-5"></i> Edit
+                                                    </a>
+                                                    <a class="dropdown-item" (click)="deleteFacture(facture.id)">
+                                                        <i class="fa fa-trash-alt m-r-5"></i> Delete
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+
+                            <div class="table_footer">
+                                <div class="col-sm-12 col-md-5">
+                                    <div class="dataTables_info">
+                                        Showing {{ serialNumberArray[0] }} to {{ serialNumberArray[serialNumberArray.length - 1] }} of {{ totalData }} entries
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-7">
+                                    <div class="pagination_section">
+                                        <ul class="pagination">
+                                            <li class="page-item" [ngClass]="{ 'disabled': currentPage === 1 }">
+                                                <a (click)="getMoreData('previous')" class="page-link" href="javascript:void(0);" tabindex="-1">Previous</a>
+                                            </li>
+
+                                            <ng-container *ngFor="let item of pageNumberArray; let i = index">
+                                                <li class="page-item" [class.active]="item === currentPage">
+                                                    <a (click)="moveToPage(item)" class="page-link" href="javascript:void(0);">{{ item }}</a>
+                                                </li>
+                                            </ng-container>
+
+                                            <li class="page-item" [ngClass]="{ 'disabled': currentPage === pageNumberArray[pageNumberArray.length - 1] || facturesList.length === 0 }">
+                                                <a (click)="getMoreData('next')" class="page-link" href="javascript:void(0);">Next</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
