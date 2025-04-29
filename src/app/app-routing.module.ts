@@ -73,7 +73,7 @@ const routes: Routes = [
           )
       },
       { path: 'complaints', component: ListComplaintsComponent },
-      { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent }
+      { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent },
 
       { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent },
       { path: 'medecins', component: MedecinList }
