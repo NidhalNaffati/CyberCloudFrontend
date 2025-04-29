@@ -1,0 +1,43 @@
+
+  
+     
+<div class="container mt-4">
+    
+      <h2 class="text-center text-primary">Appointments</h2>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>User ID</th>
+            <th>Available</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let appointment of appointments">
+            <td>{{ appointment.date }}</td>
+            <td>{{ appointment.startTime }}</td>
+            <td>{{ appointment.endTime }}</td>
+            <td>{{ appointment.userId }}</td>
+            <td>{{ appointment.isAvailable ? 'Yes' : 'No' }}</td>
+            <td>
+              <!-- Action buttons (Edit/Delete) -->
+              <button class="btn btn-warning btn-sm" [routerLink]="['/admin/appointments/edit', appointment.id]">Edit</button>
+              <button 
+              class="btn btn-danger btn-sm" 
+              (click)="deleteAppointment(appointment.id ?? 0)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+
+
+
+
+
+
+ 

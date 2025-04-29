@@ -18,7 +18,7 @@ import { EditActivityComponent } from './BackOffice/edit-activity/edit-activity.
 import { ReservationFormComponent } from './BackOffice/reservations/reservation-form/reservation-form.component';
 import { BlogStatisticsComponent } from './BackOffice/statistics/blog-statistics/blog-statistics.component';
 
-// Shared
+// Shared Components
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 
@@ -27,9 +27,19 @@ import { ListComplaintsComponent } from './components/list-complaints/list-compl
 import { AddComplaintsComponent } from './components/add-complaints/add-complaints.component';
 import { AddResponsecomplaintComponent } from './components/add-responsecomplaint/add-responsecomplaint.component';
 
+// Appointment and Consultation Components
+import { AddAppointmentComponent } from './components/add-appointment/add-appointment.component';
+import { AppointmentListComponent } from './components/appointment-list/appointment-list.component';
+import { EditAppointmentComponent } from './components/edit-appointment/edit-appointment.component';
+import { ConsultationListComponent } from './components/consultations/consultation-list/consultation-list.component';
+import { AddConsultationComponent } from './components/consultations/add-consultation/add-consultation.component';
+import { EditConsultationComponent } from './components/consultations/edit-consultation/edit-consultation.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
+
 // Additional Components
 import { RealtimeTranscriptionComponent } from './components/realtime-transcription/realtime-transcription.component';
 import { MedecinList } from './components/medecin-list/medecin-list.component';
+import { JitsiComponent } from './jitsi/jitsi.component';
 
 const routes: Routes = [
   {
@@ -49,9 +59,12 @@ const routes: Routes = [
       { path: 'add-complaint', component: AddComplaintsComponent },
       { path: 'edit/:id', component: AddComplaintsComponent },
       { path: 'confirmation', component: ConfirmationComponent },
-      { path: 'speech-to-text', component: RealtimeTranscriptionComponent }
+      { path: 'speech-to-text', component: RealtimeTranscriptionComponent },
+      { path: 'add-appointment', component: AddAppointmentComponent }
     ]
   },
+  { path: 'calendar', component: CalendarComponent },
+  { path: 'video-call', component: JitsiComponent },
   {
     path: 'admin',
     component: AllTemplateBackComponent,
@@ -75,7 +88,12 @@ const routes: Routes = [
       },
       { path: 'complaints', component: ListComplaintsComponent },
       { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent },
-      { path: 'medecins', component: MedecinList }
+      { path: 'medecins', component: MedecinList },
+      { path: 'appointments', component: AppointmentListComponent },
+      { path: 'appointments/edit/:id', component: EditAppointmentComponent },
+      { path: 'consultations', component: ConsultationListComponent },
+      { path: 'consultations/add', component: AddConsultationComponent },
+      { path: 'consultations/edit/:id', component: EditConsultationComponent }
     ]
   },
   { path: '404', component: NotfoundComponent },

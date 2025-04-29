@@ -13,6 +13,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { NgxEditorModule } from 'ngx-editor';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
@@ -62,6 +68,15 @@ import { AuthInterceptor } from './auth/auth.interceptor';
 
 // Other Components
 import { MedecinList } from './components/medecin-list/medecin-list.component';
+import { AddAppointmentComponent } from './components/add-appointment/add-appointment.component';
+import { AppointmentListComponent } from './components/appointment-list/appointment-list.component';
+import { EditAppointmentComponent } from './components/edit-appointment/edit-appointment.component';
+import { ConsultationListComponent } from './components/consultations/consultation-list/consultation-list.component';
+import { AddConsultationComponent } from './components/consultations/add-consultation/add-consultation.component';
+import { EditConsultationComponent } from './components/consultations/edit-consultation/edit-consultation.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
+import { EventDialogComponent } from './components/event-dialog/event-dialog.component';
+import { JitsiComponent } from './jitsi/jitsi.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +109,17 @@ import { MedecinList } from './components/medecin-list/medecin-list.component';
     FooterComponent,
     RangePipe,
     ConfirmationComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    // Other Components
+    AddAppointmentComponent,
+    AppointmentListComponent,
+    EditAppointmentComponent,
+    ConsultationListComponent,
+    AddConsultationComponent,
+    EditConsultationComponent,
+    CalendarComponent,
+    EventDialogComponent,
+    JitsiComponent
   ],
   imports: [
     BrowserModule,
@@ -109,16 +134,23 @@ import { MedecinList } from './components/medecin-list/medecin-list.component';
     NgxChartsModule,
     NgxPaginationModule,
     NgPipesModule,
-    NotfoundComponent,
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatSelectModule,
     BlogModule,
     EditorModule,
     FullCalendarModule,
     NgxEditorModule,
-    MedecinList
+    MedecinList,
+    MedecinList,
+    NotfoundComponent
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },

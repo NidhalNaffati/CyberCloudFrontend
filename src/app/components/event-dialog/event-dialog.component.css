@@ -1,0 +1,33 @@
+
+.full-width {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  mat-checkbox {
+    display: block;
+    margin-bottom: 15px;
+  }
+  tml, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* styles.css ou styles.scss */
+.success-snackbar {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .error-snackbar {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  /* Style amélioré pour le bouton de fermeture des notifications */
+  .mat-simple-snackbar-action {
+    color: white;
+  }
