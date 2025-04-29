@@ -41,7 +41,11 @@ export class NavbarBackComponent implements OnInit {
 
   loadUnreadResponses(): void {
     this.responseComplaintService.getUnreadResponses().subscribe((data) => {
-      this.unreadResponses = data;
+      // Filtrer uniquement les réponses des utilisateurs avec le rôle ROLE_USER
+      this.unreadResponses = data.filter(response => {
+        return response.user && response.user.role === 'ROLE_USER';
+      });
+      console.log('Filtered user responses:', this.unreadResponses);
     });
   }
 

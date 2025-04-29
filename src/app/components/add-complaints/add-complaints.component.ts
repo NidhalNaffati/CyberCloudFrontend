@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ComplaintService } from 'src/app/services/complaint.service';
 import { ResponseComplaintService } from 'src/app/services/response-complaint.service';
+import { GenerateContentService } from 'src/app/services/generate-content.service';
 import { Complaint } from 'src/app/models/complaint';
 import { ResponseComplaint } from 'src/app/models/response-complaint';
 import { Router } from '@angular/router';
@@ -43,6 +44,7 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private complaintService: ComplaintService,
     private responseComplaintService: ResponseComplaintService,
+    private generateContentService: GenerateContentService,
     private router: Router,
     private sanitizer: DomSanitizer,
     public authService: AuthService
@@ -99,9 +101,18 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
 
   clearSidebar(): void {
     this.complaints = [];
+    // Store the state in localStorage to persist after page refresh
+    localStorage.setItem('sidebarCleared', 'true');
   }
 
   loadComplaints(): void {
+    // Check if sidebar was cleared previously
+    if (localStorage.getItem('sidebarCleared') === 'true') {
+      this.complaints = [];
+      this.isLoading = false;
+      return;
+    }
+    
     this.isLoading = true;
     this.complaintService.getComplaints().subscribe({
       next: (data: Complaint[]) => {
@@ -173,6 +184,33 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
     if (!this.selectedComplaintId) {
       this.complaintForm.reset();
     }
+  }
+  
+  /**
+   * Generates content based on the subject entered by the user
+   * Uses the GenerateContentService to call the backend API
+   */
+  generateContent(): void {
+    const subject = this.complaintForm.get('subject')?.value;
+    
+    if (!subject) {
+      return;
+    }
+    
+    // Show loading state or spinner if needed
+    
+    this.generateContentService.generateContent(subject).subscribe({
+      next: (response) => {
+        // Update the content field with the generated content
+        this.complaintForm.patchValue({
+          content: response.content
+        });
+      },
+      error: (error) => {
+        console.error('Error generating content:', error);
+        // Show error message to user if needed
+      }
+    });
   }
 
   loadResponses(complaintId: number): void {
@@ -334,6 +372,9 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
   }
 
   startAddingNewComplaint(): void {
+    // When adding a new complaint, we should show the form and clear the 'sidebarCleared' flag
+    // to ensure complaints will be loaded next time
+    localStorage.removeItem('sidebarCleared');
     this.isEditMode = false;
     this.selectedComplaintId = null;
     this.complaintForm.reset({
@@ -343,6 +384,11 @@ export class AddComplaintsComponent implements OnInit, OnDestroy {
       isUrgent: false,
       isRead: false
     });
+    
+    // Reload complaints when adding a new one
+    if (this.complaints.length === 0) {
+      this.refreshComplaints();
+    }
   }
 
   resetForm(): void {

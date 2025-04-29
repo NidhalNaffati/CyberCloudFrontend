@@ -9,7 +9,10 @@
     <div class="complaint-card card-hover-effect shadow-lg rounded-4">
       <div class="d-flex align-items-center justify-content-between mb-3 px-4 pt-3">
         <div class="d-flex gap-2">
-          <span class="badge bg-primary me-2 fs-7 p-2">USER #{{ responseComplaint.userId }}</span>
+          <span class="badge bg-primary me-2 fs-7 p-2">
+            <i class="bi bi-person-fill me-1"></i>
+            {{ responseComplaint.user?.firstName || '' }} {{ responseComplaint.user?.lastName || 'User #' + responseComplaint.userId }}
+          </span>
           <span class="badge fs-7 p-2" [ngClass]="responseComplaint.isUrgent ? 'bg-danger pulse' : 'bg-secondary'">
             {{ responseComplaint.isUrgent ? 'URGENT' : 'STANDARD' }}
           </span>
@@ -43,7 +46,10 @@
     <div class="complaint-card card-hover-effect shadow-lg rounded-4">
       <div class="d-flex align-items-center justify-content-between mb-3 px-4 pt-3">
         <div class="d-flex gap-2">
-          <span class="badge bg-primary me-2 fs-7 p-2">USER #{{ complaint.userId }}</span>
+          <span class="badge bg-primary me-2 fs-7 p-2">
+            <i class="bi bi-person-fill me-1"></i>
+            {{ complaint.user?.firstName || '' }} {{ complaint.user?.lastName || 'User #' + complaint.userId }}
+          </span>
           <span class="badge fs-7 p-2" [ngClass]="complaint.isUrgent ? 'bg-danger pulse' : 'bg-secondary'">
             {{ complaint.isUrgent ? 'URGENT' : 'STANDARD' }}
           </span>
@@ -98,7 +104,7 @@
               <i class="bi bi-shield-fill me-1"></i> ADMIN
             </span>
             <span *ngIf="!authService.isAdmin()">
-              <i class="bi bi-person-fill me-1"></i> User #{{ response.userId }}
+              <i class="bi bi-person-fill me-1"></i> {{ response.user?.firstName || '' }} {{ response.user?.lastName || 'User #' + response.userId }}
             </span>
           </span>
          <!-- Dans la partie timeline-item, modifiez le div des boutons -->

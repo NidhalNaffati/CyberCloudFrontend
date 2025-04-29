@@ -37,8 +37,59 @@
               <a href="assets/FrontOffice/daycare-website-template/404.html" class="dropdown-item">404 Page</a>
             </div>
           </div>
+          
+         <!-- Notification dropdown -->
+<div *ngIf="isAuthenticated" class="d-flex align-items-center ms-auto">
+  <div class="dropdown ms-3">
+    <a href="#" class="position-relative" id="notificationDropdownMessage" 
+       data-bs-toggle="dropdown" aria-expanded="false"
+       (click)="toggleNotifications($event)">
+      <i class="fas fa-envelope text-primary fa-2x"></i>
+      <span *ngIf="unreadResponsesCount > 0" 
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{unreadResponsesCount}}
+      </span>
+    </a>
+    
+    <ul class="dropdown-menu dropdown-menu-end p-0" 
+        aria-labelledby="notificationDropdownMessage" style="width: 350px;"
+        data-bs-auto-close="outside">
+      <li>
+        <div class="notification-header bg-primary text-white p-3">
+          <h6 class="mb-0">Responses to your complaints</h6>
         </div>
-        
+      </li>
+      <li>
+        <div class="notification-list" style="max-height: 400px; overflow-y: auto;">
+          <div *ngFor="let response of adminResponses" 
+               class="dropdown-item p-3 border-bottom" 
+               (click)="viewComplaint(response, $event)"
+               [class.bg-light]="!response.isReadRep"
+               style="cursor: pointer;">
+            <div class="d-flex align-items-center">
+              <div class="flex-shrink-0 me-3">
+                <div class="avatar bg-success rounded-circle text-white d-flex align-items-center justify-content-center" 
+                     style="width: 40px; height: 40px;">
+                  <i class="fas fa-user-shield"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1">
+                <h6 class="mb-1">New response</h6>
+                <small class="text-muted">{{response.dateRep | date:'short'}}</small>
+                <p class="mb-0 text-truncate">{{stripHtml(response.content) | slice:0:50}}...</p>
+              </div>
+              <span *ngIf="!response.isReadRep" class="badge bg-danger rounded-pill">New</span>
+            </div>
+          </div>
+          <div *ngIf="adminResponses.length === 0" class="text-center p-3 text-muted">
+            No responses yet
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+        </div>        
         <div class="d-flex me-4">
           <div id="phone-tada" class="d-flex align-items-center justify-content-center">
             <a href="" class="position-relative wow tada" data-wow-delay=".9s">
@@ -74,6 +125,3 @@
   </div>
 </div>
 <!-- Navbar End -->
-
-
-
