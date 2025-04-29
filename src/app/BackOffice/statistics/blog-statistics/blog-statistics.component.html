@@ -25,6 +25,7 @@
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">Articles {{ currentViewLabel }}</h4>
+          <p *ngIf="isEmptyMap(postsData)" class="text-muted text-center my-4">Aucune donnée disponible pour cette période</p>
           <canvas #postsChart></canvas>
         </div>
       </div>
@@ -33,6 +34,7 @@
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">Commentaires {{ currentViewLabel }}</h4>
+          <p *ngIf="isEmptyMap(commentsData)" class="text-muted text-center my-4">Aucune donnée disponible pour cette période</p>
           <canvas #commentsChart></canvas>
         </div>
       </div>
@@ -41,6 +43,7 @@
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">Réactions {{ currentViewLabel }}</h4>
+          <p *ngIf="isEmptyMap(reactionsData)" class="text-muted text-center my-4">Aucune réaction n'a encore été enregistrée</p>
           <div>
             <canvas #reactionsChart style="height: 700px;"></canvas>
           </div>

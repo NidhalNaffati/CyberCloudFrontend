@@ -16,6 +16,7 @@ export class ResponseFormComponent implements OnInit {
   commentId: number | null = null;
   loading: boolean = false;
   error: string | null = null;
+  userId: number = parseInt(localStorage.getItem('user_id') || '1'); // Récupérer l'ID utilisateur connecté
 
   constructor(
     private fb: FormBuilder,
@@ -23,10 +24,9 @@ export class ResponseFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) {
+    // Simplifier le formulaire pour ne contenir que le contenu et l'ID du commentaire
     this.responseForm = this.fb.group({
       content: ['', [Validators.required, Validators.minLength(3)]],
-      userId: [null, Validators.required],
-      userName: ['', Validators.required],
       commentId: [null, Validators.required]
     });
   }
@@ -55,10 +55,9 @@ export class ResponseFormComponent implements OnInit {
     this.loading = true;
     this.responseService.getResponseById(id).subscribe({
       next: (response) => {
+        // Ne charger que les champs nécessaires
         this.responseForm.patchValue({
           content: response.content,
-          userId: response.userId,
-          userName: response.userName,
           commentId: response.commentId
         });
         this.commentId = response.commentId;
@@ -74,17 +73,31 @@ export class ResponseFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.responseForm.invalid) {
+      // Marquer tous les champs comme touchés pour afficher les erreurs
+      Object.keys(this.responseForm.controls).forEach(key => {
+        const control = this.responseForm.get(key);
+        if (control) {
+          control.markAsTouched();
+        }
+      });
       return;
     }
 
     this.loading = true;
+    
+    // Créer l'objet de réponse en y ajoutant l'ID utilisateur du token
+    const formValues = this.responseForm.value;
     const response: BlogCommentResponse = {
-      ...this.responseForm.value,
-      responseId: this.isEditMode ? this.responseId! : undefined,
+      content: formValues.content,
+      commentId: formValues.commentId,
+      userId: this.userId,
       createdAt: new Date()
     };
 
+    console.log('Envoi de la réponse avec les données:', response);
+
     if (this.isEditMode && this.responseId) {
+      // Mettre à jour une réponse existante
       this.responseService.updateResponse(this.responseId, response).subscribe({
         next: () => {
           this.router.navigate(['/admin/responses']);
@@ -96,6 +109,7 @@ export class ResponseFormComponent implements OnInit {
         }
       });
     } else {
+      // Créer une nouvelle réponse
       this.responseService.createResponse(response.commentId, response).subscribe({
         next: () => {
           this.router.navigate(['/admin/responses']);

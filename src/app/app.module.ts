@@ -1,4 +1,3 @@
-
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -58,6 +57,7 @@ import { NotfoundComponent } from './components/notfound/notfound.component';
 
 // Statistics
 import { StatisticsComponent } from './components/statistics/statistics.component';
+import { StatisticsModule } from './BackOffice/statistics/statistics.module';
 
 import { AuthInterceptor } from './auth/auth.interceptor';
 
@@ -105,7 +105,6 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     CommonModule,
     NgChartsModule,
     NgxChartsModule,
-
     NgxPaginationModule,
     NgPipesModule,
     NotfoundComponent,
@@ -117,7 +116,8 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     BlogModule,
     EditorModule,
     FullCalendarModule,
-    NgxEditorModule
+    NgxEditorModule,
+    StatisticsModule
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },

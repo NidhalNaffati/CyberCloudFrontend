@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map, catchError,tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -49,6 +50,7 @@ export class StatisticsService {
     return this.http.get<Map<string, number>>(`${this.apiUrl}/posts/monthly`, { params });
   }
   
+  // Récupérer le nombre de posts par année
   getPostsCountByYear(startDate?: Date, endDate?: Date): Observable<Map<string, number>> {
     let params = new HttpParams();
     
@@ -63,6 +65,7 @@ export class StatisticsService {
     return this.http.get<Map<string, number>>(`${this.apiUrl}/posts/yearly`, { params });
   }
 
+  // Récupérer le nombre de commentaires par jour
   getCommentsCountByDay(startDate?: Date, endDate?: Date): Observable<Map<string, number>> {
     let params = new HttpParams();
     
@@ -77,6 +80,7 @@ export class StatisticsService {
     return this.http.get<Map<string, number>>(`${this.apiUrl}/comments/daily`, { params });
   }
 
+  // Récupérer le nombre de commentaires par mois
   getCommentsCountByMonth(startDate?: Date, endDate?: Date): Observable<Map<string, number>> {
     let params = new HttpParams();
     
@@ -91,6 +95,7 @@ export class StatisticsService {
     return this.http.get<Map<string, number>>(`${this.apiUrl}/comments/monthly`, { params });
   }
   
+  // Récupérer le nombre de commentaires par année
   getCommentsCountByYear(startDate?: Date, endDate?: Date): Observable<Map<string, number>> {
     let params = new HttpParams();
     
@@ -105,9 +110,9 @@ export class StatisticsService {
     return this.http.get<Map<string, number>>(`${this.apiUrl}/comments/yearly`, { params });
   }
 
+  // Récupérer la distribution des réactions
   getReactionsDistribution(): Observable<Map<string, number>> {
     return this.http.get<Map<string, number>>(`${this.apiUrl}/reactions/distribution`);
   }
 
-  
 }

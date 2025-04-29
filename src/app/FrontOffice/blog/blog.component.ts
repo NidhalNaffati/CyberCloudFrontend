@@ -40,9 +40,9 @@ export class BlogComponent implements OnInit {
   location = window.location;
   iduser = parseInt(localStorage.getItem('user_id')||'0');
    postData=[];
-  // Pagination
+
   currentPage = 1;
-  itemsPerPage = 3; // Changé à 3 posts par page
+  itemsPerPage = 3; 
   totalPages = 1;
   searchTerm = '';
 
@@ -51,6 +51,9 @@ export class BlogComponent implements OnInit {
     suffix: '.min',
     plugins: 'lists link image table wordcount'
   };
+
+
+  currentImageIndex: number | null = null;
 
   constructor(
     private blogPostService: BlogpostService,
@@ -63,13 +66,13 @@ export class BlogComponent implements OnInit {
     this.initForm();
     this.loadBlogPosts();
     console.log(this.iduser);
-    // Initialiser les carousels après le chargement des posts
+    
     setTimeout(() => {
       this.initCarousels();
     }, 1000);
   }
   
-  // Initialiser les carousels Bootstrap
+
   initCarousels(): void {
     document.querySelectorAll('.carousel').forEach(carouselEl => {
       new bootstrap.Carousel(carouselEl, {
@@ -93,13 +96,13 @@ export class BlogComponent implements OnInit {
 
   openPostDetailModal(post: BlogPost): void {
     this.selectedPost = post;
-    // Ouvrir le modal
+    
     const modalElement = document.getElementById('post-detail-modal');
     if (modalElement) {
       const modal = new bootstrap.Modal(modalElement);
       modal.show();
       
-      // Initialiser le carousel après l'ouverture du modal
+      
       setTimeout(() => {
         const carouselElement = document.getElementById('carousel-detail');
         if (carouselElement) {
@@ -111,18 +114,17 @@ export class BlogComponent implements OnInit {
     }
   }
   
-  // Ces méthodes sont maintenant gérées par le composant ImageUploadComponent
-  // Nous gardons ces méthodes vides pour la compatibilité avec le code existant
+  
   onFileSelected(event: any): void {
-    // Géré par ImageUploadComponent
+   
   }
   
   addImage(): void {
-    // Géré par ImageUploadComponent
+    
   }
   
   removeImage(index: number): void {
-    // Géré par ImageUploadComponent
+    
   }
 
   loadBlogPosts(): void {
@@ -132,20 +134,32 @@ export class BlogComponent implements OnInit {
         this.filteredPosts = [...this.blogPosts];
         console.log( this.filteredPosts);
         
-        // Charger le nombre de commentaires pour chaque post
+        
         this.blogPosts.forEach(post => {
           this.loadCommentsCount(post.postId);
         });
-        // Appliquer le tri par date et la pagination
+        
         this.sortPosts();
         
-        // Initialiser les carousels après le chargement des posts
+        
         setTimeout(() => {
           this.initCarousels();
         }, 500);
       },
       error: () => {
-        Swal.fire('Erreur', 'Impossible de charger les posts.', 'error');
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: 'Impossible de charger les posts.',
+          confirmButtonText: 'OK',
+          didClose: () => {
+            document.body.classList.remove('modal-open');
+            const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+            while (modalBackdrops.length > 0) {
+              modalBackdrops[0].parentNode?.removeChild(modalBackdrops[0]);
+            }
+          }
+        });
       }
     });
   }
@@ -178,7 +192,7 @@ export class BlogComponent implements OnInit {
     this.sortPosts();
   }
 
-  // Pagination methods
+
   updatePagination(): void {
     this.totalPages = Math.ceil(this.filteredPosts.length / this.itemsPerPage);
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
@@ -212,7 +226,6 @@ export class BlogComponent implements OnInit {
     });
   }
   
-  // Méthode pour mettre à jour le compteur de commentaires depuis le composant enfant
   updateCommentCount(postId: number, count: number): void {
     this.commentCounts[postId] = count;
   }
@@ -232,7 +245,6 @@ export class BlogComponent implements OnInit {
       }));
     }
   
-    // Afficher un indicateur de chargement
     Swal.fire({
       title: 'Traitement en cours...',
       text: 'Veuillez patienter pendant la création de votre publication',
@@ -242,7 +254,6 @@ export class BlogComponent implements OnInit {
       }
     });
 
-    // Fermer la modale avant d'afficher le Swal
     const modalElement = document.getElementById('blog-modal');
     if (modalElement) {
       const modal = bootstrap.Modal.getInstance(modalElement);
@@ -259,7 +270,6 @@ export class BlogComponent implements OnInit {
             title: 'Succès',
             text: 'Post mis à jour avec succès.',
             didClose: () => {
-              // S'assurer que tous les overlays sont supprimés
               document.body.classList.remove('modal-open');
               const modalBackdrops = document.getElementsByClassName('modal-backdrop');
               while (modalBackdrops.length > 0) {
@@ -271,13 +281,28 @@ export class BlogComponent implements OnInit {
           });
         },
         error: () => {
-          Swal.fire('Erreur', 'Erreur lors de la mise à jour du post.', 'error');
+          Swal.close();
+          
+          setTimeout(() => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erreur',
+              text: 'Erreur lors de la mise à jour du post.',
+              confirmButtonText: 'OK',
+              didClose: () => {
+                document.body.classList.remove('modal-open');
+                const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+                while (modalBackdrops.length > 0) {
+                  modalBackdrops[0].parentNode?.removeChild(modalBackdrops[0]);
+                }
+              }
+            });
+          }, 100);
         }
       });
     } else {
       this.blogPostService.createPost(postData).subscribe({
         next: (createdPost) => {
-          // Ajouter la notification immédiatement après la création réussie du post
           this.notificationService.addNotification(createdPost);
           
           Swal.fire({
@@ -285,7 +310,6 @@ export class BlogComponent implements OnInit {
             title: 'Succès',
             text: 'Post créé avec succès.',
             didClose: () => {
-              // S'assurer que tous les overlays sont supprimés
               document.body.classList.remove('modal-open');
               const modalBackdrops = document.getElementsByClassName('modal-backdrop');
               while (modalBackdrops.length > 0) {
@@ -297,7 +321,23 @@ export class BlogComponent implements OnInit {
           });
         },
         error: () => {
-          Swal.fire('Erreur', 'Erreur lors de la création du post.', 'error');
+          Swal.close();
+          
+          setTimeout(() => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erreur',
+              text: 'Erreur lors de la création du post.',
+              confirmButtonText: 'OK',
+              didClose: () => {
+                document.body.classList.remove('modal-open');
+                const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+                while (modalBackdrops.length > 0) {
+                  modalBackdrops[0].parentNode?.removeChild(modalBackdrops[0]);
+                }
+              }
+            });
+          }, 100);
         }
       });
     }
@@ -322,7 +362,6 @@ export class BlogComponent implements OnInit {
       });
     }
 
-    // Ouvrir le modal
     const modalElement = document.getElementById('blog-modal');
     if (modalElement) {
       const modal = new bootstrap.Modal(modalElement);
@@ -346,7 +385,12 @@ export class BlogComponent implements OnInit {
             this.loadBlogPosts();
           },
           error: () => {
-            Swal.fire('Erreur', 'Erreur lors de la suppression du post.', 'error');
+            Swal.fire({
+              icon: 'error',
+              title: 'Erreur',
+              text: 'Erreur lors de la suppression du post.',
+              confirmButtonText: 'OK'
+            });
           }
         });
       }
@@ -420,7 +464,6 @@ export class BlogComponent implements OnInit {
         modal.hide();
       }
       
-      // S'assurer que tous les overlays sont supprimés
       document.body.classList.remove('modal-open');
       const modalBackdrops = document.getElementsByClassName('modal-backdrop');
       while (modalBackdrops.length > 0) {
@@ -428,16 +471,14 @@ export class BlogComponent implements OnInit {
       }
     }
   }
-  // Dans votre composant BlogComponent
 handleImageError(event: any) {
   event.target.src = 'assets/img/default-image.jpg';
 }
 
 ngAfterViewInit() {
-  // Initialiser tous les carrousels
   document.querySelectorAll('.carousel').forEach(carouselEl => {
     new bootstrap.Carousel(carouselEl, {
-      interval: false // Désactive l'auto-rotation
+      interval: false 
     });
   });
 }
@@ -450,22 +491,18 @@ ngAfterViewInit() {
       }
     }, 0);
   }
-  // Méthode améliorée pour afficher le menu déroulant
 showDropdownMenu(postId: number | string) {
-  // Fermer tous les menus déroulants ouverts d'abord
   document.querySelectorAll('.dropdown-menu.show').forEach(openMenu => {
     if (openMenu.id !== `dropdown-menu-${postId}`) {
       openMenu.classList.remove('show');
     }
   });
   
-  // Ouvrir ou fermer le menu sélectionné
   const menuId = typeof postId === 'string' ? `dropdown-menu-${postId}` : `dropdown-menu-${postId}`;
   const menu = document.getElementById(menuId);
   if (menu) {
     menu.classList.toggle('show');
     
-    // S'assurer que le menu reste dans les limites de l'écran
     setTimeout(() => {
       const rect = menu.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
@@ -477,22 +514,17 @@ showDropdownMenu(postId: number | string) {
     }, 0);
   }
   
-  // Empêcher la propagation de l'événement
   event?.stopPropagation();
 }
 
-// Méthode pour encoder les URL pour le partage
 encodeURIComponent(url: string): string {
   return window.encodeURIComponent(url);
 }
 
-  // Ajoute la méthode pour copier le lien du post
   copyPostLink(postId: number): void {
     const url = `${window.location.origin}/blog/${postId}`;
     navigator.clipboard.writeText(url).then(() => {
-      // Affiche un retour visuel (par exemple avec SweetAlert ou un toast)
-      // Utilisation de SweetAlert si déjà utilisé dans le projet
-      // @ts-ignore
+      
       if (Swal) {
         Swal.fire({
           icon: 'success',
@@ -527,7 +559,6 @@ encodeURIComponent(url: string): string {
         let base64String = btoa(stringChar);
         let dataUrl = 'data:image/jpg;base64,' + base64String;
   
-        // ✅ Créer un fichier à partir du base64
         const byteCharacters = atob(base64String);
         const byteNumbers = new Array(byteCharacters.length)
           .fill(0)
@@ -536,11 +567,9 @@ encodeURIComponent(url: string): string {
         const blob = new Blob([byteArray], { type: 'image/jpeg' });
         const file = new File([blob], `generated_image_${Date.now()}.jpg`, { type: 'image/jpeg' });
   
-        // ✅ 1. Sauvegarder dans imageForms[index] pour affichage et gestion locale
         this.imageForms[index].imageUrl = this.sanitizer.bypassSecurityTrustUrl(dataUrl);
      
   
-        // ✅ 2. Ajouter aussi dans generatedImages pour envoi global plus tard
         this.selectedImages.push({
           file: file,
           preview: dataUrl,
@@ -555,5 +584,13 @@ encodeURIComponent(url: string): string {
   
   addInput() {
     this.imageForms.push({ description: '', imageUrl: null });
+  }
+
+  showImageDetail(index: number): void {
+    this.currentImageIndex = index;
+  }
+
+  hideImageDetail(): void {
+    this.currentImageIndex = null;
   }
 }

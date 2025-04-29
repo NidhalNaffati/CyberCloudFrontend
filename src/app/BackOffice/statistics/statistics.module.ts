@@ -14,7 +14,10 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes)
+  ],
+  exports: [
+    BlogStatisticsComponent,
+    CommonModule
   ]
-  
 })
 export class StatisticsModule { }

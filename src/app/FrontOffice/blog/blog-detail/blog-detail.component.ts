@@ -51,7 +51,19 @@ export class BlogDetailComponent implements OnInit {
         console.error('Erreur lors du chargement du post:', err);
         this.error = 'Impossible de charger le post. Veuillez réessayer plus tard.';
         this.loading = false;
-        Swal.fire('Erreur', this.error, 'error');
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: this.error,
+          confirmButtonText: 'OK',
+          didClose: () => {
+            document.body.classList.remove('modal-open');
+            const modalBackdrops = document.getElementsByClassName('modal-backdrop');
+            while (modalBackdrops.length > 0) {
+              modalBackdrops[0].parentNode?.removeChild(modalBackdrops[0]);
+            }
+          }
+        });
       }
     });
   }

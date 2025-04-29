@@ -1,7 +1,7 @@
 // src/environments/environment.ts
 export const environment = {
   production: false,
-  webPurifyApiKey: '07eecebf6c7ade29a72ff9d33acc428e',
+  webPurifyApiKey: '206632b1259a2743aa9f8d857dfbaa35',
   apiUrl: 'http://localhost:8089',
   baseURL: 'https://clipdrop-api.co',
   apiKey:

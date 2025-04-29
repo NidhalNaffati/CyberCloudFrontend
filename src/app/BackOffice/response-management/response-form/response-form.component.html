@@ -27,7 +27,7 @@
     <div class="col">
       <form [formGroup]="responseForm" (ngSubmit)="onSubmit()">
         <div class="mb-3">
-          <label for="commentId" class="form-label">ID Commentaire</label>
+          <label for="commentId" class="form-label">ID Commentaire <span class="text-danger">*</span></label>
           <input type="number" class="form-control" id="commentId" formControlName="commentId" [readonly]="commentId !== null">
           <div *ngIf="responseForm.get('commentId')?.invalid && (responseForm.get('commentId')?.dirty || responseForm.get('commentId')?.touched)" class="text-danger">
             <small *ngIf="responseForm.get('commentId')?.errors?.['required']">L'ID du commentaire est requis.</small>
@@ -35,23 +35,7 @@
         </div>
 
         <div class="mb-3">
-          <label for="userId" class="form-label">ID Utilisateur</label>
-          <input type="number" class="form-control" id="userId" formControlName="userId">
-          <div *ngIf="responseForm.get('userId')?.invalid && (responseForm.get('userId')?.dirty || responseForm.get('userId')?.touched)" class="text-danger">
-            <small *ngIf="responseForm.get('userId')?.errors?.['required']">L'ID utilisateur est requis.</small>
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="userName" class="form-label">Nom d'utilisateur</label>
-          <input type="text" class="form-control" id="userName" formControlName="userName">
-          <div *ngIf="responseForm.get('userName')?.invalid && (responseForm.get('userName')?.dirty || responseForm.get('userName')?.touched)" class="text-danger">
-            <small *ngIf="responseForm.get('userName')?.errors?.['required']">Le nom d'utilisateur est requis.</small>
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="content" class="form-label">Contenu</label>
+          <label for="content" class="form-label">Contenu <span class="text-danger">*</span></label>
           <textarea class="form-control" id="content" rows="4" formControlName="content"></textarea>
           <div *ngIf="responseForm.get('content')?.invalid && (responseForm.get('content')?.dirty || responseForm.get('content')?.touched)" class="text-danger">
             <small *ngIf="responseForm.get('content')?.errors?.['required']">Le contenu est requis.</small>

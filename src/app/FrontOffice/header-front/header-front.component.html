@@ -54,8 +54,44 @@
           </div>
         </div>
 
-        
-
+        <!-- Notifications Icon -->
+        <div *ngIf="isAuthenticated" class="me-3 position-relative">
+          <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-bell text-primary fa-lg"></i>
+              <span *ngIf="unreadBlogNotificationsCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ unreadBlogNotificationsCount }}
+                <span class="visually-hidden">notifications non lues</span>
+              </span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end notification-list shadow-lg p-0" aria-labelledby="notificationDropdown">
+              <div class="notification-header text-white d-flex justify-content-between align-items-center p-3">
+                <h6 class="m-0">Notifications ({{ unreadBlogNotificationsCount }})</h6>
+                <button class="btn btn-sm btn-light" (click)="markAllBlogNotificationsAsRead()">Tout marquer comme lu</button>
+              </div>
+              <div *ngIf="blogNotifications.length === 0" class="p-3 text-center text-muted">
+                <p>Pas de notifications</p>
+              </div>
+              <div *ngFor="let notification of blogNotifications" class="dropdown-item d-flex align-items-center" 
+                   [class.unread]="!notification.read"
+                   (click)="viewBlogPost(notification)">
+                <div class="notification-avatar">
+                  <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="notification-content ms-3">
+                  <div class="notification-title d-flex justify-content-between">
+                    <span>{{ notification.userName }}</span>
+                    <small class="notification-time">{{ formatDate(notification.createdAt) }}</small>
+                  </div>
+                  <p class="notification-text mb-0">{{ notification.message }}</p>
+                  <small class="text-primary">{{ notification.title }}</small>
+                </div>
+              </div>
+              <div class="dropdown-divider m-0"></div>
+              <a routerLink="/blog" class="dropdown-item text-center py-2 text-primary">Voir tous les posts</a>
+            </div>
+          </div>
+        </div>
       
         <!-- Logout button that only appears when authenticated -->
         <div *ngIf="isAuthenticated" class="ms-3 me-3">

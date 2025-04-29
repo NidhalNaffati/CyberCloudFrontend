@@ -1,4 +1,3 @@
-<!-- Blog Start -->
 <div class="container-fluid blog py-5">
     <div class="container py-5">
         <div class="mx-auto text-center wow fadeIn" data-wow-delay="0.1s" style="max-width: 600px;">
@@ -6,7 +5,6 @@
             <h4 class="mb-5 display-3">Discover our Blog</h4>
         </div>
         
-        <!-- Search and Filter Section -->
         <div class="row filter mb-4">
             <div class="col-lg-6">
                 <div class="position-relative search-input-container">
@@ -26,7 +24,6 @@
             </div>
         </div>
 
-        <!-- Create Post Card -->
         <div class="row justify-content-center mb-5">
             <div class="col-lg-12">
                 <div class="card shadow-sm rounded-lg border-0 mb-4">
@@ -62,20 +59,17 @@
             </div>
         </div>
 
-        <!-- Posts Feed with Arrows -->
+
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="position-relative posts-slider">
-                    <!-- Left Arrow -->
                     <button class="btn btn-prev" (click)="prevPage()" [disabled]="currentPage === 1">
                         <i class="fas fa-chevron-left"></i>
                     </button>
 
-                    <!-- Posts Container -->
                     <div class="posts-container">
                         <div *ngFor="let post of paginatedPosts" class="post-card wow fadeIn" data-wow-delay="0.1s">
                             <div class="e-card">
-                                <!-- Image Carousel -->
                                 <div *ngIf="post.images && post.images.length > 0" class="e-card-image">
                                     <div id="carousel-{{post.postId}}" class="carousel slide" data-bs-ride="carousel">
                                         <div style="display: flex;">
@@ -282,7 +276,6 @@
           ></editor>
                         
                     </div>
-                    <!-- Upload d'images avec le nouveau composant -->
                     <div class="mb-4">
                         <label class="form-label">Images</label>
                         <app-image-upload 
@@ -316,9 +309,7 @@
         </div>
     </div>
 </div>
-<!-- Blog Section End -->
 
-<!-- Modal for Post Details -->
 <div class="modal fade" id="post-detail-modal" tabindex="-1" aria-labelledby="postDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
@@ -327,10 +318,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0" *ngIf="selectedPost">
-                <!-- Image Carousel -->
                 <div *ngIf="selectedPost.images && selectedPost.images.length > 0" class="card-img-top">
                     <div id="carousel-detail" class="carousel slide" data-bs-ride="carousel">
-                        <!-- Indicators -->
                         <div class="carousel-indicators">
                             <button *ngFor="let image of selectedPost.images; let i = index" 
                                     type="button" 
@@ -342,19 +331,35 @@
                             </button>
                         </div>
                         
-                        <!-- Carousel Items -->
                         <div class="carousel-inner">
                             <div *ngFor="let image of selectedPost.images; let i = index" 
                                  class="carousel-item" 
                                  [class.active]="i === 0">
-                                <img [src]="image.url" 
-                                     class="d-block w-100" 
-                                     [alt]="image.description || 'Image ' + (i+1)" 
-                                     style="height: 400px; object-fit: contain; background-color: #f8f9fa;">
+                                <div class="position-relative image-container">
+                                    <img [src]="image.url" 
+                                         class="d-block w-100" 
+                                         [alt]="image.description || 'Image ' + (i+1)" 
+                                         style="height: 400px; object-fit: contain; background-color: #f8f9fa; cursor: pointer;"
+                                         (click)="showImageDetail(i)">
+                                    
+                                    <div *ngIf="currentImageIndex === i" class="image-detail-overlay" (click)="hideImageDetail()">
+                                        <button class="close-overlay-btn" (click)="hideImageDetail(); $event.stopPropagation()">×</button>
+                                        
+                                        <div class="enlarged-image-container">
+                                            <img [src]="image.url" 
+                                                 class="enlarged-image" 
+                                                 [alt]="image.description || 'Image ' + (i+1)">
+                                        </div>
+                                        
+                                        <div class="image-description" *ngIf="image.description">
+                                            
+                                            {{ image.description }}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
-                        <!-- Controls -->
                         <button class="carousel-control-prev" type="button" data-bs-target="#carousel-detail" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Previous</span>
@@ -366,7 +371,6 @@
                     </div>
                 </div>
                 
-                <!-- Post Content -->
                 <div class="p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
@@ -392,7 +396,6 @@
                         <div [innerHTML]="selectedPost.content" class="preserve-styles"></div>
                     </div>
                     
-                    <!-- Reactions Section -->
                     <div class="d-flex justify-content-between align-items-center mb-3 border-top border-bottom py-2">
                         <div class="reactions">
                             <div class="d-flex align-items-center">
@@ -412,7 +415,6 @@
                         </div>
                     </div>
                     
-                    <!-- Reaction Buttons -->
                     <div class="d-flex justify-content-between mb-4">
                         <div class="position-relative">
                             <button class="btn btn-link text-dark flex-fill reaction-btn" 
@@ -422,7 +424,6 @@
                                 <i class="far fa-thumbs-up me-1"></i> J'aime
                             </button>
                             
-                            <!-- Reaction Panel -->
                             <div id="reaction-panel-modal-{{selectedPost.postId}}" class="reaction-panel d-none" 
                                  (mouseenter)="showReactionPanel('modal-' + selectedPost.postId)" 
                                  (mouseleave)="hideReactionPanel('modal-' + selectedPost.postId)">
@@ -460,7 +461,6 @@
                         </div>
                     </div>
                     
-                    <!-- Comments Section -->
                     <div class="comments-section">
                      
                         <app-comment [postId]="selectedPost.postId" (commentCountChanged)="updateCommentCount(selectedPost.postId, $event)"></app-comment>
@@ -503,5 +503,3 @@
     pointer-events: none;
 }
 </style>
-
-

@@ -3,6 +3,9 @@
   <div class="row mb-4">
     <div class="col">
       <h2>{{ isEditMode ? 'Modifier' : 'Créer' }} un Article</h2>
+      <div *ngIf="isEditMode" class="text-muted">
+        ID de l'article: {{ postId }}
+      </div>
     </div>
   </div>
 
@@ -20,7 +23,7 @@
     <div class="col-md-8 offset-md-2">
       <form [formGroup]="blogForm" (ngSubmit)="onSubmit()">
         <div class="mb-3">
-          <label for="title" class="form-label">Titre</label>
+          <label for="title" class="form-label">Titre <span class="text-danger">*</span></label>
           <input type="text" class="form-control" id="title" formControlName="title">
           <div *ngIf="blogForm.get('title')?.invalid && blogForm.get('title')?.touched" class="text-danger">
             <small *ngIf="blogForm.get('title')?.errors?.['required']">Le titre est requis.</small>
@@ -29,7 +32,7 @@
         </div>
 
         <div class="mb-3">
-          <label for="content" class="form-label">Contenu</label>
+          <label for="content" class="form-label">Contenu <span class="text-danger">*</span></label>
           <editor
             [init]="editorConfig"
             id="content"
@@ -41,7 +44,7 @@
           </div>
         </div>
 
-        <!-- Le champ userId a été supprimé car il sera automatiquement associé à l'admin connecté -->
+        <!-- Le champ userId est caché car il sera automatiquement associé à l'admin connecté -->
         <input type="hidden" formControlName="userId">
 
         <div class="d-flex justify-content-between">
@@ -51,6 +54,14 @@
           </button>
         </div>
       </form>
+
+      <!-- Affichage des informations de débogage en mode développement -->
+      <div class="mt-4 p-3 border rounded bg-light" *ngIf="isEditMode">
+        <h6>État du formulaire</h6>
+        <p><small>Valide: {{ blogForm.valid ? 'Oui' : 'Non' }}</small></p>
+        <p><small>Touché: {{ blogForm.touched ? 'Oui' : 'Non' }}</small></p>
+        <p><small>Modifié: {{ blogForm.dirty ? 'Oui' : 'Non' }}</small></p>
+      </div>
     </div>
   </div>
 </div>
