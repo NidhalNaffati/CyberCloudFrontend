@@ -46,9 +46,36 @@
                 </div>
               </td>
               <td>
-                <div class="d-flex flex-column">
-                  <span class="badge bg-info mb-1">{{ c.subject }}</span> 
-                  <small class="text-muted">User ID: {{ c.userId }}</small>
+                <div class="user-info-container">
+                
+                  <small class="text-muted user-with-icon">
+                    
+                    <span class="user-label">USER :</span>
+                    <span *ngIf="c.user?.firstName || c.user?.lastName; else userIdBlock" class="user-badge user-name">
+                      {{ c.user?.firstName || '' }} {{ c.user?.lastName || '' }}
+                    </span>
+                    
+                    <ng-template #userIdBlock>
+                      <span class="user-badge user-id">
+                        <i class="mdi mdi-account user-icon"></i>
+                        #{{ c.userId }}
+                      </span>
+                    </ng-template>
+                    
+                  </small>
+                  <div class="subject-container">
+                    <small class="text-muted user-with-icon">
+                    <span class="subject-label">
+                      <i class="mdi mdi-tag-outline subject-icon"></i>
+                      SUBJECT :
+                    </span>
+                    <span class="subject-badge" [class.urgent-flash]="c.isUrgent">
+                      {{ c.subject | lowercase }}
+                    </span> 
+                  </small>
+
+                  </div>
+                  
                 </div>
               </td>
               <td>
@@ -58,6 +85,7 @@
                       <i class="bi bi-star{{ star <= c.starRatingConsultation ? '-fill' : '' }}"></i>
                     </span>
                   </div>
+                  
                   <p class="feedback-preview mb-0"[innerHTML]="getSafeHtml(c.content)"></p>
                 </div>
               </td>

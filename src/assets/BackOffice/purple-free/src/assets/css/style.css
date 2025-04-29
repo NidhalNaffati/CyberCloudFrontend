@@ -160,6 +160,192 @@
   
 }
 
+/* Conteneur principal */
+.user-info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Style du badge sujet */
+.subject-badge {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: white;
+  align-self: flex-start;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-transform: capitalize;
+  transition: all 0.3s ease;
+}
+
+.subject-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Conteneur utilisateur */
+.user-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background-color: rgba(245, 245, 245, 0.7);
+  transition: all 0.3s ease;
+}
+
+.user-with-icon:hover {
+  background-color: rgba(232, 240, 254, 0.9);
+}
+
+/* Badge utilisateur */
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+/* Icône utilisateur */
+.user-icon {
+  font-size: 16px;
+  color: #5d5dff;
+  transition: transform 0.3s ease;
+}
+
+.user-with-icon:hover .user-icon {
+  transform: scale(1.1);
+}
+
+/* Nom utilisateur */
+.user-name {
+  font-weight: 500;
+  color: #3a3a3a;
+  position: relative;
+}
+
+.user-name:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -1px;
+  left: 0;
+  background-color: #5d5dff;
+  transition: width 0.3s ease;
+}
+
+.user-with-icon:hover .user-name:after {
+  width: 100%;
+}
+
+/* ID utilisateur */
+.user-id {
+  font-style: normal;
+  color: #6c757d;
+  font-family: 'Courier New', monospace;
+  font-weight: 500;
+}
+
+/* Label USER */
+.user-label {
+  font-weight: 600; /* Augmenté de 500 à 600 */
+  color: #5a5a5a; /* Couleur légèrement plus foncée */
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 4px;
+}
+
+/* Animation pour les éléments urgents */
+.urgent-flash {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* Conteneur sujet */
+.subject-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+/* Label sujet */
+.subject-label {
+  font-size: 0.7rem;
+  font-weight: 600; /* Augmenté de 500 à 600 */
+  color: #5a5a5a; /* Couleur légèrement plus foncée */
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.subject-icon {
+  font-size: 14px;
+  color: #6c757d;
+  opacity: 0.8;
+}
+.subject-icon, .user-icon {
+  color: #5a5a5a;
+}
+
+/* Badge sujet amélioré */
+.subject-badge {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  border-radius: 12px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-transform: capitalize;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.subject-badge::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255,255,255,0.3) 0%,
+    rgba(255,255,255,0) 60%
+  );
+  transform: rotate(30deg);
+}
+
+.subject-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Animation pour sujets urgents */
+.urgent-flash {
+  animation: pulse 1.5s infinite;
+  background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
 /* Add to your component's CSS file */
 :host ::ng-deep .ngx-charts .bar, 
 :host ::ng-deep .ngx-charts .arc, 

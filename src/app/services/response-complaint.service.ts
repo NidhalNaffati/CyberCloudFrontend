@@ -83,6 +83,10 @@ export class ResponseComplaintService {
     return this.http.get<ResponseComplaint[]>(`${this.apiUrl}/unread`);
   }
 
+  getUnreadResponseComplaintsOrderedByDateDesc(): Observable<ResponseComplaint[]> {
+    return this.http.get<ResponseComplaint[]>(`${this.apiUrl}/unread`);
+  }
+
   markResponseAsRead(responseId: number): Observable<ResponseComplaint> {
     return this.http.put<ResponseComplaint>(`${this.apiUrl}/mark-as-read/${responseId}`, {});
   }

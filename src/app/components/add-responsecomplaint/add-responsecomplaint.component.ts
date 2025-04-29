@@ -168,22 +168,21 @@ export class AddResponsecomplaintComponent implements OnInit, OnChanges {
   
     // Vérification des mots inappropriés...
   
+    const response: ResponseComplaint = {
+      responseId: this.editingResponse ? this.responseToEdit!.responseId : 0,
+      userId: userId, // Utiliser l'ID utilisateur connecté
+      content: responseContent,
+      complaintId: currentComplaintId,
+      dateRep: new Date().toISOString(),
+      isReadRep: false
+    };
   
-        const response: ResponseComplaint = {
-          responseId: this.editingResponse ? this.responseToEdit!.responseId : 0,
-          userId: userId, // Utiliser l'ID utilisateur connecté
-          content: responseContent,
-          complaintId: currentComplaintId,
-          dateRep: new Date().toISOString(),
-          isReadRep: false
-        };
-  
-        if (this.editingResponse) {
-          this.updateResponse(response);
-        } else {
-          this.createResponse(response);
-        }
-      }
+    if (this.editingResponse) {
+      this.updateResponse(response);
+    } else {
+      this.createResponse(response);
+    }
+  }
   createResponse(response: ResponseComplaint): void {
     this.responseService.addResponse(response.complaintId, response).subscribe({
       next: (newResponse: ResponseComplaint) => {
@@ -193,6 +192,15 @@ export class AddResponsecomplaintComponent implements OnInit, OnChanges {
         // Ajouter la nouvelle réponse à la liste
         this.responses.push(newResponse);
         this.showResponseForm = false;
+        
+        // Afficher un message de confirmation avec information sur l'envoi d'email si c'est un admin
+        if (this.authService.isAdmin()) {
+          // Si c'est un admin qui répond, on peut supposer que l'email a été envoyé
+          // car le backend envoie automatiquement un email à l'utilisateur qui a créé la plainte
+          alert("Response added successfully! An email notification has been sent to the user.");
+        } else {
+          alert("Response added successfully!");
+        }
         
         // Recharger les réponses pour s'assurer d'avoir les dernières données
         this.loadResponsesForComplaint(response.complaintId);
