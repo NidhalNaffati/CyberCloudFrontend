@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 
 // FrontOffice Components
 import { AllTemplateFrontComponent } from './FrontOffice/all-template-front/all-template-front.component';
@@ -26,6 +26,7 @@ import { NotfoundComponent } from './components/notfound/notfound.component';
 import { ListComplaintsComponent } from './components/list-complaints/list-complaints.component';
 import { AddComplaintsComponent } from './components/add-complaints/add-complaints.component';
 import { AddResponsecomplaintComponent } from './components/add-responsecomplaint/add-responsecomplaint.component';
+//import {RealtimeTranscriptionComponent} from "./components/realtime-transcription/realtime-transcription.component";
 
 const routes: Routes = [
   {
@@ -44,12 +45,12 @@ const routes: Routes = [
       { path: 'blog/post/:id', component: BlogDetailComponent },
       { path: 'add-complaint', component: AddComplaintsComponent },
       { path: 'edit/:id', component: AddComplaintsComponent },
-      { path: 'confirmation', component: ConfirmationComponent }
+      { path: 'confirmation', component: ConfirmationComponent },
+    //  {path: 'speech-to-text', component: RealtimeTranscriptionComponent}
     ]
   },
   {
-    path: 'admin',
-    component: AllTemplateBackComponent,
+    path: 'admin', component: AllTemplateBackComponent,
     children: [
       { path: '', component: HomeBackComponent, pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
@@ -61,27 +62,19 @@ const routes: Routes = [
       { path: 'comments', loadChildren: () => import('./BackOffice/comment-management/comment-management.module').then(m => m.CommentManagementModule) },
       { path: 'responses', loadChildren: () => import('./BackOffice/response-management/response-management.module').then(m => m.ResponseManagementModule) },
       { path: 'blog-statistics', component: BlogStatisticsComponent },
-      {
-        path: 'reservations',
-        loadChildren: () =>
-          import('./BackOffice/reservations/reservations-routing.module').then(
-            (m) => m.ReservationsRoutingModule
-          )
-      },
+      { path: 'reservations', loadChildren: () => import('./BackOffice/reservations/reservations-routing.module').then((m) => m.ReservationsRoutingModule)},
       { path: 'reservation-form/:id', component: ReservationFormComponent },
       { path: 'complaints', component: ListComplaintsComponent },
       { path: 'responsecomplaint/:id', component: AddResponsecomplaintComponent }
 
     ]
   },
-  { path: '404', component: NotfoundComponent },
-  { path: '**', redirectTo: '/404', pathMatch: 'full' }
+  {path: '404', component: NotfoundComponent},
+  {path: '**', redirectTo: '/404'}
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
-
 export class AppRoutingModule { }
