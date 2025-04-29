@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { catchError, finalize } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { Activity } from 'src/app/models/activity.model';
-
+import { environment } from 'src/environments/environment';
+// ...existing imports...
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -75,29 +76,26 @@ public loadActivities(): void {  // Ajout de public
     });
   }
 
+
   private transformActivity(activity: any): Activity {
     let imageUrl: string;
-
     if (activity.imagePath) {
       if (activity.imagePath.startsWith('http')) {
         imageUrl = activity.imagePath;
       } else {
-
-        imageUrl = '/assets/images/default-activity.jpg';
+        imageUrl = `${this.getBaseImageUrl()}/${activity.imagePath}`;
       }
     } else {
       imageUrl = '/assets/images/default-activity.jpg';
     }
-
     return {
       ...activity,
       image: imageUrl,
       formattedDate: this.formatActivityDate(activity.date)
     };
   }
-
   private getBaseImageUrl(): string {
-    return 'http://localhost:8089/activities/images';
+    return `${environment.apiUrl}/activities/images`;
   }
 
   private formatActivityDate(dateString: string): string {
@@ -124,16 +122,36 @@ public loadActivities(): void {  // Ajout de public
   filterActivities(): void {
     if (!this.searchTerm) {
       this.filteredActivities = [...this.activities];
+      this.currentPage = 1;
       return;
     }
 
-    const term = this.searchTerm.toLowerCase();
-    this.filteredActivities = this.activities.filter(activity =>
-      activity.name.toLowerCase().includes(term) ||
-      activity.details.toLowerCase().includes(term) ||
-      activity.location.toLowerCase().includes(term)
-    );
-    this.currentPage = 1;
+    const term = this.searchTerm.trim();
+    if (term.length >= 3) {
+      this.isLoading = true;
+      this.activityService.searchActivitiesNlp(term).subscribe({
+        next: (results) => {
+          console.log('NLP search results:', results); // Debug line
+          this.filteredActivities = results.map(activity => this.transformActivity(activity));
+          this.isLoading = false;
+          this.currentPage = 1;
+        },
+        error: (err) => {
+          console.error('NLP search error:', err); // Debug line
+          this.errorMessage = 'Erreur lors de la recherche intelligente';
+          this.isLoading = false;
+        }
+      });
+    } else {
+      // Fallback to local filtering for short terms
+      const lowerTerm = term.toLowerCase();
+      this.filteredActivities = this.activities.filter(activity =>
+        activity.name.toLowerCase().includes(lowerTerm) ||
+        activity.details.toLowerCase().includes(lowerTerm) ||
+        activity.location.toLowerCase().includes(lowerTerm)
+      );
+      this.currentPage = 1;
+    }
   }
 
   get paginatedActivities(): Activity[] {

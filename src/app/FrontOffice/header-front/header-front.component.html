@@ -126,22 +126,19 @@
         <div *ngIf="isAuthenticated" class="ms-3 me-3">
 
         <!-- Profile and Logout buttons (authenticated users) -->
-        <div *ngIf="isAuthenticated" class="ms-3 me-3 d-flex align-items-center">
+        <ng-container *ngIf="isAuthenticated; else guestLinks">
           <a routerLink="/auth/profile/edit" class="btn btn-primary rounded me-2">
             <i class="fas fa-user-edit me-2"></i>Edit Profile
           </a>
           <button (click)="logout()" class="btn btn-danger rounded">
             <i class="fas fa-sign-out-alt me-2"></i>Logout
           </button>
-        </div>
-
+        </ng-container>
         <!-- Login/Register buttons (non-authenticated users) -->
-        <div *ngIf="!isAuthenticated" class="ms-3 me-3">
+        <ng-template #guestLinks>
           <a routerLink="/auth/login" class="btn btn-primary rounded me-2">Login</a>
           <a routerLink="/auth/register" class="btn btn-outline-primary rounded">Register</a>
-        </div>
+        </ng-template>
       </div>
-    </nav>
-  </div>
 </div>
 <!-- Navbar End -->
