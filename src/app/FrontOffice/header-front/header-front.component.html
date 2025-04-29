@@ -10,10 +10,10 @@
       </div>
       <!-- Social media links -->
       <div class="top-link pe-2">
-        <a href="" class="btn btn-light btn-sm-square rounded-circle"><i class="fab fa-facebook-f text-secondary"></i></a>
-        <a href="" class="btn btn-light btn-sm-square rounded-circle"><i class="fab fa-twitter text-secondary"></i></a>
-        <a href="" class="btn btn-light btn-sm-square rounded-circle"><i class="fab fa-instagram text-secondary"></i></a>
-        <a href="" class="btn btn-light btn-sm-square rounded-circle me-0"><i class="fab fa-linkedin-in text-secondary"></i></a>
+        <small class="btn btn-light btn-sm-square rounded-circle"><i class="fab fa-facebook-f text-secondary"></i></small>
+        <small class="btn btn-light btn-sm-square rounded-circle"><i class="fab fa-twitter text-secondary"></i></small>
+        <small class="btn btn-light btn-sm-square rounded-circle"><i class="fab fa-instagram text-secondary"></i></small>
+        <small class="btn btn-light btn-sm-square rounded-circle me-0"><i class="fab fa-linkedin-in text-secondary"></i></small>
       </div>
     </div>
   </div>
@@ -54,22 +54,6 @@
           <a [routerLink]="['/contact']" routerLinkActive="active" class="nav-item nav-link">Contact</a>
         </div>
 
-        <!-- Contact info section with phone -->
-        <div class="d-none d-lg-flex me-4">
-          <div id="phone-tada" class="d-flex align-items-center justify-content-center">
-            <a href="" class="position-relative wow tada" data-wow-delay=".9s">
-              <i class="fa fa-phone-alt text-primary fa-2x me-4"></i>
-              <div class="position-absolute" style="top: -7px; left: 20px;">
-                <span><i class="fa fa-comment-dots text-secondary"></i></span>
-              </div>
-            </a>
-          </div>
-          <div class="d-flex flex-column pe-3 border-end border-primary">
-            <span class="text-primary">Have any questions?</span>
-            <a href="#"><span class="text-secondary">Free: + 0123 456 7890</span></a>
-          </div>
-        </div>
-
         <!-- Profile and Logout buttons (authenticated users) -->
         <div *ngIf="isAuthenticated" class="ms-3 me-3 d-flex align-items-center">
           <a routerLink="/auth/profile/edit" class="btn btn-primary rounded me-2">
@@ -85,11 +69,6 @@
           <a routerLink="/auth/login" class="btn btn-primary rounded me-2">Login</a>
           <a routerLink="/auth/register" class="btn btn-outline-primary rounded">Register</a>
         </div>
-
-        <!-- Search button -->
-        <button class="btn-search btn btn-primary btn-md-square rounded-circle" data-bs-toggle="modal" data-bs-target="#searchModal">
-          <i class="fas fa-search text-white"></i>
-        </button>
       </div>
     </nav>
   </div>

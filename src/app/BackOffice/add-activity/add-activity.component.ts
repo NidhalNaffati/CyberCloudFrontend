@@ -58,7 +58,7 @@ export class AddActivityComponent implements OnInit {
       ]],
       price: ['', [
         Validators.required,
-        Validators.min(0.01)
+        Validators.min(0)
       ]],
       image: [null]
     });
