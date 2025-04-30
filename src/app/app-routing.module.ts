@@ -39,14 +39,14 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 // Additional Components
 import { RealtimeTranscriptionComponent } from './components/realtime-transcription/realtime-transcription.component';
 import { MedecinList } from './components/medecin-list/medecin-list.component';
- import { MyFactureComponent } from './FrontOffice/my-facture/my-facture.component';
+import { MyFactureComponent } from './FrontOffice/my-facture/my-facture.component';
 import { ListFactureComponent } from './BackOffice/factures/list-facture/list-facture.component';
 import { AddFactureComponent } from './BackOffice/factures/add-facture/add-facture.component';
 import { UpdateFactureComponent } from './BackOffice/factures/update-facture/update-facture.component';
 import { RemboursementComponent } from './FrontOffice/remboursement/remboursement.component';
 import { ListRemboursementComponent } from './BackOffice/list-remboursement/list-remboursement.component';
- import { JitsiComponent } from './jitsi/jitsi.component';
- 
+import { JitsiComponent } from './jitsi/jitsi.component';
+
 const routes: Routes = [
   {
     path: 'auth',
@@ -66,12 +66,10 @@ const routes: Routes = [
       { path: 'edit/:id', component: AddComplaintsComponent },
       { path: 'confirmation', component: ConfirmationComponent },
       { path: 'speech-to-text', component: RealtimeTranscriptionComponent },
-       { path: 'myfactures', component: MyFactureComponent },    
-        { path: 'remboursement/:factureId', component: RemboursementComponent },
-
-
-       { path: 'add-appointment', component: AddAppointmentComponent }
-     ]
+      { path: 'myfactures', component: MyFactureComponent },
+      { path: 'remboursement/:factureId', component: RemboursementComponent },
+      { path: 'add-appointment', component: AddAppointmentComponent }
+    ]
   },
   { path: 'calendar', component: CalendarComponent },
   { path: 'video-call', component: JitsiComponent },
@@ -102,7 +100,7 @@ const routes: Routes = [
         children: [{ path: '', component: ListRemboursementComponent }],
       },
 
-      
+
       {
         path: 'reservations',
         loadChildren: () =>

@@ -25,6 +25,7 @@ export class ListComplaintsComponent implements OnInit {
   complaints: Complaint[] = [];
   paginatedComplaints: Complaint[] = [];
   filterDate: string = '';
+  searchSubject: string = '';
 
   selectedComplaintId: number | null = null;
   currentPage: number = 1;
@@ -58,22 +59,42 @@ export class ListComplaintsComponent implements OnInit {
   
   
   filterComplaints() {
+    this.applyFilters();
+  }
+  
+  applyFilters() {
+    let filtered = [...this.complaints];
+    
+    // Apply date filter if present
     if (this.filterDate) {
       const selectedDate = new Date(this.filterDate);
-      const filtered = this.complaints.filter(complaint => {
+      filtered = filtered.filter(complaint => {
         const complaintDate = new Date(complaint.date);
         return complaintDate.toDateString() === selectedDate.toDateString();
       });
-      this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
-      this.currentPage = 1;
-      this.paginatedComplaints = filtered.slice(0, this.itemsPerPage);
-    } else {
-      this.clearFilter(); // remet les valeurs par défaut
     }
+    
+    // Apply subject search if present
+    if (this.searchSubject && this.searchSubject.trim() !== '') {
+      const searchTerm = this.searchSubject.toLowerCase().trim();
+      filtered = filtered.filter(complaint => 
+        complaint.subject && complaint.subject.toLowerCase().includes(searchTerm)
+      );
+    }
+    
+    // Update pagination
+    this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
+    this.currentPage = 1;
+    this.paginatedComplaints = filtered.slice(0, this.itemsPerPage);
+  }
+  
+  searchComplaints() {
+    this.applyFilters();
   }
   
   clearFilter() {
     this.filterDate = '';
+    this.searchSubject = '';
     this.totalPages = Math.ceil(this.complaints.length / this.itemsPerPage);
     this.currentPage = 1;
     this.updatePaginatedComplaints();
@@ -88,16 +109,31 @@ export class ListComplaintsComponent implements OnInit {
   changePage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
-  
-      const source = this.filterDate
-        ? this.complaints.filter(complaint =>
-            new Date(complaint.date).toDateString() === new Date(this.filterDate).toDateString()
-          )
-        : this.complaints;
-  
+      
+      // Get filtered complaints based on current filters
+      let filtered = [...this.complaints];
+      
+      // Apply date filter
+      if (this.filterDate) {
+        const selectedDate = new Date(this.filterDate);
+        filtered = filtered.filter(complaint => {
+          const complaintDate = new Date(complaint.date);
+          return complaintDate.toDateString() === selectedDate.toDateString();
+        });
+      }
+      
+      // Apply subject search
+      if (this.searchSubject && this.searchSubject.trim() !== '') {
+        const searchTerm = this.searchSubject.toLowerCase().trim();
+        filtered = filtered.filter(complaint => 
+          complaint.subject && complaint.subject.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      // Apply pagination
       const start = (this.currentPage - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
-      this.paginatedComplaints = source.slice(start, end);
+      this.paginatedComplaints = filtered.slice(start, end);
     }
   }
   

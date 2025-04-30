@@ -4,10 +4,18 @@
       <div class="mx-auto text-center wow fadeIn" data-wow-delay="0.1s" style="max-width: 700px;">
         <h4 class="text-primary mb-4 border-bottom border-primary border-2 d-inline-block p-2 title-border-radius">Voice Recognition</h4>
         <h1 class="display-3">Speech-to-Text</h1>
-        <p class="mb-5">Speak into your microphone to convert your speech into text with our advanced voice recognition technology.</p>
+        <p class="mb-5">Read the sentence below and speak it into your microphone. The text will turn green if you say it correctly!</p>
       </div>
       <div class="row g-5 justify-content-center">
         <div class="col-lg-8 wow fadeIn" data-wow-delay="0.3s">
+          <!-- Child-Friendly Paragraph -->
+          <div class="mb-4">
+            <h5 class="text-primary mb-3">Read This Sentence:</h5>
+            <div class="p-4 bg-white border border-primary rounded">
+              <p class="mb-0 text-dark">{{ childParagraph }}</p>
+            </div>
+          </div>
+
           <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h5 class="text-primary">Status:</h5>
@@ -73,17 +81,19 @@
           </div>
 
           <div class="mb-4">
-            <h5 class="text-primary mb-3">Transcript:</h5>
+            <h5 class="text-primary mb-3">Your Speech:</h5>
             <div class="p-4 bg-white border border-primary rounded" style="min-height: 200px;">
               <ng-container *ngIf="fullTranscript || interimTranscript; else emptyState">
                 <p class="mb-0">
-                  <span class="text-dark">{{ fullTranscript }}</span>
+                  <span [ngClass]="{'text-success': transcriptColor === 'green', 'text-danger': transcriptColor === 'red', 'text-dark': !transcriptColor}">{{ fullTranscript }}</span>
                   <span class="text-secondary fst-italic" *ngIf="interimTranscript">{{ interimTranscript }}</span>
                 </p>
+                <p *ngIf="transcriptColor" class="mt-2 mb-0">
+                  Match: {{ similarityScore }}% ({{ transcriptColor === 'green' ? 'Good job!' : 'Try again!' }})
+                </p>
               </ng-container>
-
               <ng-template #emptyState>
-                <p class="text-secondary text-center mb-0">Transcript will appear here...</p>
+                <p class="text-secondary text-center mb-0">Your speech will appear here...</p>
               </ng-template>
             </div>
           </div>
@@ -91,7 +101,7 @@
           <div *ngIf="isRecording" class="alert alert-info d-flex align-items-center" role="alert">
             <i class="fas fa-spinner fa-spin me-2"></i>
             <div>
-              <strong>Recording in progress...</strong> Speak into your microphone.
+              <strong>Recording in progress...</strong> Speak the sentence above.
               <p *ngIf="interimTranscript" class="mb-0 mt-2">Processing: "{{ interimTranscript }}"</p>
             </div>
           </div>

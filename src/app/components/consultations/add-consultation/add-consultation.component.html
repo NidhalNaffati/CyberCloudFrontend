@@ -22,8 +22,8 @@
 
     <!-- Enhance with AI Button -->
     <div class="form-group mt-2">
-      <button type="button" class="btn btn-secondary" (click)="enhanceDescription()" 
-        [disabled]="isLoading || consultationForm.get('description')?.invalid">
+      <button type="button" class="btn btn-secondary" (click)="enhanceDescription()"
+              [disabled]="isLoading || consultationForm.get('description')?.invalid">
         <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         <span *ngIf="!isLoading">Correct Description with AI 🤖</span>
       </button>

@@ -30,7 +30,6 @@ export interface EditProfileRequest {
 interface AuthenticationRequest {
   email: string;
   password: string;
- 
 }
 
 interface VerifyAccountRequest {
@@ -129,23 +128,27 @@ export class AuthService {
       );
       localStorage.setItem('access_token', response.access_token);
       localStorage.setItem('refresh_token', response.refresh_token);
-     
       // Set auth headers
       this.setAuthHeaders();
       const userRole = this.extractUserRoleFromToken(response.access_token);
       this.isAuthenticatedSubject.next(true);
       this.userRoleSubject.next(userRole);
 
-      // Add redirection logic here
-      if (userRole === 'ROLE_ADMIN') {
-        await this.router.navigate(['/admin']); // Adjust the admin route as needed
-      } else {
-        await this.router.navigate(['/']); // Home page for regular users
-      }
+      // Redirect based on user role
+      this.redirectBasedOnRole(userRole);
 
       return response;
     } catch (error) {
       return this.handleError(error as HttpErrorResponse);
+    }
+  }
+
+  // New method to handle role-based redirection
+  redirectBasedOnRole(role: string | null): void {
+    if (role === 'ROLE_ADMIN') {
+      this.router.navigate(['/admin']).then(r => console.log('Redirected to admin'));
+    } else {
+      this.router.navigate(['/']).then(r => console.log('Redirected to home'));
     }
   }
 

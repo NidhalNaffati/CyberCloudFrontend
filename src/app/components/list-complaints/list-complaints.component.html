@@ -7,6 +7,21 @@
 
     <!-- Zone de filtres et actions -->
     <div class="col-md-6 d-flex flex-wrap justify-content-md-end gap-2">
+      <!-- Search by Subject -->
+      <div class="d-flex align-items-center gap-2 me-2">
+        <label for="subjectSearch" class="form-label mb-0 me-2">Search by Subject:</label>
+        <input
+          id="subjectSearch"
+          type="text"
+          class="form-control"
+          style="min-width: 150px;"
+          placeholder="Enter subject..."
+          [(ngModel)]="searchSubject"
+          (input)="searchComplaints()"
+        />
+      </div>
+      
+      <!-- Filter by Date -->
       <div class="d-flex align-items-center gap-2">
         <label for="dateFilter" class="form-label mb-0 me-2">Filter by Date:</label>
         <input

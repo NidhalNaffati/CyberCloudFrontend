@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService { 
+export class ApiService {
   private apiUrl = environment.apiUrl;
 
   constructor(
@@ -16,21 +16,12 @@ export class ApiService {
     private authService: AuthService
   ) {}
 
- 
-  private getHeaders(): HttpHeaders {
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-    
-    return headers;
-  }
-
-  
+  /**
+   * Execute a GET request to the API
+   * @param endpoint The API endpoint path
+   * @param params Optional query parameters
+   * @returns Observable with the response data
+   */
   get<T>(endpoint: string, params?: any): Observable<T> {
     const url = `${this.apiUrl}${endpoint}`;
     let httpParams = new HttpParams();
@@ -43,44 +34,62 @@ export class ApiService {
       });
     }
 
-    return this.http.get<T>(url, { 
-      params: httpParams,
-      headers: this.getHeaders()
-    }).pipe(catchError(this.handleError));
+    return this.http.get<T>(url, { params: httpParams })
+      .pipe(catchError(this.handleError));
   }
 
-  
+  /**
+   * Execute a POST request to the API
+   * @param endpoint The API endpoint path
+   * @param data The payload to send
+   * @returns Observable with the response data
+   */
   post<T>(endpoint: string, data: any): Observable<T> {
     const url = `${this.apiUrl}${endpoint}`;
-    return this.http.post<T>(url, data, {
-      headers: this.getHeaders()
-    }).pipe(catchError(this.handleError));
+    return this.http.post<T>(url, data)
+      .pipe(catchError(this.handleError));
   }
 
-  
+  /**
+   * Execute a PUT request to the API
+   * @param endpoint The API endpoint path
+   * @param data The payload to send
+   * @returns Observable with the response data
+   */
   put<T>(endpoint: string, data: any): Observable<T> {
     const url = `${this.apiUrl}${endpoint}`;
-    return this.http.put<T>(url, data, {
-      headers: this.getHeaders()
-    }).pipe(catchError(this.handleError));
+    return this.http.put<T>(url, data)
+      .pipe(catchError(this.handleError));
   }
 
-  
+  /**
+   * Execute a PATCH request to the API
+   * @param endpoint The API endpoint path
+   * @param data The payload to send
+   * @returns Observable with the response data
+   */
   patch<T>(endpoint: string, data: any): Observable<T> {
     const url = `${this.apiUrl}${endpoint}`;
-    return this.http.patch<T>(url, data, {
-      headers: this.getHeaders()
-    }).pipe(catchError(this.handleError));
+    return this.http.patch<T>(url, data)
+      .pipe(catchError(this.handleError));
   }
 
-
+  /**
+   * Execute a DELETE request to the API
+   * @param endpoint The API endpoint path
+   * @returns Observable with the response data
+   */
   delete<T>(endpoint: string): Observable<T> {
     const url = `${this.apiUrl}${endpoint}`;
-    return this.http.delete<T>(url, {
-      headers: this.getHeaders()
-    }).pipe(catchError(this.handleError));
+    return this.http.delete<T>(url)
+      .pipe(catchError(this.handleError));
   }
-  
+
+  /**
+   * Centralized error handling for HTTP requests
+   * @param error The HTTP error response
+   * @returns Observable with error
+   */
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An error occurred while processing your request.';
 
